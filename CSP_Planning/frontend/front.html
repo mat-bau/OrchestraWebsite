@@ -232,10 +232,69 @@
         .tab-content {
             display: none;
         }
+        /* les sous-contenus de planning sont week-content */
+        .week-content {
+        display: none;
+        }
+        .week-content.active {
+        display: block;
+        }
 
-        .tab-content.active {
+        /* le container des sous-contenus peut être scrolable si besoin */
+        #planning-weeks-contents {
+        overflow-y: auto;
+        }
+
+
+        /* Layout horizontal pour les onglets de semaines (pas le planning) */
+        #dynamic-tab-contents > .tab-content.active:not(#planning) {
+            display: flex;
+            gap: 20px;
+            align-items: flex-start;
+        }
+
+        #dynamic-tab-contents > .tab-content.active:not(#planning) .table-section {
+            flex: 1 1 48%;
+            box-sizing: border-box;
+        }
+
+        /* Assurer que l'onglet planning s'affiche correctement */
+        #planning {
             display: block;
         }
+
+        #planning.active {
+            display: block !important;
+        }
+
+        /* Style pour les sous-onglets du planning */
+        #planning-weeks-tabs {
+            display: flex;
+            margin-bottom: 20px;
+            border-bottom: 2px solid #e9ecef;
+        }
+
+        #planning-weeks-tabs .tab {
+            padding: 12px 24px;
+            background: none;
+            border: none;
+            border-bottom: 2px solid transparent;
+            cursor: pointer;
+            font-size: 16px;
+            font-weight: 500;
+            color: #6c757d;
+            transition: all 0.3s ease;
+        }
+
+        #planning-weeks-tabs .tab.active {
+            color: #74140b;
+            border-bottom-color: #74140b;
+        }
+
+        #planning-weeks-tabs .tab:hover {
+            color: #74140b;
+        }
+
 
         .table-section {
             margin-bottom: 40px;
@@ -409,6 +468,86 @@
             display: block;
         }
 
+        #planning-weeks-contents .week-content {
+            display: none;
+        }
+
+        #planning-weeks-contents .week-content.active {
+            display: block;
+        }
+
+        #planning-weeks-contents .week-content.active .calendar {
+            display: grid;
+            grid-template-columns: 60px repeat(7,1fr);
+            grid-template-rows: 30px repeat(26, minmax(30px,auto));
+            gap: 0;
+            border: 1px solid #ddd;
+            margin-top: 20px;
+        }
+
+        /* entêtes de jour */
+        .calendar .day-header {
+        grid-row: 1;
+        text-align: center;
+        font-weight: bold;
+        border-bottom: 1px solid #ccc;
+        background: #f8f9fa;
+        }
+
+        /* 1ère colonne : heure */
+        .calendar .time-cell {
+        grid-column: 1;
+        border-bottom: 1px solid #eee;
+        font-size:12px;
+        padding:2px;
+        text-align:right;
+        color:#666;
+        }
+
+        /* toutes les autres cellules vides */
+        .calendar .slot-cell {
+        border:1px solid #f0f0f0;
+        }
+
+        .calendar .event {
+            position: relative;
+            background: rgba(116,20,11,0.1);
+            border-left: 4px solid #74140b;
+            padding: 2px 4px;
+            font-size: 12px;
+            overflow: hidden;
+            z-index: 2;
+            border-radius: 3px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+        }
+
+        #planning-weeks-tabs {
+            display: flex;
+            margin-bottom: 20px;
+            border-bottom: 2px solid #e9ecef;
+        }
+
+        #planning-weeks-tabs .tab {
+            padding: 12px 24px;
+            background: none;
+            border: none;
+            border-bottom: 2px solid transparent;
+            cursor: pointer;
+            font-size: 16px;
+            font-weight: 500;
+            color: #6c757d;
+            transition: all 0.3s ease;
+        }
+
+        #planning-weeks-tabs .tab.active {
+            color: #74140b;
+            border-bottom-color: #74140b;
+        }
+
+        #planning-weeks-tabs .tab:hover {
+            color: #74140b;
+        }
+
         .download-button {
             background: linear-gradient(135deg, #28a745 0%, #20c997 100%);
             color: white;
@@ -437,6 +576,54 @@
         .logo–header {
             height: 1em;        /* adapte à la hauteur de la ligne */
             width: auto;
+        }
+
+                /* Tooltip styles */
+        .tooltip {
+            position: relative;
+            cursor: pointer;
+        }
+
+        .tooltip .tooltiptext {
+            visibility: hidden;
+            width: 250px;
+            background-color: #333;
+            color: #fff;
+            text-align: left;
+            border-radius: 6px;
+            padding: 10px;
+            position: absolute;
+            z-index: 1000;
+            bottom: 125%;
+            left: 50%;
+            margin-left: -125px;
+            opacity: 0;
+            transition: opacity 0.3s;
+            font-size: 12px;
+            line-height: 1.4;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.3);
+        }
+
+        .tooltip .tooltiptext::after {
+            content: "";
+            position: absolute;
+            top: 100%;
+            left: 50%;
+            margin-left: -5px;
+            border-width: 5px;
+            border-style: solid;
+            border-color: #333 transparent transparent transparent;
+        }
+
+        .tooltip:hover .tooltiptext {
+            visibility: visible;
+            opacity: 1;
+        }
+
+        .tooltip .tooltiptext strong {
+            color: #74140b;
+            display: block;
+            margin-bottom: 5px;
         }
     </style>
 </head>
@@ -495,7 +682,7 @@
                 </div>
 
                 <div class="parameter-group">
-                    <label class="parameter-label">Laisser le solveur choisir le nombre d’absents</label>
+                    <label class="parameter-label">Laisser le solveur choisir le nombre d'absents</label>
                     <div class="checkbox-container">
                         <input type="checkbox" id="auto_seuil" name="auto_seuil">
                     </div>
@@ -540,95 +727,23 @@
             </div>
 
             <div class="results-section" id="results">
-                <div class="tabs">
-                    <button class="tab active" data-tab="weekend1">Weekend 1</button>
-                    <button class="tab" data-tab="weekend2">Weekend 2</button>
-                    <button class="tab" data-tab="planning">Planning Final</button>
+                <div class="tabs" id="dynamic-tabs">
+                    <!-- Les onglets seront générés dynamiquement -->
+                     
                 </div>
 
-                <div class="tab-content active" id="weekend1">
-                    <div style="display: flex; gap: 20px;">
-                        <div style="flex: 1;">
-                            <div class="table-section">
-                                <div class="table-title">Disponibilités - Weekend 1</div>
-                                <div class="table-container">
-                                    <table id="disponibilites-weekend1">
-                                        <thead id="disponibilites-weekend1-head">
-                                        </thead>
-                                        <tbody id="disponibilites-weekend1-body">
-                                        </tbody>
-                                    </table>
-                                </div>
-                            </div>
-                        </div>
-                        
-                        <div style="flex: 1;">
-                            <div class="table-section">
-                                <div class="table-title">Répartition - Weekend 1</div>
-                                <div class="table-container">
-                                    <table id="repartition-weekend1">
-                                        <thead id="repartition-weekend1-head">
-                                        </thead>
-                                        <tbody id="repartition-weekend1-body">
-                                        </tbody>
-                                    </table>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
+                <div id="dynamic-tab-contents">
+                    <!-- Le contenu des onglets sera généré dynamiquement -->
                 </div>
 
-                <div class="tab-content" id="weekend2">
-                    <div style="display: flex; gap: 20px;">
-                        <div style="flex: 1;">
-                            <div class="table-section">
-                                <div class="table-title">Disponibilités - Weekend 2</div>
-                                <div class="table-container">
-                                    <table id="disponibilites-weekend2">
-                                        <thead id="disponibilites-weekend2-head">
-                                        </thead>
-                                        <tbody id="disponibilites-weekend2-body">
-                                        </tbody>
-                                    </table>
-                                </div>
-                            </div>
-                        </div>
-                        
-                        <div style="flex: 1;">
-                            <div class="table-section">
-                                <div class="table-title">Répartition - Weekend 2</div>
-                                <div class="table-container">
-                                    <table id="repartition-weekend2">
-                                        <thead id="repartition-weekend2-head">
-                                        </thead>
-                                        <tbody id="repartition-weekend2-body">
-                                    </table>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="tab-content" id="planning">
-                    <div class="table-section">
-                        <div class="table-title">Planning Final</div>
-                        <div class="table-container">
-                            <table id="planning-final">
-                                <thead>
-                                    <tr>
-                                        <th>Morceau</th>
-                                        <th>Jour</th>
-                                        <th>Heures</th>
-                                        <th>Participants</th>
-                                    </tr>
-                                </thead>
-                                <tbody id="planning-final-body">
-                                </tbody>
-                            </table>
-                        </div>
-                        <button class="download-button" id="download-btn" style="display: none;">
-                            📥 Télécharger le planning Excel
-                        </button>
+                    <div class="tab-content" id="planning">
+                    <!-- Sous-onglets semaines -->
+                    <div class="tabs" id="planning-weeks-tabs"></div>
+                    <div id="planning-weeks-contents"></div>
+                    <!-- Télécharger -->
+                    <button class="download-button" id="download-btn" style="display: none;">
+                        📥 Télécharger le planning Excel
+                    </button>
                     </div>
                 </div>
             </div>
@@ -642,6 +757,8 @@
         // Variables pour stocker les fichiers
         let disponibilitesFile = null;
         let repartitionFile = null;
+        let currentPlanningData = null; // Pour stocker les données du planning
+        
         // Au sommet de ton <script> ou dans un bloc DOMContentLoaded
         const emptyState   = document.getElementById('empty-state');
         const loading      = document.getElementById('loading');
@@ -657,7 +774,8 @@
                 valueSpan.textContent = this.value;
             });
         });
-        // --- Gestion du mode auto vs fixed pour le seuil d’absence ---
+        
+        // --- Gestion du mode auto vs fixed pour le seuil d'absence ---
         const autoCheckbox     = document.getElementById('auto_seuil');
         const absenceSlider    = document.getElementById('absence-threshold');
         const absenceValueSpan = document.getElementById('absence-threshold-value');
@@ -741,22 +859,6 @@
         // Configuration des zones de drop
         setupDropZone('disponibilites-drop', 'disponibilites-file', 'disponibilites-info');
         setupDropZone('repartition-drop', 'repartition-file', 'repartition-info');
-
-        // Gestion des onglets
-        const tabs = document.querySelectorAll('.tab');
-        const tabContents = document.querySelectorAll('.tab-content');
-
-        tabs.forEach(tab => {
-            tab.addEventListener('click', () => {
-                const targetTab = tab.getAttribute('data-tab');
-                
-                tabs.forEach(t => t.classList.remove('active'));
-                tabContents.forEach(tc => tc.classList.remove('active'));
-                
-                tab.classList.add('active');
-                document.getElementById(targetTab).classList.add('active');
-            });
-        });
 
         // Fonction pour afficher les erreurs
         function showError(message) {
@@ -854,25 +956,407 @@
                 tbody.appendChild(tr);
             });
         }
+       // Remplacez cette fonction dans votre code JavaScript
+        function createDynamicTabs(dispoObj, repartObj) {
+            const tabs = document.getElementById('dynamic-tabs');
+            const panes = document.getElementById('dynamic-tab-contents');
+            tabs.innerHTML = '';
+            panes.innerHTML = '';
 
-        // Fonction pour remplir le planning final je dois encore y regarder
-        function fillPlanningTable(data) {
-            const tbody = document.getElementById('planning-final-body');
-            tbody.innerHTML = '';
+            // Créer les onglets des semaines
+            Object.keys(dispoObj)
+                .sort((a, b) => {
+                    const na = parseInt(a.split('_')[1], 10);
+                    const nb = parseInt(b.split('_')[1], 10);
+                    return na - nb;
+                })
+                .forEach((sem, idx) => {
+                    const wkNum = sem.split('_')[1];
+                    const tabId = `semaine${wkNum}`;
+
+                    // onglet
+                    const btn = document.createElement('button');
+                    btn.className = idx === 0 ? 'tab active' : 'tab';
+                    btn.dataset.tab = tabId;
+                    btn.textContent = `Semaine ${wkNum}`;
+                    tabs.appendChild(btn);
+
+                    // contenu
+                    const div = document.createElement('div');
+                    div.id = tabId;
+                    div.className = idx === 0 ? 'tab-content active' : 'tab-content';
+                    div.innerHTML = `
+                        <div class="table-section">
+                            <div class="table-title">Disponibilités - Semaine ${wkNum}</div>
+                            <div class="table-container">
+                                <table id="disponibilites-${tabId}"><thead></thead><tbody></tbody></table>
+                            </div>
+                        </div>
+                        <div class="table-section">
+                            <div class="table-title">Répartition - Semaine ${wkNum}</div>
+                            <div class="table-container">
+                                <table id="repartition-${tabId}"><thead></thead><tbody></tbody></table>
+                            </div>
+                        </div>
+                    `;
+                    panes.appendChild(div);
+                });
+
+            // *** AJOUT : Créer l'onglet Planning final ***
+            const planningBtn = document.createElement('button');
+            planningBtn.className = 'tab';
+            planningBtn.dataset.tab = 'planning';
+            planningBtn.textContent = '📅 Planning Final';
+            tabs.appendChild(planningBtn);
+
+            // Créer le contenu de l'onglet Planning (récupérer le contenu existant du HTML)
+            const planningDiv = document.createElement('div');
+            planningDiv.id = 'planning';
+            planningDiv.className = 'tab-content';
+            planningDiv.innerHTML = `
+                <!-- Sous-onglets semaines -->
+                <div class="tabs" id="planning-weeks-tabs"></div>
+                <div id="planning-weeks-contents"></div>
+                <!-- Télécharger -->
+                <button class="download-button" id="download-btn" style="display: none;">
+                    📥 Télécharger le planning Excel
+                </button>
+            `;
+            panes.appendChild(planningDiv);
+
+            // Réattacher les event listeners
+            attachTabListeners();
             
-            data.forEach(row => {
-                const tr = document.createElement('tr');
-                tr.innerHTML = `
-                    <td>${row.morceau}</td>
-                    <td>${row.jour}</td>
-                    <td>${row.creneau}</td>
-                    <td>${row.participants}</td>
-                `;
-                tbody.appendChild(tr);
+            // Réattacher l'event listener pour le bouton download
+            document.getElementById('download-btn').addEventListener('click', downloadExcel);
+        }
+
+        // Fonction pour attacher les event listeners aux onglets
+        function attachTabListeners() {
+            const tabs = document.querySelectorAll('.tab');
+            const tabContents = document.querySelectorAll('.tab-content');
+
+            tabs.forEach(tab => {
+                tab.addEventListener('click', () => {
+                    const targetTab = tab.getAttribute('data-tab');
+                    
+                    tabs.forEach(t => t.classList.remove('active'));
+                    tabContents.forEach(tc => tc.classList.remove('active'));
+                    
+                    tab.classList.add('active');
+                    document.getElementById(targetTab).classList.add('active');
+                });
             });
         }
 
-        // Fonction principale de génération
+        function fillDynamicTables(dispoObj = {}, repartObj = {}) {
+        // ici dispoObj === data.disponibilites
+        //     repartObj === data.repartition
+
+        // garde-fou trivial
+        if (Object.keys(dispoObj).length === 0
+        && Object.keys(repartObj).length === 0) {
+            console.warn("pas de créneaux dispo/repartition");
+            return;
+        }
+
+        Object
+            .keys(dispoObj)
+            .sort((a,b)=>
+            parseInt(a.split("_")[1],10)
+            - parseInt(b.split("_")[1],10)
+            )
+            .forEach(sem => {
+            const n = sem.split("_")[1];
+            fillTable(`disponibilites-semaine${n}`,
+                        dispoObj[sem],
+                        false);
+            fillTable(`repartition-semaine${n}`,
+                        repartObj[sem],
+                        true);
+            });
+        }
+        // 1. REMPLACER la fonction calculateWeekDates par cette version qui utilise ta fonction robuste
+        function calculateWeekDates(events) {
+            const weekDates = {};
+            
+            events.forEach(ev => {
+                if (!ev.Jour || ev.Jour.startsWith('Non')) return;
+                
+                const jourMatch = ev.Jour.match(/^(\w+)\s+(\d{1,2}\/\d{1,2}\/\d{4})\s+S(\d+)$/);
+                if (!jourMatch) return;
+                
+                const [, dayName, dateStr, weekNum] = jourMatch;
+                
+                // Utiliser ta fonction robuste pour déterminer la semaine
+                const weekDays = getWeekFromDate(dayName, dateStr);
+                if (weekDays) {
+                    weekDates[weekNum] = weekDays;
+                }
+            });
+            
+            return weekDates;
+        }
+
+        // 2. AJOUTER cette fonction robuste dans ton script (avant calculateWeekDates)
+        function getWeekFromDate(dayName, dateStr) {
+            const fullDayNames = ['Lundi', 'Mardi', 'Mercredi', 'Jeudi', 'Vendredi', 'Samedi', 'Dimanche'];
+            const [dd, mm, yyyy] = dateStr.split('/').map(Number);
+            const baseDate = new Date(yyyy, mm - 1, dd);
+            const indexInWeek = fullDayNames.indexOf(dayName);
+            if (indexInWeek === -1) {
+                console.warn("❌ Nom de jour invalide :", dayName);
+                return null;
+            }
+            // Trouver le lundi de la semaine
+            const mondayDate = new Date(baseDate);
+            mondayDate.setDate(baseDate.getDate() - indexInWeek);
+            // Construire les jours de la semaine
+            const result = {};
+            for (let i = 0; i < 7; i++) {
+                const d = new Date(mondayDate);
+                d.setDate(mondayDate.getDate() + i);
+                const jour = fullDayNames[i];
+                const day = String(d.getDate()).padStart(2, '0');
+                const month = String(d.getMonth() + 1).padStart(2, '0');
+                result[jour] = `${day}/${month}`;
+            }
+            return result;
+        }
+
+        // 3. REMPLACER complètement la fonction groupByWeek par cette version améliorée
+        function groupByWeek(planning) {
+            console.log("🔍 groupByWeek appelée avec:", planning);
+            
+            const weeks = {};
+            
+            planning.forEach((ev, index) => {
+                console.log(`📝 Traitement événement ${index}:`, ev);
+                
+                if (!ev.Jour || ev.Jour.startsWith('Non')) {
+                    console.log(`⏭️ Événement ignoré (pas de jour valide): ${ev.Jour}`);
+                    return;
+                }
+                
+                // Parsing du format "Vendredi 13/12/2024 S2"
+                const jourMatch = ev.Jour.match(/^(\w+)\s+(\d{1,2}\/\d{1,2}\/\d{4})\s+S(\d+)$/);
+                
+                if (!jourMatch) {
+                    console.warn(`⚠️ Format jour non reconnu: ${ev.Jour}`);
+                    return;
+                }
+                
+                const [, dayName, dateStr, weekNum] = jourMatch;
+                console.log(`✅ Format détecté: ${dayName}, ${dateStr}, S${weekNum}`);
+                
+                const [deb, fin] = (ev.Heures || '').split('-');
+                
+                if (!deb || !fin) {
+                    console.warn(`⚠️ Heures invalides: ${ev.Heures}`);
+                    return;
+                }
+                
+                // Si la semaine n'existe pas encore, la créer avec toutes les dates
+                if (!weeks[weekNum]) {
+                    const weekDays = getWeekFromDate(dayName, dateStr);
+                    if (!weekDays) {
+                        console.warn(`⚠️ Impossible de déterminer la semaine pour ${dayName} ${dateStr}`);
+                        return;
+                    }
+                    weeks[weekNum] = {
+                        events: [],
+                        dates: weekDays
+                    };
+                    console.log(`📅 Nouvelle semaine créée: ${weekNum}`, weekDays);
+                }
+                
+                // Ajouter l'événement à la semaine
+                weeks[weekNum].events.push({
+                    day: dayName,
+                    date: weeks[weekNum].dates[dayName],
+                    week: weekNum,
+                    debut: deb.trim(),
+                    fin: fin.trim(),
+                    morceau: (ev.Morceau || '').trim(),
+                    musiciens: ev.Musiciens || []
+                });
+                
+                console.log(`✅ Événement ajouté à semaine ${weekNum}: ${dayName} ${weeks[weekNum].dates[dayName]} ${deb}-${fin} ${ev.Morceau}`);
+            });
+            
+            console.log("📊 Résultat groupByWeek:", weeks);
+            return weeks;
+        }
+        // Fonctions utilitaires manquantes
+        function pad(n) {
+            return n < 10 ? '0' + n : n;
+        }
+
+        function toMin(hm) {
+            const [h, m] = hm.split(':').map(Number);
+            return h * 60 + m;
+        }
+
+        // 4. REMPLACER complètement la fonction renderPlanningCalendar par cette version corrigée
+        function renderPlanningCalendar(planning) {
+            console.log("🎯 renderPlanningCalendar appelée avec:", planning);
+            
+            const container = document.getElementById('planning');
+            if (!container) {
+                console.error('[Agenda] #planning introuvable !');
+                return;
+            }
+            
+            const tabss = container.querySelector('#planning-weeks-tabs');
+            const paness = container.querySelector('#planning-weeks-contents');
+            if (!tabss || !paness) {
+                console.error('[Agenda] planning-weeks-tabs ou planning-weeks-contents manquant.');
+                return;
+            }
+            
+            tabss.innerHTML = '';
+            paness.innerHTML = '';
+            
+            const weeks = groupByWeek(planning);
+            console.log("📅 Semaines groupées:", weeks);
+            
+            const days = ['Lundi', 'Mardi', 'Mercredi', 'Jeudi', 'Vendredi', 'Samedi', 'Dimanche'];
+            const startH = 8, endH = 21, step = 30;
+
+            const weekKeys = Object.keys(weeks).sort((a, b) => parseInt(a) - parseInt(b));
+            console.log("🔢 Clés des semaines:", weekKeys);
+            
+            weekKeys.forEach((sem, i) => {
+                console.log(`📝 Création semaine ${sem}, index ${i}`);
+                
+                // Onglet semaine
+                const btn = document.createElement('button');
+                btn.className = i === 0 ? 'tab active' : 'tab';
+                btn.dataset.week = sem;
+                btn.textContent = 'Semaine ' + sem;
+                tabss.appendChild(btn);
+
+                // Contenu semaine
+                const div = document.createElement('div');
+                div.className = i === 0 ? 'week-content active' : 'week-content';
+                div.dataset.week = sem;
+                div.innerHTML = '<div class="calendar"></div>';
+                paness.appendChild(div);
+                
+                const cal = div.querySelector('.calendar');
+
+                // Header jours avec dates
+                cal.appendChild(Object.assign(document.createElement('div'), {
+                    className: 'time-cell day-header',
+                    textContent: ''
+                }));
+                
+                days.forEach(d => {
+                    const dateForDay = weeks[sem].dates[d];
+                    const displayText = `${d} ${dateForDay}`;
+                    
+                    cal.appendChild(Object.assign(document.createElement('div'), {
+                        className: 'day-header',
+                        textContent: displayText
+                    }));
+                });
+                
+                // Lignes horaires + slots
+                for (let m = startH * 60; m < endH * 60; m += step) {
+                    const hh = pad(Math.floor(m / 60)), mm = pad(m % 60);
+                    cal.appendChild(Object.assign(document.createElement('div'), {
+                        className: 'time-cell',
+                        textContent: `${hh}:${mm}`
+                    }));
+                    for (let d = 0; d < 7; d++) {
+                        cal.appendChild(Object.assign(document.createElement('div'), {
+                            className: 'slot-cell'
+                        }));
+                    }
+                }
+
+                // Placer les événements
+                // Placer les événements
+                weeks[sem].events.forEach(ev => {
+                    const col = days.indexOf(ev.day);
+                    if (col === -1) {
+                        console.warn(`⚠️ Jour non reconnu: ${ev.day}`);
+                        return;
+                    }
+                    
+                    const topMin = toMin(ev.debut) - startH * 60;
+                    const heightMin = toMin(ev.fin) - toMin(ev.debut);
+                    const rowStart = Math.floor(topMin / step) + 2;
+                    const rowSpan = Math.ceil(heightMin / step);
+                    
+                    const e = document.createElement('div');
+                    e.className = 'event tooltip';
+
+                    // Créer le contenu avec tooltip amélioré
+                    let tooltipContent = `<strong>🎵 ${ev.morceau}</strong><br><strong>👥 Musiciens :</strong><br>`;
+                    if (ev.musiciens && Array.isArray(ev.musiciens) && ev.musiciens.length > 0) {
+                        tooltipContent += ev.musiciens.map(m => `• ${m}`).join('<br>');
+                    } else {
+                        tooltipContent += 'Informations non disponibles';
+                    }
+                    tooltipContent += `<br><strong>🕐 Horaires :</strong> ${ev.debut} - ${ev.fin}`;
+
+                    e.innerHTML = `
+                        <div style="font-weight: bold; margin-bottom: 2px;">${ev.morceau}</div>
+                        <div style="font-size: 10px; opacity: 0.8;">${ev.debut}-${ev.fin}</div>
+                        <span class="tooltiptext">${tooltipContent}</span>
+                    `;
+                    
+                    Object.assign(e.style, {
+                        gridColumnStart: col + 2,
+                        gridRowStart: rowStart,
+                        gridRowEnd: `span ${rowSpan}`
+                    });
+                    cal.appendChild(e);
+                    
+                    console.log(`✅ Événement ajouté: ${ev.morceau} le ${ev.day} ${ev.date} de ${ev.debut} à ${ev.fin}`, ev.musiciens);
+                });
+
+                const weekTabs     = tabss.querySelectorAll('button[data-week]');
+                const weekContents = paness.querySelectorAll('.week-content');
+
+                weekTabs.forEach(btn => {
+                    btn.addEventListener('click', () => {
+                    const target = btn.dataset.week;
+                    weekTabs.forEach(b => b.classList.remove('active'));
+                    weekContents.forEach(c => c.classList.remove('active'));
+
+                    btn.classList.add('active');
+                    paness
+                        .querySelector(`.week-content[data-week="${target}"]`)
+                        .classList.add('active');
+                    });
+                });
+
+            // Gestion des clics sous-onglets
+            document.querySelectorAll('#planning-weeks-tabs .tab').forEach(tab => {
+                tab.addEventListener('click', () => {
+                    const sem = tab.dataset.week;
+                    console.log(`🔄 Changement vers semaine ${sem}`);
+                    
+                    // Désactiver tous les sous-onglets et contenus
+                    document.querySelectorAll('#planning-weeks-tabs .tab').forEach(t => t.classList.remove('active'));
+                    document.querySelectorAll('#planning-weeks-contents .week-content').forEach(w => w.classList.remove('active'));
+                    
+                    // Activer le sous-onglet cliqué
+                    tab.classList.add('active');
+                    const targetContent = document.querySelector(`#planning-weeks-contents .week-content[data-week="${sem}"]`);
+                    if (targetContent) {
+                        targetContent.classList.add('active');
+                        console.log(`✅ Semaine ${sem} activée`);
+                    } else {
+                        console.error(`❌ Contenu pour semaine ${sem} introuvable`);
+                    }
+                });
+            });
+            
+            console.log("✅ renderPlanningCalendar terminée");
+        });}
         async function generatePlanning() {
             const formData = new FormData();
             formData.append('repartition', repartitionFile);
@@ -881,11 +1365,11 @@
             formData.append('max_load', document.getElementById('max-load').value);
             formData.append('load_penalty', document.getElementById('load-penalty').value);
             formData.append('group_bonus', document.getElementById('group-bonus').value);
-            const isAuto  = document.getElementById('auto_seuil').checked;
-            const mode    = isAuto ? 'auto' : 'fixed';
-            const seuil   = isAuto ? 0 : parseInt(document.getElementById('absence-threshold').value, 10);
+            const isAuto = document.getElementById('auto_seuil').checked;
+            const mode = isAuto ? 'auto' : 'fixed';
+            const seuil = isAuto ? 0 : parseInt(document.getElementById('absence-threshold').value, 10);
 
-            formData.append('mode_absence',  mode);
+            formData.append('mode_absence', mode);
             formData.append('seuil_absence', seuil);
 
             // Afficher le loading
@@ -895,7 +1379,6 @@
             generateBtn.disabled = true;
 
             try {
-                // Envoyer la requête
                 console.log("📤 Envoi de la requête au backend...");
 
                 const response = await fetch(`${API_URL}/upload`, {
@@ -908,26 +1391,36 @@
                 }
 
                 const data = await response.json();
-
-                if (data.error) {
-                    throw new Error(data.error);
-                }
-
-                // Remplir les tableaux
-                fillTable('disponibilites-weekend1', data.disponibilites.weekend1);
-                fillTable('disponibilites-weekend2', data.disponibilites.weekend2);
-                fillTable('repartition-weekend1', data.repartition.weekend1, true);
-                fillTable('repartition-weekend2', data.repartition.weekend2, true);
+                console.log("► back JSON:", data);
                 
-                // Remplir le planning final
-                if (data.planning) {
-                    fillPlanningTable(data.planning);
-                }
+                const {
+                    disponibilites = {},
+                    repartition = {},
+                    planning = []
+                } = data;
 
-                // Afficher les résultats
-                loading.classList.remove('active');
+                console.log("► dispoObj:", disponibilites);
+                console.log("► repartObj:", repartition);
+                console.log("► planning:", planning);
+
+                if (data.error) throw new Error(data.error);
+
+                // 1) génère les onglets et les tables vides
+                createDynamicTabs(disponibilites, repartition);
+
+                // 2) appelle votre fillTable habituelle, mais pour chaque semaine de façon dynamique
+                fillDynamicTables(disponibilites, repartition);
+
+                // 3) *** IMPORTANT : Render le calendrier APRÈS avoir créé les onglets ***
+                renderPlanningCalendar(planning);
+
+                // 4) affiche le bouton download
+                const downloadBtn = document.getElementById('download-btn');
+                if (downloadBtn) {
+                    downloadBtn.style.display = 'block';
+                }
+                
                 results.classList.add('active');
-                downloadBtn.style.display = 'block';
 
             } catch (error) {
                 console.error('Erreur:', error);
@@ -936,6 +1429,7 @@
                 emptyState.style.display = 'block';
             } finally {
                 generateBtn.disabled = false;
+                loading.classList.remove('active');
             }
         }
 
@@ -965,7 +1459,6 @@
                 showError('Erreur lors du téléchargement du fichier Excel');
             }
         }
-
         // Event listeners
         document.getElementById('generate-btn').addEventListener('click', generatePlanning);
         document.getElementById('download-btn').addEventListener('click', downloadExcel);
