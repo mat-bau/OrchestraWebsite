@@ -85,3 +85,8 @@ python3 -m http.server 8000
 This is an evolving project! If you find any bug, weird behavior, or simply have an idea that could improve the planner or add other features for shared living, **please open an issue or contribute directly** — we’d love your help.
 
 ---
+## Ideas for the frontend part & pre processing
+
+- Add some personnability : we can add 1 weekend so we have 3 rehearsal weekends, 
+- Make it do also juste for one week : many slots dispatched over 1 week and the algo consider only these slots but front displays the whole week 
+- Customize slots duration
