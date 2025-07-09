@@ -2,7 +2,7 @@ from flask import Flask, request, jsonify, send_file
 from flask_cors import CORS
 import os
 from scheduler_repetition import RepetitionScheduler
-
+import traceback
 
 
 app = Flask(__name__)
@@ -22,8 +22,8 @@ def upload():
         max_load = int(request.form['max_load'])
         load_penalty = int(request.form['load_penalty'])
         group_bonus = int(request.form['group_bonus'])
-        seuil_absence = int(request.form.get("absence_threshold", 0))
-       
+        seuil_absence = int(request.form.get("seuil_absence", 0))
+        mode_absence = request.form.get("mode_absence", "fixed")
 
 
         dispo_path = os.path.join(UPLOAD_FOLDER, dispo_file.filename)
@@ -31,23 +31,37 @@ def upload():
 
         dispo_file.save(dispo_path)
         repart_file.save(repart_path) 
-        print("🧾 Paramètres reçus :", maybe_penalty, max_load, load_penalty, group_bonus, seuil_absence)  # <-- LOG 2
+        print("🧾 Params :", maybe_penalty, max_load, load_penalty, group_bonus, mode_absence, seuil_absence)
         print("📂 Fichiers reçus :", dispo_file.filename, repart_file.filename)  # <-- LOG 3
 
 
-        # Instanciation de ton planificateur
+        print("🔧 Instanciation du planner…")
         planner = RepetitionScheduler(
             repart_path, dispo_path,
-            maybe_penalty, max_load, load_penalty, group_bonus, seuil_absence
+            maybe_penalty, max_load, load_penalty, group_bonus,
+            mode_absence, seuil_absence
         )
+        print("✅ Planner instancié.")
 
+        # 2) Génération
+        print("⚙️  Lancement de generer_planning()…")
         planner.generer_planning()
-        print("✅ Planning généré avec succès.")
+        print("✅ generer_planning() terminé.")
+
+        # 3) Export Excel
+        print(f"💾 Export vers {RESULT_FILE} …")
         planner.export_planning(RESULT_FILE)
+        print("✅ export_planning() terminé.")
+
+        # 4) Sérialisation JSON
+        print("🗜  Sérialisation JSON…")
         json_data = planner.get_json_data()
+        print("✅ JSON prêt, on renvoie au front.")
+        print("✅ Planning généré avec succès.")
         return jsonify(json_data)
 
     except Exception as e:
+        traceback.print_exc()
         return jsonify({"error": str(e)}), 500
 
 

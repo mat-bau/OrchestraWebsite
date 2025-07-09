@@ -5,7 +5,15 @@ from collections import defaultdict
 import time
 
 class RepetitionScheduler:
-    def __init__(self, repartitions_file: str, disponibilites_file: str, maybe_penalty: int, max_load: int, load_penalty: int, group_bonus: int, seuil_absence: int = 0):
+    def __init__(self,
+                 repartitions_file: str,
+                 disponibilites_file: str,
+                 maybe_penalty: int,
+                 max_load: int,
+                 load_penalty: int,
+                 group_bonus: int,
+                 mode_absence: str = "strict",
+                 seuil_absence: int = 0):
         """
         Args:
             repartitions_file: Fichier Excel des répartitions donc avec les morceaux et participants
@@ -45,7 +53,9 @@ class RepetitionScheduler:
         self.max_load = max_load             # Nombre max de créneaux par jour
         self.load_penalty = load_penalty     # Pénalité si le musicien est surchargé
         self.group_bonus = group_bonus       # Gain pour les répétitions groupées
+        self.mode_absence   = mode_absence      # Mode de gestion des absences ("strict", "flexible" ou "auto")
         self.seuil_absence = seuil_absence
+        self.T             = None
 
     def transformer_simple(self, texte):
         """
@@ -149,60 +159,84 @@ class RepetitionScheduler:
 
     # 1st constraint : dipsonibilité "oui" "non" "peut-être"
     def add_disponibility_constraints(self):
-        for morceau, musiciens in self.repartition.items():
-            for slot in self.creneaux:
-                slot_idx = self.slot_index[slot]
+        # si mode == "auto", on crée T = maxi d’absents autorisés sur un slot
+        if self.mode_absence == "auto":
+            # bornes 0…(nombre total de musiciens)
+            total_mus = sum(len(mus) for mus in self.repartition.values())
+            self.T = self.model.NewIntVar(0, total_mus, "T_max_abs")
 
-                # 1) est-ce que j'affecte ce morceau à ce slot ?
-                is_here = self.model.NewBoolVar(f"{morceau}_{slot}_is_here")
-                self.model.Add(self.assignments[morceau] == slot_idx)   .OnlyEnforceIf(is_here)
-                self.model.Add(self.assignments[morceau] != slot_idx)   .OnlyEnforceIf(is_here.Not())
-
-                absent_flags = []
-                # boucle sur chaque musicien du morceau
+        if self.mode_absence == "fixed" and self.seuil_absence == 0:
+            for morceau, musiciens in self.repartition.items():
                 for musicien in musiciens:
-                    dispo = self.disponibilites[musicien].get(slot, "non").strip().lower()
+                    for slot in self.creneaux:
+                        slot_idx = self.slot_index[slot]
+                        is_dispo = self.disponibilites[musicien].get(slot, "non").lower()
 
-                    if dispo == "oui":
-                        # pas d'absent_flag, pas de pénalité
+                        is_here = self.model.NewBoolVar(f"{morceau}_{slot}_is_here")
+                        self.model.Add(self.assignments[morceau] == slot_idx).OnlyEnforceIf(is_here)
+                        self.model.Add(self.assignments[morceau] != slot_idx).OnlyEnforceIf(is_here.Not())
+
+                        # Si dispo == non → contrainte dure (seulement si le morceau est assigné)
+                        if is_dispo == "non":
+                            self.model.Add(self.assignments[morceau] != slot_idx).OnlyEnforceIf(self.is_assigned[morceau])
+
+                        # Si dispo == peut-être → pénalité
+                        if is_dispo == "peut-être":
+                            penalty = self.model.NewIntVar(0, self.maybe_penalty, f"penalty_{morceau}_{slot}_{musicien}")
+                            self.model.Add(penalty == self.maybe_penalty).OnlyEnforceIf(is_here)
+                            self.model.Add(penalty == 0).OnlyEnforceIf(is_here.Not())
+                            self.penalties.append(penalty)
+        else:
+            for morceau, musiciens in self.repartition.items():
+                for slot in self.creneaux:
+                    slot_idx = self.slot_index[slot]
+                    is_here = self.model.NewBoolVar(f"{morceau}_{slot}_is_here")
+                    self.model.Add(self.assignments[morceau] == slot_idx).OnlyEnforceIf(is_here)
+                    self.model.Add(self.assignments[morceau] != slot_idx).OnlyEnforceIf(is_here.Not())
+                    
+                    absent_flags = []
+                    for musicien in musiciens:
+                        dispo = self.disponibilites[musicien].get(slot,"non").lower()
+                        if dispo == "oui":
+                            continue
+                        absent = self.model.NewBoolVar(f"{morceau}_{slot}_{musicien}_absent")
+                        self.model.Add(is_here == 1).OnlyEnforceIf(absent)
+                        self.model.Add(is_here == 0).OnlyEnforceIf(absent.Not())
+                        absent_flags.append(absent)
+                        # pénalités "non" / "peut-être" (inchangé)
+                        if dispo == "non":
+                            pen = self.model.NewIntVar(0,1, f"pen_non_{morceau}_{slot}_{musicien}")
+                            self.model.Add(pen == 1).OnlyEnforceIf(absent)
+                            self.model.Add(pen == 0).OnlyEnforceIf(absent.Not())
+                        else:
+                            pen = self.model.NewIntVar(0,self.maybe_penalty,
+                                                        f"pen_maybe_{morceau}_{slot}_{musicien}")
+                            self.model.Add(pen == self.maybe_penalty).OnlyEnforceIf(absent)
+                            self.model.Add(pen == 0).OnlyEnforceIf(absent.Not())
+                            self.penalties.append(pen)
+                            self.absent_participants.setdefault(morceau, {})\
+                                                    .setdefault(slot, []).append((musicien, absent))
+
+                    if not absent_flags:
                         continue
 
-                    # 2) création du flag d'absence
-                    absent = self.model.NewBoolVar(f"{morceau}_{slot}_{musicien}_absent")
-                    # absent ⇒ is_here et inverse
-                    self.model.Add(is_here == 1).OnlyEnforceIf(absent)
-                    self.model.Add(is_here == 0).OnlyEnforceIf(absent.Not())
-                    absent_flags.append(absent)
+                    # === ICI on remplace ton ancien "sum_abs ≤ seuil_absence" ===
+                    if self.mode_absence == "strict":
+                        # exactement comme ton ancien algo "aucun absent"
+                        self.model.Add(sum(absent_flags) == 0).OnlyEnforceIf(is_here)
 
-                    # 3) on pénalise selon le type d'absence
-                    if dispo == "non":
-                        # penalty_non : par défaut tu peux mettre 1, ou tout coefficient que tu veux
-                        pen_non = self.model.NewIntVar(0, self.max_load, f"pen_non_{morceau}_{slot}_{musicien}")
-                        # si absent alors on ajoute la pénalité
-                        self.model.Add(pen_non == 1).OnlyEnforceIf(absent)
-                        self.model.Add(pen_non == 0).OnlyEnforceIf(absent.Not())
-                        self.penalties.append(pen_non)
+                    elif self.mode_absence == "fixed":
+                        sum_abs = self.model.NewIntVar(0, len(absent_flags),
+                                                    f"{morceau}_{slot}_sum_abs")
+                        self.model.Add(sum_abs == sum(absent_flags)).OnlyEnforceIf(is_here)
+                        self.model.Add(sum_abs <= self.seuil_absence).OnlyEnforceIf(is_here)
 
-                    elif dispo == "peut-être":
-                        pen_maybe = self.model.NewIntVar(0, self.maybe_penalty,
-                                                        f"pen_maybe_{morceau}_{slot}_{musicien}")
-                        self.model.Add(pen_maybe == self.maybe_penalty).OnlyEnforceIf(absent)
-                        self.model.Add(pen_maybe == 0).OnlyEnforceIf(absent.Not())
-                        self.penalties.append(pen_maybe)
-
-                    # pour ton post-processing
-                    self.absent_participants[morceau].setdefault(slot, []).append((musicien, absent))
-
-                # 4) seuil d’absences par morceau/slot
-                if absent_flags:
-                    sum_abs = self.model.NewIntVar(0, len(absent_flags),
-                                                f"{morceau}_{slot}_sum_absents")
-                    # on somme tous les flags
-                    self.model.Add(sum_abs == sum(absent_flags))
-                    # si on place le morceau ici ⇒ sum_abs ≤ seuil_absence
-                    self.model.Add(sum_abs <= self.seuil_absence).OnlyEnforceIf(is_here)
-
-
+                    else:  # mode_absence == "auto"
+                        sum_abs = self.model.NewIntVar(0, len(absent_flags),
+                                                    f"{morceau}_{slot}_sum_abs")
+                        self.model.Add(sum_abs == sum(absent_flags)).OnlyEnforceIf(is_here)
+                        # on laisse le solver choisir T, puis on contraint sum_abs <= T
+                        self.model.Add(sum_abs <= self.T).OnlyEnforceIf(is_here)
 
 
     # 2nd: Un créneau n'accueille qu'un morceau
@@ -281,22 +315,28 @@ class RepetitionScheduler:
                     self.model.Add(reward == 0).OnlyEnforceIf(bloc.Not())
                     self.penalties.append(reward)  
 
-
     def define_objective(self):
-        penalty_not_assigned_weight = 1000  # poids fort pour encourager l'assignation
-
+        penalty_not_assigned_weight = 10000
+        # 1) penalty pour non‐assignés
         for morceau in self.morceaux:
-            penalty = self.model.NewIntVar(0, penalty_not_assigned_weight, f"penalite_non_assigne_{morceau}")
-            self.model.Add(penalty == penalty_not_assigned_weight).OnlyEnforceIf(self.is_assigned[morceau].Not())
-            self.model.Add(penalty == 0).OnlyEnforceIf(self.is_assigned[morceau])
-            self.penalties.append(penalty)
+            p = self.model.NewIntVar(0, penalty_not_assigned_weight,
+                                     f"penalite_non_assigne_{morceau}")
+            self.model.Add(p == penalty_not_assigned_weight).OnlyEnforceIf(self.is_assigned[morceau].Not())
+            self.model.Add(p == 0).OnlyEnforceIf(self.is_assigned[morceau])
+            self.penalties.append(p)
 
-        self.model.Minimize(sum(self.penalties))
+        # 2) si mode "auto", on minimise ensuite T
+        objective = sum(self.penalties)
+        if self.mode_absence == "auto":
+            W2 = 10000
+            objective = objective + self.T * W2
+
+        # 3) on inclut toutes les pénalités "non"/"peut-être" que tu as déjà ajoutées
+        self.model.Minimize(objective)
 
     def build_model(self):
         # 1) (re)création du modèle
         self.model = cp_model.CpModel()
-
         # 2) définir les variables
         self.define_variables()
 
@@ -306,10 +346,13 @@ class RepetitionScheduler:
         self.add_daily_load_constraints()
         self.add_penalites_repetitions_groupees()
 
+        # 4) définir l'objectif
+        self.define_objective()
+
 
     def solve(self,
-            time_limit_sec: float = 60,
-            num_workers: int = 8):
+            time_limit_sec: float = 120,
+            num_workers: int = 12):
         """
         Construit le modèle (via build_model), résout, et extrait :
         - status
@@ -325,9 +368,6 @@ class RepetitionScheduler:
         self.penalties = []
         self.musiciens_absents_force.clear()
         self.build_model()
-
-        # --- Minimiser les pénalités collectées dans self.penalties ---
-        self.model.Minimize(sum(self.penalties))
 
         # --- Solve ---
         start = time.time()

@@ -495,6 +495,13 @@
                 </div>
 
                 <div class="parameter-group">
+                    <label class="parameter-label">Laisser le solveur choisir le nombre d’absents</label>
+                    <div class="checkbox-container">
+                        <input type="checkbox" id="auto_seuil" name="auto_seuil">
+                    </div>
+                </div>
+
+                <div class="parameter-group">
                     <label class="parameter-label">Seuil d'absence autorisé (0-3)</label>
                     <div class="slider-container">
                         <input type="range" class="slider" id="absence-threshold" min="0" max="3" value="0">
@@ -643,17 +650,33 @@
         const downloadBtn  = document.getElementById('download-btn');
 
         // Gestion des sliders
-        const absenceSlider = document.getElementById('absence-threshold');
-        const absenceSliderValue = document.getElementById('absence-threshold-value');
-        absenceSlider.addEventListener('input', () => {
-            absenceSliderValue.textContent = absenceSlider.value;
-        });
         const sliders = document.querySelectorAll('.slider');
         sliders.forEach(slider => {
             const valueSpan = document.getElementById(slider.id + '-value');
             slider.addEventListener('input', function() {
                 valueSpan.textContent = this.value;
             });
+        });
+        // --- Gestion du mode auto vs fixed pour le seuil d’absence ---
+        const autoCheckbox     = document.getElementById('auto_seuil');
+        const absenceSlider    = document.getElementById('absence-threshold');
+        const absenceValueSpan = document.getElementById('absence-threshold-value');
+
+        // Initialisation (si la checkbox est déjà cochée au reload)
+        absenceSlider.disabled = autoCheckbox.checked;
+
+        // Quand on bouge le slider, on met à jour la petite valeur
+        absenceSlider.addEventListener('input', () => {
+        absenceValueSpan.textContent = absenceSlider.value;
+        });
+
+        // Quand on coche/déco, on lock/unlock le slider et on grise/dégrise
+        autoCheckbox.addEventListener('change', () => {
+        const isAuto = autoCheckbox.checked;
+        absenceSlider.disabled = isAuto;
+        // si tu veux un effet visuel "grisé", ajouter/enlever une classe CSS
+        absenceSlider.closest('.parameter-group')
+                    .classList.toggle('text-muted', isAuto);
         });
 
         // Gestion des zones de drop
@@ -858,7 +881,12 @@
             formData.append('max_load', document.getElementById('max-load').value);
             formData.append('load_penalty', document.getElementById('load-penalty').value);
             formData.append('group_bonus', document.getElementById('group-bonus').value);
-            formData.append('absence_threshold', document.getElementById('absence-threshold').value);
+            const isAuto  = document.getElementById('auto_seuil').checked;
+            const mode    = isAuto ? 'auto' : 'fixed';
+            const seuil   = isAuto ? 0 : parseInt(document.getElementById('absence-threshold').value, 10);
+
+            formData.append('mode_absence',  mode);
+            formData.append('seuil_absence', seuil);
 
             // Afficher le loading
             emptyState.style.display = 'none';
