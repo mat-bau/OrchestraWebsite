@@ -29,6 +29,9 @@ We designed several constraints and preferences that reflect the real-life decis
 ### Interactive refinement with threshold acceptance
 - We make acceptable a threshold number of musicians to be forced to play at a slot, so fater the solver generated the planning we can manually modify our disponibilities by asking kindly the musicians if they can adjust their schedule to fit the slot.
 
+### Ignore deserted slots (not implemented yet)
+- If a strong majority of musicians of a song are not there at a slot we are not even considering it like a valid value of the domain.
+
 ### Incomplete but optimized solutions
 - Sometimes no perfect solution exists, and not every songs are assigned.
 - The COP formulation allows us to still suggest the best possible outcome with **soft constraints** and **penalties** (e.g., if one member is missing or if two sessions are too far apart).
