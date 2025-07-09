@@ -165,7 +165,7 @@ class RepetitionScheduler:
             total_mus = sum(len(mus) for mus in self.repartition.values())
             self.T = self.model.NewIntVar(0, total_mus, "T_max_abs")
 
-        if self.mode_absence == "fixed" and self.seuil_absence == 0:
+        if self.mode_absence == "fixed" and self.seuil_absence == 0: # ancienne version (qui est dans la main branch) mais en gros prend les peut-etre un peu moins stricte jsp pq faut que j'y regarde
             for morceau, musiciens in self.repartition.items():
                 for musicien in musiciens:
                     for slot in self.creneaux:
@@ -176,11 +176,11 @@ class RepetitionScheduler:
                         self.model.Add(self.assignments[morceau] == slot_idx).OnlyEnforceIf(is_here)
                         self.model.Add(self.assignments[morceau] != slot_idx).OnlyEnforceIf(is_here.Not())
 
-                        # Si dispo == non → contrainte dure (seulement si le morceau est assigné)
+                        # Si dispo == non -> contrainte dure (seulement si le morceau est assigné)
                         if is_dispo == "non":
                             self.model.Add(self.assignments[morceau] != slot_idx).OnlyEnforceIf(self.is_assigned[morceau])
 
-                        # Si dispo == peut-être → pénalité
+                        # Si dispo == peut-être -> pénalité
                         if is_dispo == "peut-être":
                             penalty = self.model.NewIntVar(0, self.maybe_penalty, f"penalty_{morceau}_{slot}_{musicien}")
                             self.model.Add(penalty == self.maybe_penalty).OnlyEnforceIf(is_here)
@@ -203,7 +203,7 @@ class RepetitionScheduler:
                         self.model.Add(is_here == 1).OnlyEnforceIf(absent)
                         self.model.Add(is_here == 0).OnlyEnforceIf(absent.Not())
                         absent_flags.append(absent)
-                        # pénalités "non" / "peut-être" (inchangé)
+                        # pénalités "non" / "peut-être"
                         if dispo == "non":
                             pen = self.model.NewIntVar(0,1, f"pen_non_{morceau}_{slot}_{musicien}")
                             self.model.Add(pen == 1).OnlyEnforceIf(absent)
@@ -219,10 +219,7 @@ class RepetitionScheduler:
 
                     if not absent_flags:
                         continue
-
-                    # === ICI on remplace ton ancien "sum_abs ≤ seuil_absence" ===
                     if self.mode_absence == "strict":
-                        # exactement comme ton ancien algo "aucun absent"
                         self.model.Add(sum(absent_flags) == 0).OnlyEnforceIf(is_here)
 
                     elif self.mode_absence == "fixed":
@@ -231,11 +228,10 @@ class RepetitionScheduler:
                         self.model.Add(sum_abs == sum(absent_flags)).OnlyEnforceIf(is_here)
                         self.model.Add(sum_abs <= self.seuil_absence).OnlyEnforceIf(is_here)
 
-                    else:  # mode_absence == "auto"
+                    else:
                         sum_abs = self.model.NewIntVar(0, len(absent_flags),
                                                     f"{morceau}_{slot}_sum_abs")
                         self.model.Add(sum_abs == sum(absent_flags)).OnlyEnforceIf(is_here)
-                        # on laisse le solver choisir T, puis on contraint sum_abs <= T
                         self.model.Add(sum_abs <= self.T).OnlyEnforceIf(is_here)
 
 
@@ -331,7 +327,7 @@ class RepetitionScheduler:
             W2 = 10000
             objective = objective + self.T * W2
 
-        # 3) on inclut toutes les pénalités "non"/"peut-être" que tu as déjà ajoutées
+        # 3) on inclut toutes les pénalités "non"/"peut-être"
         self.model.Minimize(objective)
 
     def build_model(self):
