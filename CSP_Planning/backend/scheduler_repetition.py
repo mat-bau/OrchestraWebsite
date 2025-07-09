@@ -59,78 +59,102 @@ class RepetitionScheduler:
 
     def transformer_simple(self, texte):
         """
-        Fonction outil pour transformer le texte d'un créneau en format plus simple
-        Args:
-            texte: Le texte du créneau à transformer
+        Renvoie None ou dict { jour: "LUN", date: 5, h1: 14, m1:0, h2:16, m2:0 }
         """
-        import re
-        texte_clean = texte.strip().replace('\n', ' ').replace('\r', ' ')
-        match = re.search(r'(\w+\.)\s+(\d+).*?(\d{1,2}):(\d{2})\s*-\s*(\d{1,2}):(\d{2})', texte_clean)
-        # print(f"Debug: Matching text '{texte_clean}' -> {match}")
-        if not match:
+        # On normalise
+        t = texte.strip().replace("\n"," ").replace("\r"," ")
+        m = re.search(r"(\w+\.)\s+(\d+).*?(\d{1,2}):(\d{2})\s*-\s*(\d{1,2}):(\d{2})", t)
+        if not m:
             return None
-        
-        jour, date, h1, m1, h2, m2 = match.groups()
-
-        jours = {'lun.': 'LUN', 'mar.': 'MAR', 'mer.': 'MER', 'jeu.': 'JEU',
-                'ven.': 'VEN', 'sam.': 'SAM', 'dim.': 'DIM'}
-        
-        jour_conv = jours.get(jour, jour.upper())
-        
-        # a changer vous même en fonction de vos jours !!
-        date_num = int(date)
-        if date_num == 11 or date_num == 12 or date_num == 13:
-            weekend = 1
-        elif date_num == 18 or date_num == 19 or date_num == 20:
-            weekend = 2
-        elif date_num == 25 or date_num == 26 or date_num == 27:
-            weekend = 3
-        else:
-            weekend = 0
-        return f"{jour_conv}_{weekend}_{int(h1)}-{int(h2)}"
+        jour_txt, jour_chiffre, H1, M1, H2, M2 = m.groups()
+        jours = {
+            'lun.':'LUN','mar.':'MAR','mer.':'MER',
+            'jeu.':'JEU','ven.':'VEN','sam.':'SAM','dim.':'DIM'
+        }
+        jour = jours.get(jour_txt.lower(), jour_txt.upper().rstrip('.'))
+        date_num = int(jour_chiffre)
+        return {
+            'jour': jour,
+            'date': date_num,
+            'h1': int(H1), 'm1': int(M1),
+            'h2': int(H2), 'm2': int(M2)
+        }
     
     def load_data(self):
-        # A retravailler en fonction de la structure des fichiers d'input (je me base sur l'Excel 2024-2025)
-        
-        # 1. {Morceau: {Musicien1, Musicien2, ...}}
+        """
+        1) Charge la répartition (morceaux ↔ musiciens)
+        2) Charge les dispos et détecte automatiquement les semaines
+        3) Construit self.creneaux (liste triée des "jour_date_hdeb-hfin")
+        """
+        # 1. Répartition morceaux ↔ musiciens
         instrument_cols = self.repartitions_df.columns[6:]
-        for index, row in self.repartitions_df.iterrows():
+        for _, row in self.repartitions_df.iterrows():
             morceau = row['Titre']
-            if pd.isna(morceau) or not any([not pd.isna(row[col]) for col in instrument_cols]): # lignes vides ou catégories (lignes sans musiciens)
+            if pd.isna(morceau) or not any(not pd.isna(row[c]) for c in instrument_cols):
                 continue
             self.morceaux.append(morceau)
             self.repartition[morceau] = set()
             for col in instrument_cols:
                 cellule = row[col]
-                if pd.isna(cellule):
-                    continue
-                # plusieurs noms dans une cellule (peuvent être séparés par des virgules ou espaces)
-                noms = [nom.strip() for nom in str(cellule).split(',')]
-                for nom in noms:
+                if pd.isna(cellule): continue
+                for nom in str(cellule).split(','):
+                    nom = nom.strip()
                     if nom:
                         self.musiciens.add(nom)
                         self.repartition[morceau].add(nom)
-        
-        # 2. {Musicien: {Créneau1: "oui"/"non"/"peut-être"}}
-        dispo_cols = self.disponibilites_df.columns[2:]  # On ignore les deux premières colonnes
-        for index, row in self.disponibilites_df.iterrows():
-            musicien = str(row['Nom']).strip().title()  
-            if pd.isna(musicien):
-                continue
-            local_dispo = {}
-            for col in dispo_cols:
-                creneau = self.transformer_simple(str(col).strip())
-                local_dispo[creneau] = str(row[col]).strip().lower() if not pd.isna(row[col]) else "non"
-            self.disponibilites[musicien] = local_dispo
-        
-        # 3. Créneaux
-        self.creneaux = list(next(iter(self.disponibilites.values())).keys())
-        self.creneaux.sort()
-        self.slot_index = {slot: i for i, slot in enumerate(self.creneaux)}
-        for creaneau in self.creneaux:
-            jour = "_".join(creaneau.split("_")[:2])
-            self.creneaux_par_jour[jour].append(creaneau)
 
+        # 2. Disponibilités : on stocke pour chaque musicien un dict {slot_str: "oui"/"non"/"peut-être"}
+        dispo_cols = self.disponibilites_df.columns[2:]
+        self.all_dates   = set()
+        self.disponibilites = {}
+        for _, row in self.disponibilites_df.iterrows():
+            musicien = str(row['Nom']).strip().title()
+            if pd.isna(musicien) or not musicien: continue
+            local = {}
+            for col in dispo_cols:
+                info = self.transformer_simple(str(col))
+                if not info: 
+                    continue
+                d = info['date']
+                j = info['jour']
+                h1, m1, h2, m2 = info['h1'], info['m1'], info['h2'], info['m2']
+                # on mémorise la date pour détecter les semaines
+                self.all_dates.add(d)
+                # on construit la clé slot
+                start = f"{h1:02d}:{m1:02d}"
+                end   = f"{h2:02d}:{m2:02d}"
+                slot = f"{j}_{d:02d}_{start}-{end}"
+                val = str(row[col]).strip().lower() if not pd.isna(row[col]) else "non"
+                local[slot] = val
+            self.disponibilites[musicien] = local
+
+        # 3. Mappage date → numéro de semaine (semaine 1 = base…base+6, etc.)
+        dates_sorted = sorted(self.all_dates)
+        base = dates_sorted[0]
+        self.date2week = {
+            d: ( (d - base) // 7 ) + 1
+            for d in dates_sorted
+        }
+        self.weeks = sorted(set(self.date2week.values()))
+
+        # 4. Construction de self.creneaux et index
+        # on prend la liste des slots d'un musicien (tous en ont la même forme)
+        premier = next(iter(self.disponibilites.values()), {})
+        # tri personnalisé : par date puis heure
+        def _key(s):
+            # s = "LUN_05_14:00-16:00"
+            _, dd, plage = s.split("_")
+            start, _ = plage.split("-")
+            h, m = start.split(":")
+            return (int(dd), int(h), int(m))
+        self.creneaux = sorted(premier.keys(), key=_key)
+        self.slot_index = {slot: i for i, slot in enumerate(self.creneaux)}
+
+        # 5. Regroupement par jour de la semaine
+        self.creneaux_par_jour = defaultdict(list)
+        for slot in self.creneaux:
+            jour = slot.split("_")[0]
+            self.creneaux_par_jour[jour].append(slot)
 
     def define_variables(self):
         """
@@ -347,7 +371,7 @@ class RepetitionScheduler:
 
 
     def solve(self,
-            time_limit_sec: float = 120,
+            time_limit_sec: float = 15,
             num_workers: int = 12):
         """
         Construit le modèle (via build_model), résout, et extrait :
@@ -408,141 +432,188 @@ class RepetitionScheduler:
         from openpyxl import load_workbook
         from openpyxl.styles import PatternFill
 
+        # Constantes pour le tri et formatage (comme dans get_json_data)
+        DAY_ORDER = {"Lundi":1, "Mardi":2, "Mercredi":3, "Jeudi":4,"Vendredi":5,"Samedi":6,"Dimanche":7, 
+                    "LUN":1, "MAR":2, "MER":3, "JEU":4, "VEN":5, "SAM":6, "DIM":7}
+        DAY_NAMES = {"LUN":"Lundi", "MAR":"Mardi", "MER":"Mercredi", "JEU":"Jeudi", 
+                    "VEN":"Vendredi", "SAM":"Samedi", "DIM":"Dimanche"}
+
+        def slot_sort_key(slot):
+            jour, heures = format_slot(slot)
+            reel_jour = jour.split(" ")[0]  # "Lundi 05" → "Lundi"
+            return (DAY_ORDER[reel_jour], heures)
+
+        def format_slot(slot: str) -> tuple[str,str]:
+            """
+            slot est au format "JOUR_DATE_START-END", ex. "LUN_05_14:00-16:00"
+            Retourne (affichage_jour, affichage_heures),
+            par exemple ("Lundi 05", "14:00-16:00").
+            """
+            try:
+                jour_code, date_num, periode = slot.split("_")
+            except ValueError:
+                return slot, ""
+            jour_aff = DAY_NAMES.get(jour_code, jour_code)
+            return f"{jour_aff} {date_num}", periode
+
         # --- 1) DataFrame "Planning" ---
-        rows = []
+        planning_rows = []
         for morceau in self.morceaux:
-            if morceau in self.solution:
-                slot = self.solution[morceau]
-                jour, horaire = slot.split("_", 1)
+            if morceau not in self.solution:
+                planning_rows.append({
+                    "Morceau": morceau,
+                    "Jour": "Non assigné",
+                    "Heures": "—",
+                    "Participants": ", ".join(self.repartition.get(morceau, []))
+                })
             else:
-                jour, horaire = "Non assigné", "Non assigné"
-            participants = ", ".join(self.repartition.get(morceau, []))
-            rows.append({
-                "Morceau": morceau,
-                "Jour":    jour,
-                "Créneau": horaire,
-                "Participants": participants
-            })
-        df_plan = pd.DataFrame(rows)
-        # tri des jours
-        ordre_jours = ["LUN","MAR","MER","JEU","VEN","SAM","DIM","Non assigné"]
-        df_plan["Jour"] = pd.Categorical(df_plan["Jour"],
-                                         categories=ordre_jours,
-                                         ordered=True)
-        df_plan.sort_values(["Jour","Créneau"], inplace=True)
+                slot = self.solution[morceau]
+                jour, heures = format_slot(slot)
+                planning_rows.append({
+                    "Morceau": morceau,
+                    "Jour": jour,
+                    "Heures": heures,
+                    "Participants": ", ".join(self.repartition.get(morceau, []))
+                })
+        
+        df_planning = pd.DataFrame(planning_rows)
+        
+        # Tri du planning par jour
+        if not df_planning.empty:
+            df_planning["jour_order"] = df_planning["Jour"].apply(
+                lambda x: DAY_ORDER.get(x.split(" ")[0], 99) if x != "Non assigné" else 100
+            )
+            df_planning.sort_values(["jour_order", "Heures"], inplace=True)
+            df_planning.drop("jour_order", axis=1, inplace=True)
 
-        # --- 2) DataFrame "Disponibilités" ---
-        # on veut un tableau à plat : une ligne par créneau, colonnes musiciens
-        # tri des créneaux
-        def jour_cle(s):
-            j = s.split("_",1)[0]
-            return (ordre_jours.index(j) if j in ordre_jours else 99, s)
-        slots = sorted(self.creneaux, key=jour_cle)
+        # --- 2) DataFrames par semaine ---
         musiciens = sorted(self.musiciens)
+        dispo_dfs = {}
+        repart_dfs = {}
 
-        dispo_dict = {"Créneau": slots}
-        for m in musiciens:
-            dispo_dict[m] = [
-                self.disponibilites.get(m, {})
-                                   .get(s, "non")
-                                   .strip().lower()
-                for s in slots
-            ]
-        df_dispo = pd.DataFrame(dispo_dict)
+        # Pour chaque semaine détectée
+        for w in self.weeks:
+            # Sélection et tri des slots de la semaine w
+            week_slots = [s for s in self.creneaux
+                        if self.date2week[int(s.split("_")[1])] == w]
+            week_slots = sorted(week_slots, key=slot_sort_key)
 
-        # --- 3) DataFrames "Répartition_W1" et "Répartition_W2" ---
-        rep_dfs = {}
-        for wk in (1,2):
-            wk_slots = [s for s in slots if s.endswith(f"_{wk}")]
-            rep_dict = {"Morceau": [], "Créneau": wk_slots}
-            for m in musiciens:
-                rep_dict[m] = []
-            for s in wk_slots:
-                # retrouver le morceau joué à ce créneau
-                piece = next((
-                    p for p,sl in self.solution.items() if sl==s
-                ), None)
-                rep_dict["Morceau"].append(piece or "Aucun")
+            # --- DataFrame Disponibilités pour cette semaine ---
+            dispo_rows = []
+            for slot in week_slots:
+                jour, heures = format_slot(slot)
+                row = {"Jour": jour, "Heures": heures}
+                for m in musiciens:
+                    row[m] = self.disponibilites.get(m, {}).get(slot, "non")
+                dispo_rows.append(row)
+            
+            dispo_dfs[f"Dispo_Semaine_{w}"] = pd.DataFrame(dispo_rows)
+
+            # --- DataFrame Répartition pour cette semaine ---
+            repart_rows = []
+            for slot in week_slots:
+                jour, heures = format_slot(slot)
+                piece = next((p for p,s in self.solution.items() if s==slot), None)
+                row = {"Jour": jour, "Heures": heures, "Morceau": piece or ""}
                 for m in musiciens:
                     if piece and m in self.repartition.get(piece, []):
-                        rep_dict[m].append("Répète")
+                        dispo = self.disponibilites.get(m,{}).get(slot,"non")
+                        row[m] = "Répète" if dispo=="oui" else "Absent"
                     else:
-                        rep_dict[m].append("")
-            rep_dfs[f"Répartition_W{wk}"] = pd.DataFrame(rep_dict)
+                        row[m] = ""
+                repart_rows.append(row)
+            
+            repart_dfs[f"Repart_Semaine_{w}"] = pd.DataFrame(repart_rows)
 
-        # --- 4) Écriture initiale via pandas ---
+        # --- 3) Écriture initiale via pandas ---
         with pd.ExcelWriter(output_file, engine="openpyxl") as writer:
-            df_plan.to_excel(writer,      sheet_name="Planning",      index=False)
-            df_dispo.to_excel(writer,     sheet_name="Disponibilités", index=False)
-            for sheet, df in rep_dfs.items():
-                df.to_excel(writer, sheet_name=sheet, index=False)
+            df_planning.to_excel(writer, sheet_name="Planning", index=False)
+            
+            # Écriture des onglets par semaine
+            for sheet_name, df in dispo_dfs.items():
+                df.to_excel(writer, sheet_name=sheet_name, index=False)
+            
+            for sheet_name, df in repart_dfs.items():
+                df.to_excel(writer, sheet_name=sheet_name, index=False)
 
-        # --- 5) Re-ouverture et stylage avec openpyxl ---
+        # --- 4) Re-ouverture et stylage avec openpyxl ---
         wb = load_workbook(output_file)
-        # styles dispo
-        fill_yes    = PatternFill(fill_type="solid", fgColor="C6EFCE")
-        fill_maybe  = PatternFill(fill_type="solid", fgColor="FFEB9C")
-        fill_no     = PatternFill(fill_type="solid", fgColor="F2DCDB")
-        ws = wb["Disponibilités"]
-        for row in ws.iter_rows(min_row=2, min_col=2):
-            for cell in row:
-                v = (cell.value or "").strip().lower()
-                if v=="oui":       cell.fill = fill_yes
-                elif v in ("peut-être","peut‐être"): cell.fill = fill_maybe
-                else:               cell.fill = fill_no
-
-        # styles répartition
-        fill_repete     = PatternFill(fill_type="solid", fgColor="C6EFCE")
-        fill_non_repete = PatternFill(fill_type="solid", fgColor="D3D3D3")
-        for wk in (1,2):
-            ws = wb[f"Répartition_W{wk}"]
-            # colonnes à partir de la 3ᵉ (les musiciens)
+        
+        # Styles pour les disponibilités
+        fill_yes    = PatternFill(fill_type="solid", fgColor="C6EFCE")  # Vert
+        fill_maybe  = PatternFill(fill_type="solid", fgColor="FFEB9C")  # Jaune
+        fill_no     = PatternFill(fill_type="solid", fgColor="F2DCDB")  # Rouge
+        
+        # Styles pour les répartitions
+        fill_repete = PatternFill(fill_type="solid", fgColor="C6EFCE")  # Vert
+        fill_absent = PatternFill(fill_type="solid", fgColor="FFB6C1")  # Rose
+        fill_vide   = PatternFill(fill_type="solid", fgColor="D3D3D3")  # Gris
+        
+        # Stylage des onglets de disponibilités
+        for sheet_name in dispo_dfs.keys():
+            ws = wb[sheet_name]
+            # Colonnes des musiciens commencent à la 3ème colonne (C)
             for row in ws.iter_rows(min_row=2, min_col=3):
                 for cell in row:
-                    if cell.value=="Répète":
-                        cell.fill = fill_repete
+                    v = (cell.value or "").strip().lower()
+                    if v == "oui":
+                        cell.fill = fill_yes
+                    elif v in ("peut-être", "peut‐être"):
+                        cell.fill = fill_maybe
                     else:
-                        cell.fill = fill_non_repete
+                        cell.fill = fill_no
+        
+        # Stylage des onglets de répartition
+        for sheet_name in repart_dfs.keys():
+            ws = wb[sheet_name]
+            # Colonnes des musiciens commencent à la 4ème colonne (D)
+            for row in ws.iter_rows(min_row=2, min_col=4):
+                for cell in row:
+                    v = (cell.value or "").strip()
+                    if v == "Répète":
+                        cell.fill = fill_repete
+                    elif v == "Absent":
+                        cell.fill = fill_absent
+                    else:
+                        cell.fill = fill_vide
 
         wb.save(output_file)
         print(f"✅ Planning exporté dans {output_file}")
+        print(f"📊 Onglets créés : Planning + {len(dispo_dfs)} onglets de disponibilités + {len(repart_dfs)} onglets de répartition")
 
     def get_json_data(self):
-        """
-        Construit les données attendues par le frontend sous forme de dictionnaire,
-        en séparant les colonnes Jour / Heures et en triant correctement les créneaux.
-        """
-        # ordre des jours pour le tri
-        DAY_ORDER = {"LUN":1, "MAR":2, "MER":3, "JEU":4,
-                    "VEN":5, "SAM":6, "DIM":7}
-        # noms complets pour l’affichage
-        DAY_NAMES = {
-            "LUN":"Lundi", "MAR":"Mardi", "MER":"Mercredi",
-            "JEU":"Jeudi","VEN":"Vendredi",
-            "SAM":"Samedi","DIM":"Dimanche"
-        }
+        # pour trier et formater
+        DAY_ORDER = {"Lundi":1, "Mardi":2, "Mercredi":3, "Jeudi":4,"Vendredi":5,"Samedi":6,"Dimanche":7, "LUN":1, "MAR":2, "MER":3, "JEU":4, "VEN":5, "SAM":6, "DIM":7}
+        DAY_NAMES = {"LUN":"Lundi", "MAR":"Mardi", "MER":"Mercredi", "JEU":"Jeudi", "VEN":"Vendredi", "SAM":"Samedi", "DIM":"Dimanche"}
 
-        def slot_sort_key(slot: str):
-            # ex slot = "VEN_1_10-12"
-            jour, _, plage = slot.split("_")
-            start, _ = plage.split("-")
-            h, m = (start.split(":") + ["00"])[:2]
-            return (DAY_ORDER[jour], int(h), int(m))
+        def slot_sort_key(slot):
+            jour, heures = format_slot(slot)
+            reel_jour = jour.split(" ")[0]  # "Lundi 05" → "Lundi"
+            return (DAY_ORDER[reel_jour], heures)
 
-        def format_slot(slot: str):
-            # retourne (Jour, Heures)
-            jour, _, plage = slot.split("_")
-            start, end = plage.split("-")
-            def fmt(x):
-                h, m = (x.split(":") + ["00"])[:2]
-                return f"{int(h)}h{m:>02}"
-            return DAY_NAMES[jour], f"{fmt(start)}-{fmt(end)}"
+        def format_slot(slot: str) -> tuple[str,str]:
+            """
+            slot est au format "JOUR_DATE_START-END", ex. "LUN_05_14:00-16:00"
+            Retourne (affichage_jour, affichage_heures),
+            par exemple ("Lundi 05", "14:00-16:00").
+            """
+            # 1) découpage
+            try:
+                jour_code, date_num, periode = slot.split("_")
+            except ValueError:
+                # fallback si un slot mal formé traine
+                return slot, ""
+            # 2) optionnel : mappez "LUN" → "Lundi"
+            jour_aff = DAY_NAMES.get(jour_code, jour_code)
+            # 3) compose la chaîne complète pour l’entête "Jour"
+            #    ici on peut afficher jour_aff + " " + date_num
+            return f"{jour_aff} {date_num}", periode
 
-        # 1) planning général Morceau / Jour / Heures
-        data = []
+        # 1) planning final (inchangé)
+        planning = []
         for morceau in self.morceaux:
             if morceau not in self.solution:
-                data.append({
+                planning.append({
                     "Morceau": morceau,
                     "Jour":     "Non assigné",
                     "Heures":   "—",
@@ -551,54 +622,56 @@ class RepetitionScheduler:
             else:
                 slot = self.solution[morceau]
                 jour, heures = format_slot(slot)
-                data.append({
+                planning.append({
                     "Morceau": morceau,
                     "Jour":     jour,
                     "Heures":   heures,
                     "Participants": ", ".join(self.repartition.get(morceau, []))
                 })
 
-        # 2) disponibilités et répartition par weekend
-        disponibilites = {"weekend1": [], "weekend2": []}
-        repartition     = {"weekend1": [], "weekend2": []}
+        # 2) DISPO & REPART pour **chaque** semaine détectée
         musiciens = sorted(self.musiciens)
+        dispo_output   = {}
+        repart_output  = {}
 
-        for w in (1, 2):
-            raw_slots = [s for s in self.creneaux if f"_{w}_" in s]
-            slots     = sorted(raw_slots, key=slot_sort_key)
+        # self.weeks contient déjà [1,2,3,…]
+        for w in self.weeks:
+            # sélection et tri des slots de la semaine w
+            week_slots = [s for s in self.creneaux
+                        if self.date2week[int(s.split("_")[1])] == w]
+            week_slots = sorted(week_slots, key=slot_sort_key)
 
-            # tableau disponibilités
-            for slot in slots:
+            dispo_rows  = []
+            repart_rows = []
+
+            # dispo
+            for slot in week_slots:
                 jour, heures = format_slot(slot)
                 row = {"Jour": jour, "Heures": heures}
                 for m in musiciens:
-                    d = (self.disponibilites.get(m, {})
-                                    .get(slot, "non")
-                                    .strip().lower())
-                    row[m] = d  # "oui"/"non"/"peut-être"
-                disponibilites[f"weekend{w}"].append(row)
+                    row[m] = self.disponibilites.get(m, {}).get(slot, "non")
+                dispo_rows.append(row)
 
-            # tableau répartition (avec morceau et état repete/absent/non)
-            for slot in slots:
+            # répartition
+            for slot in week_slots:
                 jour, heures = format_slot(slot)
-                piece = next((p for p,s in self.solution.items() if s == slot), None)
-                row = {
-                    "Morceau": piece or "",
-                    "Jour":    jour,
-                    "Heures":  heures
-                }
+                piece = next((p for p,s in self.solution.items() if s==slot), None)
+                row = {"Jour": jour, "Heures": heures, "Morceau": piece or ""}
                 for m in musiciens:
                     if piece and m in self.repartition.get(piece, []):
-                        dispo = (self.disponibilites.get(m, {})
-                                        .get(slot, "non")
-                                        .strip().lower())
-                        row[m] = "repete" if dispo == "oui" else "absent"
+                        dispo = self.disponibilites.get(m,{}).get(slot,"non")
+                        row[m] = "repete" if dispo=="oui" else "absent"
                     else:
                         row[m] = "non"
-                repartition[f"weekend{w}"].append(row)
+                repart_rows.append(row)
+
+            key = f"SEMAINE_{w}"
+            dispo_output[key]  = dispo_rows
+            repart_output[key] = repart_rows
 
         return {
-            "planning":       data,
-            "disponibilites": disponibilites,
-            "repartition":     repartition
+            "planning":       planning,
+            "disponibilites": dispo_output,
+            "repartition":     repart_output
         }
+    
