@@ -295,6 +295,14 @@
             color: #74140b;
         }
 
+        /* S'assurer que le planning ne s'affiche que dans l'onglet actif */
+        #planning-final:not(.active) #planning {
+            display: none !important;
+        }
+
+        #planning-final.active #planning {
+            display: block !important;
+        }
 
         .table-section {
             margin-bottom: 40px;
@@ -578,30 +586,38 @@
             width: auto;
         }
 
-                /* Tooltip styles */
+        /* Tooltip corrigé */
         .tooltip {
             position: relative;
             cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .tooltip:hover {
+            transform: scale(1.02);
+            box-shadow: 0 2px 8px rgba(0,0,0,0.2);
         }
 
         .tooltip .tooltiptext {
             visibility: hidden;
-            width: 250px;
-            background-color: #333;
-            color: #fff;
+            width: 280px;
+            background-color: #2c3e50;
+            color: white;
             text-align: left;
-            border-radius: 6px;
-            padding: 10px;
-            position: absolute;
-            z-index: 1000;
-            bottom: 125%;
-            left: 50%;
-            margin-left: -125px;
+            border-radius: 8px;
+            padding: 15px;
+            position: fixed;
+            z-index: 9999;
             opacity: 0;
-            transition: opacity 0.3s;
-            font-size: 12px;
-            line-height: 1.4;
-            box-shadow: 0 4px 8px rgba(0,0,0,0.3);
+            transition: all 0.3s ease;
+            font-size: 13px;
+            line-height: 1.5;
+            box-shadow: 0 8px 20px rgba(0,0,0,0.3);
+            border: 1px solid #34495e;
+            pointer-events: none;
+            /* 📌 AJOUT : Position par défaut hors écran */
+            top: -1000px;
+            left: -1000px;
         }
 
         .tooltip .tooltiptext::after {
@@ -609,21 +625,37 @@
             position: absolute;
             top: 100%;
             left: 50%;
-            margin-left: -5px;
-            border-width: 5px;
+            margin-left: -6px;
+            border-width: 6px;
             border-style: solid;
-            border-color: #333 transparent transparent transparent;
+            border-color: #2c3e50 transparent transparent transparent;
         }
 
-        .tooltip:hover .tooltiptext {
+        .tooltip:hover .tooltiptext,
+        .tooltip.active .tooltiptext {
             visibility: visible;
             opacity: 1;
         }
 
         .tooltip .tooltiptext strong {
-            color: #74140b;
-            display: block;
-            margin-bottom: 5px;
+            color: #74c0fc;
+            font-weight: 600;
+        }
+
+
+
+        /* Pour les appareils tactiles */
+        @media (hover: none) {
+            .tooltip:active .tooltiptext {
+                visibility: visible;
+                opacity: 1;
+            }
+        }
+
+        /* Éviter que le tooltip dépasse de l'écran */
+        .tooltip .tooltiptext {
+            max-width: 90vw;
+            word-wrap: break-word;
         }
     </style>
 </head>
@@ -729,22 +761,9 @@
             <div class="results-section" id="results">
                 <div class="tabs" id="dynamic-tabs">
                     <!-- Les onglets seront générés dynamiquement -->
-                     
                 </div>
-
                 <div id="dynamic-tab-contents">
                     <!-- Le contenu des onglets sera généré dynamiquement -->
-                </div>
-
-                    <div class="tab-content" id="planning">
-                    <!-- Sous-onglets semaines -->
-                    <div class="tabs" id="planning-weeks-tabs"></div>
-                    <div id="planning-weeks-contents"></div>
-                    <!-- Télécharger -->
-                    <button class="download-button" id="download-btn" style="display: none;">
-                        📥 Télécharger le planning Excel
-                    </button>
-                    </div>
                 </div>
             </div>
         </div>
@@ -1002,33 +1021,38 @@
                     panes.appendChild(div);
                 });
 
-            // *** AJOUT : Créer l'onglet Planning final ***
-            const planningBtn = document.createElement('button');
-            planningBtn.className = 'tab';
-            planningBtn.dataset.tab = 'planning';
-            planningBtn.textContent = '📅 Planning Final';
-            tabs.appendChild(planningBtn);
+                // Créer l'onglet Planning avec sa structure complète
+                const planningBtn = document.createElement('button');
+                planningBtn.className = 'tab';
+                planningBtn.dataset.tab = 'planning-final';  // ⚠️ Changé ici
+                planningBtn.textContent = '📅 Planning Final';
+                tabs.appendChild(planningBtn);
 
-            // Créer le contenu de l'onglet Planning (récupérer le contenu existant du HTML)
-            const planningDiv = document.createElement('div');
-            planningDiv.id = 'planning';
-            planningDiv.className = 'tab-content';
-            planningDiv.innerHTML = `
-                <!-- Sous-onglets semaines -->
-                <div class="tabs" id="planning-weeks-tabs"></div>
-                <div id="planning-weeks-contents"></div>
-                <!-- Télécharger -->
-                <button class="download-button" id="download-btn" style="display: none;">
-                    📥 Télécharger le planning Excel
-                </button>
-            `;
-            panes.appendChild(planningDiv);
+                // Créer le contenu de l'onglet Planning
+                const planningDiv = document.createElement('div');
+                planningDiv.id = 'planning-final';  // ⚠️ Changé ici
+                planningDiv.className = 'tab-content';
+                planningDiv.innerHTML = `
+                    <h2>🎯 Planning Final</h2>
+                    <div id="planning">
+                        <div id="planning-weeks-tabs"></div>
+                        <div id="planning-weeks-contents"></div>
+                    </div>
+                    <button class="download-button" id="download-btn" style="display: none;">
+                        📥 Télécharger le planning Excel
+                    </button>
+                `;
+                panes.appendChild(planningDiv);
+
 
             // Réattacher les event listeners
             attachTabListeners();
             
             // Réattacher l'event listener pour le bouton download
-            document.getElementById('download-btn').addEventListener('click', downloadExcel);
+            const downloadBtn = document.getElementById('download-btn');
+            if (downloadBtn) {
+                downloadBtn.addEventListener('click', downloadExcel);
+            }
         }
 
         // Fonction pour attacher les event listeners aux onglets
@@ -1076,55 +1100,27 @@
                         true);
             });
         }
-        // 1. REMPLACER la fonction calculateWeekDates par cette version qui utilise ta fonction robuste
-        function calculateWeekDates(events) {
-            const weekDates = {};
+        // Fonction pour générer les dates d'une semaine
+        function generateWeekDates(weekNum) {
+            const days = ['Lundi', 'Mardi', 'Mercredi', 'Jeudi', 'Vendredi', 'Samedi', 'Dimanche'];
+            const currentMonth = getCurrentMonth();
+            const weekStart = (parseInt(weekNum) - 1) * 7 + 1;
             
-            events.forEach(ev => {
-                if (!ev.Jour || ev.Jour.startsWith('Non')) return;
-                
-                const jourMatch = ev.Jour.match(/^(\w+)\s+(\d{1,2}\/\d{1,2}\/\d{4})\s+S(\d+)$/);
-                if (!jourMatch) return;
-                
-                const [, dayName, dateStr, weekNum] = jourMatch;
-                
-                // Utiliser ta fonction robuste pour déterminer la semaine
-                const weekDays = getWeekFromDate(dayName, dateStr);
-                if (weekDays) {
-                    weekDates[weekNum] = weekDays;
-                }
+            const dates = {};
+            days.forEach((day, index) => {
+                const dayNumber = weekStart + index;
+                dates[day] = `${dayNumber.toString().padStart(2, '0')}/${currentMonth}`;
             });
             
-            return weekDates;
+            return dates;
         }
 
-        // 2. AJOUTER cette fonction robuste dans ton script (avant calculateWeekDates)
-        function getWeekFromDate(dayName, dateStr) {
-            const fullDayNames = ['Lundi', 'Mardi', 'Mercredi', 'Jeudi', 'Vendredi', 'Samedi', 'Dimanche'];
-            const [dd, mm, yyyy] = dateStr.split('/').map(Number);
-            const baseDate = new Date(yyyy, mm - 1, dd);
-            const indexInWeek = fullDayNames.indexOf(dayName);
-            if (indexInWeek === -1) {
-                console.warn("❌ Nom de jour invalide :", dayName);
-                return null;
-            }
-            // Trouver le lundi de la semaine
-            const mondayDate = new Date(baseDate);
-            mondayDate.setDate(baseDate.getDate() - indexInWeek);
-            // Construire les jours de la semaine
-            const result = {};
-            for (let i = 0; i < 7; i++) {
-                const d = new Date(mondayDate);
-                d.setDate(mondayDate.getDate() + i);
-                const jour = fullDayNames[i];
-                const day = String(d.getDate()).padStart(2, '0');
-                const month = String(d.getMonth() + 1).padStart(2, '0');
-                result[jour] = `${day}/${month}`;
-            }
-            return result;
+        // Fonction pour obtenir le mois actuel
+        function getCurrentMonth() {
+            const now = new Date();
+            return (now.getMonth() + 1).toString().padStart(2, '0');
         }
 
-        // 3. REMPLACER complètement la fonction groupByWeek par cette version améliorée
         function groupByWeek(planning) {
             console.log("🔍 groupByWeek appelée avec:", planning);
             
@@ -1138,55 +1134,55 @@
                     return;
                 }
                 
-                // Parsing du format "Vendredi 13/12/2024 S2"
-                const jourMatch = ev.Jour.match(/^(\w+)\s+(\d{1,2}\/\d{1,2}\/\d{4})\s+S(\d+)$/);
+                // Nouveau parsing pour le format "Vendredi 11" ou "Jeudi 30"
+                const jourMatch = ev.Jour.match(/^(\w+)\s+(\d{1,2})$/);
                 
                 if (!jourMatch) {
                     console.warn(`⚠️ Format jour non reconnu: ${ev.Jour}`);
                     return;
                 }
                 
-                const [, dayName, dateStr, weekNum] = jourMatch;
-                console.log(`✅ Format détecté: ${dayName}, ${dateStr}, S${weekNum}`);
+                const [, dayName, dayNumber] = jourMatch;
+                console.log(`✅ Format détecté: ${dayName}, ${dayNumber}`);
                 
                 const [deb, fin] = (ev.Heures || '').split('-');
                 
-                if (!deb || !fin) {
+                if (!deb || !fin || ev.Heures === '—') {
                     console.warn(`⚠️ Heures invalides: ${ev.Heures}`);
                     return;
                 }
                 
-                // Si la semaine n'existe pas encore, la créer avec toutes les dates
+                // Déterminer la semaine basée sur le numéro du jour
+                // Supposons que 1-7 = semaine 1, 8-14 = semaine 2, etc.
+                const weekNum = Math.ceil(parseInt(dayNumber) / 7).toString();
+                
+                // Si la semaine n'existe pas encore, la créer
                 if (!weeks[weekNum]) {
-                    const weekDays = getWeekFromDate(dayName, dateStr);
-                    if (!weekDays) {
-                        console.warn(`⚠️ Impossible de déterminer la semaine pour ${dayName} ${dateStr}`);
-                        return;
-                    }
                     weeks[weekNum] = {
                         events: [],
-                        dates: weekDays
+                        dates: generateWeekDates(weekNum) // Fonction à créer
                     };
-                    console.log(`📅 Nouvelle semaine créée: ${weekNum}`, weekDays);
+                    console.log(`📅 Nouvelle semaine créée: ${weekNum}`);
                 }
                 
                 // Ajouter l'événement à la semaine
                 weeks[weekNum].events.push({
                     day: dayName,
-                    date: weeks[weekNum].dates[dayName],
+                    date: `${dayNumber}/${getCurrentMonth()}`, // Format simple
                     week: weekNum,
                     debut: deb.trim(),
                     fin: fin.trim(),
                     morceau: (ev.Morceau || '').trim(),
-                    musiciens: ev.Musiciens || []
+                    musiciens: ev.Participants ? ev.Participants.split(', ') : []
                 });
                 
-                console.log(`✅ Événement ajouté à semaine ${weekNum}: ${dayName} ${weeks[weekNum].dates[dayName]} ${deb}-${fin} ${ev.Morceau}`);
+                console.log(`✅ Événement ajouté à semaine ${weekNum}: ${dayName} ${dayNumber} ${deb}-${fin} ${ev.Morceau}`);
             });
             
             console.log("📊 Résultat groupByWeek:", weeks);
             return weeks;
         }
+
         // Fonctions utilitaires manquantes
         function pad(n) {
             return n < 10 ? '0' + n : n;
@@ -1276,7 +1272,6 @@
                 }
 
                 // Placer les événements
-                // Placer les événements
                 weeks[sem].events.forEach(ev => {
                     const col = days.indexOf(ev.day);
                     if (col === -1) {
@@ -1292,69 +1287,115 @@
                     const e = document.createElement('div');
                     e.className = 'event tooltip';
 
-                    // Créer le contenu avec tooltip amélioré
-                    let tooltipContent = `<strong>🎵 ${ev.morceau}</strong><br><strong>👥 Musiciens :</strong><br>`;
+                    // Créer le contenu avec tooltip
+                    let tooltipContent = `<strong>🎵 ${ev.morceau}</strong><br>`;
+                    tooltipContent += `<strong>🕐 ${ev.debut} - ${ev.fin}</strong><br>`;
+                    tooltipContent += `<strong>👥 Musiciens :</strong><br>`;
                     if (ev.musiciens && Array.isArray(ev.musiciens) && ev.musiciens.length > 0) {
                         tooltipContent += ev.musiciens.map(m => `• ${m}`).join('<br>');
                     } else {
                         tooltipContent += 'Informations non disponibles';
                     }
-                    tooltipContent += `<br><strong>🕐 Horaires :</strong> ${ev.debut} - ${ev.fin}`;
 
                     e.innerHTML = `
-                        <div style="font-weight: bold; margin-bottom: 2px;">${ev.morceau}</div>
+                        <div style="font-weight: bold; margin-bottom: 2px; font-size: 12px;">${ev.morceau}</div>
                         <div style="font-size: 10px; opacity: 0.8;">${ev.debut}-${ev.fin}</div>
                         <span class="tooltiptext">${tooltipContent}</span>
                     `;
-                    
+                    // Positionnement du tooltip au survol
+                    e.addEventListener('mouseenter', function() {
+                        const tooltip = this.querySelector('.tooltiptext');
+                        if (tooltip) {
+                            const rect = this.getBoundingClientRect();
+                            tooltip.style.top = (rect.top - tooltip.offsetHeight - 10) + 'px';
+                            tooltip.style.left = (rect.left + rect.width / 2 - tooltip.offsetWidth / 2) + 'px';
+                            
+                            // Vérifier les bords de l'écran
+                            const tooltipRect = tooltip.getBoundingClientRect();
+                            if (tooltipRect.left < 10) {
+                                tooltip.style.left = '10px';
+                            }
+                            if (tooltipRect.right > window.innerWidth - 10) {
+                                tooltip.style.left = (window.innerWidth - tooltipRect.width - 10) + 'px';
+                            }
+                        }
+                    });
+
+                    e.addEventListener('click', function(event) {
+                        event.stopPropagation();
+                        
+                        // Fermer tous les autres tooltips
+                        document.querySelectorAll('.tooltip.active').forEach(tooltip => {
+                            tooltip.classList.remove('active');
+                        });
+                        
+                        // Activer ce tooltip
+                        this.classList.add('active');
+                        
+                        // Positionner le tooltip
+                        const tooltip = this.querySelector('.tooltiptext');
+                        if (tooltip) {
+                            const rect = this.getBoundingClientRect();
+                            tooltip.style.left = (rect.left + rect.width / 2 - 140) + 'px';
+                            tooltip.style.top = (rect.top - 10) + 'px';
+                            tooltip.style.transform = 'translateY(-100%)';
+                        }
+                    });
+
                     Object.assign(e.style, {
                         gridColumnStart: col + 2,
                         gridRowStart: rowStart,
                         gridRowEnd: `span ${rowSpan}`
                     });
-                    cal.appendChild(e);
                     
+                    cal.appendChild(e);
                     console.log(`✅ Événement ajouté: ${ev.morceau} le ${ev.day} ${ev.date} de ${ev.debut} à ${ev.fin}`, ev.musiciens);
                 });
 
-                const weekTabs     = tabss.querySelectorAll('button[data-week]');
+
+                // Ajouter les event listeners pour les onglets de semaines
+                const weekTabs = tabss.querySelectorAll('button[data-week]');
                 const weekContents = paness.querySelectorAll('.week-content');
 
-                weekTabs.forEach(btn => {
-                    btn.addEventListener('click', () => {
-                    const target = btn.dataset.week;
-                    weekTabs.forEach(b => b.classList.remove('active'));
-                    weekContents.forEach(c => c.classList.remove('active'));
-
-                    btn.classList.add('active');
-                    paness
-                        .querySelector(`.week-content[data-week="${target}"]`)
-                        .classList.add('active');
+                weekTabs.forEach(tab => {
+                    tab.addEventListener('click', () => {
+                        const targetWeek = tab.dataset.week;
+                        
+                        // Désactiver tous les onglets et contenus
+                        weekTabs.forEach(t => t.classList.remove('active'));
+                        weekContents.forEach(wc => wc.classList.remove('active'));
+                        
+                        // Activer l'onglet et le contenu ciblé
+                        tab.classList.add('active');
+                        const targetContent = paness.querySelector(`[data-week="${targetWeek}"]`);
+                        if (targetContent) {
+                            targetContent.classList.add('active');
+                        }
                     });
                 });
 
-            // Gestion des clics sous-onglets
-            document.querySelectorAll('#planning-weeks-tabs .tab').forEach(tab => {
-                tab.addEventListener('click', () => {
-                    const sem = tab.dataset.week;
-                    console.log(`🔄 Changement vers semaine ${sem}`);
-                    
-                    // Désactiver tous les sous-onglets et contenus
-                    document.querySelectorAll('#planning-weeks-tabs .tab').forEach(t => t.classList.remove('active'));
-                    document.querySelectorAll('#planning-weeks-contents .week-content').forEach(w => w.classList.remove('active'));
-                    
-                    // Activer le sous-onglet cliqué
-                    tab.classList.add('active');
-                    const targetContent = document.querySelector(`#planning-weeks-contents .week-content[data-week="${sem}"]`);
-                    if (targetContent) {
-                        targetContent.classList.add('active');
-                        console.log(`✅ Semaine ${sem} activée`);
-                    } else {
-                        console.error(`❌ Contenu pour semaine ${sem} introuvable`);
-                    }
+
+                // Gestion des clics sous-onglets (une seule fois à la fin)
+                document.querySelectorAll('#planning-weeks-tabs .tab').forEach(tab => {
+                    tab.addEventListener('click', () => {
+                        const sem = tab.dataset.week;
+                        console.log(`🔄 Changement vers semaine ${sem}`);
+                        
+                        // Désactiver tous les sous-onglets et contenus
+                        document.querySelectorAll('#planning-weeks-tabs .tab').forEach(t => t.classList.remove('active'));
+                        document.querySelectorAll('#planning-weeks-contents .week-content').forEach(w => w.classList.remove('active'));
+                        
+                        // Activer le sous-onglet cliqué
+                        tab.classList.add('active');
+                        const targetContent = document.querySelector(`#planning-weeks-contents .week-content[data-week="${sem}"]`);
+                        if (targetContent) {
+                            targetContent.classList.add('active');
+                            console.log(`✅ Semaine ${sem} activée`);
+                        } else {
+                            console.error(`❌ Contenu pour semaine ${sem} introuvable`);
+                        }
+                    });
                 });
-            });
-            
             console.log("✅ renderPlanningCalendar terminée");
         });}
         async function generatePlanning() {
@@ -1461,6 +1502,14 @@
         }
         // Event listeners
         document.getElementById('generate-btn').addEventListener('click', generatePlanning);
+        document.addEventListener('click', function(event) {
+            if (!event.target.closest('.tooltip')) {
+                document.querySelectorAll('.tooltip.active').forEach(tooltip => {
+                    tooltip.classList.remove('active');
+                });
+            }
+        });
+
         document.getElementById('download-btn').addEventListener('click', downloadExcel);
     </script>
 </body>
