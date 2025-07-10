@@ -1,3 +1,10 @@
+"""
+Description : Planificateur de répétitions pour l'Orchestraaaaa
+Licence : On devrait peut-être mettre une licence hein
+Anno : 43
+Auteur : Mateo Bauvir
+"""
+
 import pandas as pd
 from ortools.sat.python import cp_model
 import re
