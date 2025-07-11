@@ -20,7 +20,8 @@ class RepetitionScheduler:
                  load_penalty: int,
                  group_bonus: int,
                  mode_absence: str = "strict",
-                 seuil_absence: int = 0):
+                 seuil_absence: int = 0,
+                 generation_time_limit: int = 30):
         """
         Args:
             repartitions_file: Fichier Excel des répartitions donc avec les morceaux et participants
@@ -29,8 +30,7 @@ class RepetitionScheduler:
         self.repartitions_df = pd.read_excel(repartitions_file)
         self.disponibilites_df = pd.read_excel(disponibilites_file)
 
-        self.musiciens = set()          # Liste des musiciens : ["Adèle", "Antoine", "Bastien...lol...bonhomme qui sourit 
-                                        # à pleine dents"]
+        self.musiciens = set()          # Liste des musiciens : ["Adèle", "Antoine", "Bastien...lol...bonhomme qui sourit à pleine dents"]
         self.musiciens_absents_force = defaultdict(set)  # morceau -> {musiciens absents mais contraints}
         self.absent_participants = defaultdict(lambda: defaultdict(list))  # morceau -> {musiciens absents mais assignés malgré leur indisponibilité}
 
@@ -63,6 +63,7 @@ class RepetitionScheduler:
         self.mode_absence   = mode_absence      # Mode de gestion des absences ("strict", "flexible" ou "auto")
         self.seuil_absence = seuil_absence
         self.T             = None
+        self.generation_time_limit = generation_time_limit  # limite de temps laissé à la génération du planning
 
     def transformer_simple(self, texte):
         """
@@ -174,15 +175,10 @@ class RepetitionScheduler:
 
         domain_max = len(self.creneaux)  # valeur hors plage = “pas assigné”
         for morceau in self.morceaux:
-            # Booléen d'affectation
             b = self.model.NewBoolVar(f"is_assigned_{morceau}")
             self.is_assigned[morceau] = b
-
-            # IntVar slot (0..N)
             v = self.model.NewIntVar(0, domain_max, f"assignment_{morceau}")
             self.assignments[morceau] = v
-
-            # si b=1 alors v < domain_max ; si b=0 alors v == domain_max
             self.model.Add(v < domain_max).OnlyEnforceIf(b)
             self.model.Add(v == domain_max).OnlyEnforceIf(b.Not())
 
@@ -196,7 +192,7 @@ class RepetitionScheduler:
             total_mus = sum(len(mus) for mus in self.repartition.values())
             self.T = self.model.NewIntVar(0, total_mus, "T_max_abs")
 
-        if self.mode_absence == "fixed" and self.seuil_absence == 0: # ancienne version (qui est dans la main branch) mais en gros prend les peut-etre un peu moins stricte jsp pq faut que j'y regarde
+        if self.mode_absence == "fixed" and self.seuil_absence == 0: # ancienne version
             for morceau, musiciens in self.repartition.items():
                 for musicien in musiciens:
                     for slot in self.creneaux:
@@ -250,8 +246,6 @@ class RepetitionScheduler:
 
                     if not absent_flags:
                         continue
-                    if self.mode_absence == "strict":
-                        self.model.Add(sum(absent_flags) == 0).OnlyEnforceIf(is_here)
 
                     elif self.mode_absence == "fixed":
                         sum_abs = self.model.NewIntVar(0, len(absent_flags),
@@ -343,7 +337,7 @@ class RepetitionScheduler:
                     self.penalties.append(reward)  
 
     def define_objective(self):
-        penalty_not_assigned_weight = 10000
+        penalty_not_assigned_weight = 100
         # 1) penalty pour non‐assignés
         for morceau in self.morceaux:
             p = self.model.NewIntVar(0, penalty_not_assigned_weight,
@@ -355,7 +349,7 @@ class RepetitionScheduler:
         # 2) si mode "auto", on minimise ensuite T
         objective = sum(self.penalties)
         if self.mode_absence == "auto":
-            W2 = 10000
+            W2 = 5000
             objective = objective + self.T * W2
 
         # 3) on inclut toutes les pénalités "non"/"peut-être"
@@ -377,9 +371,7 @@ class RepetitionScheduler:
         self.define_objective()
 
 
-    def solve(self,
-            time_limit_sec: float = 15,
-            num_workers: int = 12):
+    def solve(self):
         """
         Construit le modèle (via build_model), résout, et extrait :
         - status
@@ -389,8 +381,8 @@ class RepetitionScheduler:
         """
 
         self.solver = cp_model.CpSolver()
-        self.solver.parameters.max_time_in_seconds = time_limit_sec
-        self.solver.parameters.num_search_workers = num_workers
+        self.solver.parameters.max_time_in_seconds = self.generation_time_limit
+        self.solver.parameters.num_search_workers = 8 # specifier le nbr de threads pour chercher la solution
 
         self.penalties = []
         self.musiciens_absents_force.clear()
@@ -525,7 +517,7 @@ class RepetitionScheduler:
                 for m in musiciens:
                     if piece and m in self.repartition.get(piece, []):
                         dispo = self.disponibilites.get(m,{}).get(slot,"non")
-                        row[m] = "Répète" if dispo=="oui" else "Absent"
+                        row[m] = "Répète" if dispo=="oui" else "Répète"
                     else:
                         row[m] = ""
                 repart_rows.append(row)

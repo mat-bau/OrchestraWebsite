@@ -4,7 +4,6 @@ import os
 from scheduler_repetition import RepetitionScheduler
 import traceback
 
-
 app = Flask(__name__)
 CORS(app, resources={r"/*": {"origins": "http://localhost:8000"}})
 
@@ -15,7 +14,7 @@ os.makedirs(UPLOAD_FOLDER, exist_ok=True)
 @app.route('/upload', methods=['POST'])
 def upload():
     try:
-        print("📥 Requête reçue !")
+        #print("📥 Requête reçue !")
         dispo_file = request.files['disponibilites']
         repart_file = request.files['repartition']
         maybe_penalty = int(request.form['maybe_penalty'])
@@ -24,46 +23,45 @@ def upload():
         group_bonus = int(request.form['group_bonus'])
         seuil_absence = int(request.form.get("seuil_absence", 0))
         mode_absence = request.form.get("mode_absence", "fixed")
-
-
+        timeout_limit = int(request.form.get("timeout_limit", 120))
+        
         dispo_path = os.path.join(UPLOAD_FOLDER, dispo_file.filename)
         repart_path = os.path.join(UPLOAD_FOLDER, repart_file.filename)
 
         dispo_file.save(dispo_path)
-        repart_file.save(repart_path) 
-        print("🧾 Params :", maybe_penalty, max_load, load_penalty, group_bonus, mode_absence, seuil_absence)
-        print("📂 Fichiers reçus :", dispo_file.filename, repart_file.filename)  # <-- LOG 3
+        repart_file.save(repart_path)
 
+        print("🧾 Params :", maybe_penalty, max_load, load_penalty, group_bonus, mode_absence, seuil_absence, f"timeout={timeout_limit}s")
 
-        print("🔧 Instanciation du planner…")
+        # print("Instanciation du planner...")
         planner = RepetitionScheduler(
             repart_path, dispo_path,
             maybe_penalty, max_load, load_penalty, group_bonus,
-            mode_absence, seuil_absence
+            mode_absence, seuil_absence,
+            generation_time_limit=timeout_limit
         )
-        print("✅ Planner instancié.")
+        # print(f"Planner instancié avec timeout de {timeout_limit}s.")
 
         # 2) Génération
-        print("⚙️  Lancement de generer_planning()…")
+        #print(" Lancement de generer_planning()…")
         planner.generer_planning()
-        print("✅ generer_planning() terminé.")
+        # print(" generer_planning() terminé.")
 
         # 3) Export Excel
-        print(f"💾 Export vers {RESULT_FILE} …")
+        #print(f"💾 Export vers {RESULT_FILE} …")
         planner.export_planning(RESULT_FILE)
-        print("✅ export_planning() terminé.")
+        #print("✅ export_planning() terminé.")
 
         # 4) Sérialisation JSON
-        print("🗜  Sérialisation JSON…")
+        #print("🗜  Sérialisation JSON…")
         json_data = planner.get_json_data()
-        print("✅ JSON prêt, on renvoie au front.")
-        print("✅ Planning généré avec succès.")
+        #print("✅ JSON prêt, on renvoie au front.")
+        #print("✅ Planning généré avec succès.")
         return jsonify(json_data)
 
     except Exception as e:
         traceback.print_exc()
         return jsonify({"error": str(e)}), 500
-
 
 @app.route('/download', methods=['GET'])
 def download():
@@ -71,7 +69,6 @@ def download():
         return send_file(RESULT_FILE, as_attachment=True)
     except Exception as e:
         return jsonify({"error": str(e)}), 500
-
 
 if __name__ == '__main__':
     app.run(debug=True, port=5050)

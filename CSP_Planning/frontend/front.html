@@ -151,7 +151,7 @@ Auteur : Mateo Bauvir
         }
 
         .file-icon {
-            font-size: 48px;
+            font-size: 32px;
             margin-bottom: 15px;
             color: #6c757d;
         }
@@ -169,7 +169,7 @@ Auteur : Mateo Bauvir
         }
 
         .file-icon {
-            font-size: clamp(24px, 5vw, 48px); /* Taille responsive */
+            font-size: clamp(24px, 5vw, 32px); /* Taille responsive */
             margin-bottom: 10px;
             transition: font-size 0.3s ease;
         }
@@ -910,16 +910,25 @@ Auteur : Mateo Bauvir
         }
 
         .table-container td {
-            padding: 4px 2px;
-            border: 1px solid #dee2e6;
+            border: 1px solid #dee2e6; /* Bordure fine pour les cellules */
             text-align: center;
-            font-size: 9px;
+            font-size: clamp(8px, 0.8vw, 11px);
         }
 
-        .table-container tr:nth-child(even) {
-            background-color: #f8f9fa;
+        /* Coloration par jour (et pas alternée) */
+        .day-group-2 {
+            background-color: #ffffff !important;
         }
 
+        .day-group-
+         {
+            background-color: #f0f0f0 !important;
+        }
+
+        table tbody tr:hover {
+            background-color: #e3f2fd !important;
+            transition: background-color 0.2s ease;
+        }
         /* Mobile */
         @media (max-width: 768px) {
             .tab-content.active {
@@ -1032,12 +1041,12 @@ Auteur : Mateo Bauvir
         }
 
         .dispo-section {
-            flex: 1; /* 25% de largeur fixe */
-            min-width: 200px; /* Largeur minimum pour éviter l'écrasement */
+            flex: 1; 
+            min-width: 200px; 
         }
         .repartition-section {
-            flex: 1; /* Prend tout l'espace restant */
-            min-width: 400px; /* Largeur minimum pour la lisibilité */
+            flex: 1; 
+            min-width: 400px; 
         }
 
         /* Titres des sections */
@@ -1438,12 +1447,13 @@ Auteur : Mateo Bauvir
 
         #planning-weeks-contents .week-content.active .calendar {
             display: grid;
-            grid-template-columns: 60px repeat(7,1fr);
-            grid-template-rows: 30px repeat(26, minmax(30px,auto));
+            grid-template-columns: 60px repeat(7, 1fr);
+            grid-template-rows: 30px repeat(34, 24px); /* 👈 34 créneaux de 30min */
             gap: 0;
             border: 1px solid #ddd;
             margin-top: 20px;
         }
+
 
         /* entêtes de jour */
         .calendar .day-header {
@@ -1451,6 +1461,7 @@ Auteur : Mateo Bauvir
         text-align: center;
         font-weight: bold;
         border-bottom: 1px solid #ccc;
+        font-size: 10px;
         background: #f8f9fa;
         }
 
@@ -1466,19 +1477,21 @@ Auteur : Mateo Bauvir
 
         /* toutes les autres cellules vides */
         .calendar .slot-cell {
-        border:1px solid #f0f0f0;
+            border: 1px solid #f0f0f0;
         }
 
         .calendar .event {
-            position: relative;
-            background: rgba(116,20,11,0.1);
-            border-left: 4px solid #74140b;
-            padding: 2px 4px;
-            font-size: 12px;
+            height: 98%;
             overflow: hidden;
-            z-index: 2;
+            font-size: 11px;
+            line-height: 1.2;
+            padding: 2px 4px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            background-color: #e2b8b8; 
+            border-left: 4px solid #74140b;
             border-radius: 3px;
-            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
         }
 
         #planning-weeks-tabs {
@@ -1530,7 +1543,7 @@ Auteur : Mateo Bauvir
             display: flex;
             align-items: center;
             gap: 0.5rem;        /* espace entre logo et texte */
-            font-size: 1.7rem;    /* ou ce que tu veux */
+            font-size: 1.7rem;   
         }
 
         .logo–header {
@@ -1666,16 +1679,16 @@ Auteur : Mateo Bauvir
 
             <div class="file-drop-zone" id="disponibilites-drop">
                 <div class="file-icon">📊</div>
-                <div class="file-text">Fichier Disponibilités</div>
-                <div class="file-subtext">Glissez-déposez votre fichier Excel ou cliquez pour le sélectionner</div>
+                <div class="file-text">Fichier des disponibilités</div>
+                <div class="file-subtext">Glissez-déposez ou cliquez pour le sélectionner</div>
                 <div class="file-info" id="disponibilites-info"></div>
                 <input type="file" id="disponibilites-file" accept=".xlsx,.xls">
             </div>
 
             <div class="file-drop-zone" id="repartition-drop">
                 <div class="file-icon">🎵</div>
-                <div class="file-text">Fichier Répartition</div>
-                <div class="file-subtext">Glissez-déposez votre fichier Excel ou cliquez pour le sélectionner</div>
+                <div class="file-text">Fichier de répartition</div>
+                <div class="file-subtext">Glissez-déposez ou cliquez pour le sélectionner</div>
                 <div class="file-info" id="repartition-info"></div>
                 <input type="file" id="repartition-file" accept=".xlsx,.xls">
             </div>
@@ -1696,28 +1709,27 @@ Auteur : Mateo Bauvir
                         <button class="close-modal" id="close-parametres-modal">×</button>
                     </div>
                     <div class="parametres-modal-content">
-                        <!-- TES PARAMÈTRES ICI -->
                         <div class="parameter-group">
-                            <label class="parameter-label">Pénalité "Peut-être" (1-10)</label>
+                            <label class="parameter-label">Pénalité "Peut-être" (0-50)</label>
                             <div class="slider-container">
-                                <input type="range" class="slider" id="maybe-penalty" min="1" max="10" value="4">
-                                <span class="slider-value" id="maybe-penalty-value">4</span>
+                                <input type="range" class="slider" id="maybe-penalty" min="0" max="50" value="10">
+                                <span class="slider-value" id="maybe-penalty-value">10</span>
                             </div>
                         </div>
 
                         <div class="parameter-group">
-                            <label class="parameter-label">Charge max par jour (1-5)</label>
+                            <label class="parameter-label">Morceau par jour (1-5)</label>
                             <div class="slider-container">
-                                <input type="range" class="slider" id="max-load" min="1" max="5" value="3">
+                                <input type="range" class="slider" id="max-load" min="0" max="5" value="3">
                                 <span class="slider-value" id="max-load-value">3</span>
                             </div>
                         </div>
 
                         <div class="parameter-group">
-                            <label class="parameter-label">Pénalité surcharge (1-10)</label>
+                            <label class="parameter-label">Pénalité de surcharge (0-50)</label>
                             <div class="slider-container">
-                                <input type="range" class="slider" id="load-penalty" min="1" max="10" value="2">
-                                <span class="slider-value" id="load-penalty-value">2</span>
+                                <input type="range" class="slider" id="load-penalty" min="0" max="50" value="50">
+                                <span class="slider-value" id="load-penalty-value">50</span>
                             </div>
                         </div>
 
@@ -1729,18 +1741,25 @@ Auteur : Mateo Bauvir
                         </div>
 
                         <div class="parameter-group">
-                            <label class="parameter-label">Seuil d'absence autorisé (0-3)</label>
+                            <label class="parameter-label">Absent(s) autorisé(s) (0-10)</label>
                             <div class="slider-container">
-                                <input type="range" class="slider" id="absence-threshold" min="0" max="3" value="0">
+                                <input type="range" class="slider" id="absence-threshold" min="0" max="10" value="0">
                                 <span class="slider-value" id="absence-threshold-value">0</span>
                             </div>
                         </div>
 
                         <div class="parameter-group">
-                            <label class="parameter-label">Bonus répétitions groupées (10-100)</label>
+                            <label class="parameter-label">Bonus répétitions groupées (0-100)</label>
                             <div class="slider-container">
-                                <input type="range" class="slider" id="group-bonus" min="10" max="100" value="60">
-                                <span class="slider-value" id="group-bonus-value">60</span>
+                                <input type="range" class="slider" id="group-bonus" min="0" max="100" value="100">
+                                <span class="slider-value" id="group-bonus-value">100</span>
+                            </div>
+                        </div>
+                        <div class="parameter-group">
+                            <label class="parameter-label">Limite de temps (30-600 sec)</label>
+                            <div class="slider-container">
+                                <input type="range" class="slider" id="timeout-limit" min="30" max="600" value="30">
+                                <span class="slider-value" id="timeout-limit-value">30</span>
                             </div>
                         </div>
                     </div>
@@ -1834,6 +1853,7 @@ Auteur : Mateo Bauvir
         const isAuto = autoCheckbox.checked;
         absenceSlider.disabled = isAuto;
         // si tu veux un effet visuel "grisé", ajouter/enlever une classe CSS
+        absenceSlider.classList.toggle('disabled', isAuto);
         absenceSlider.closest('.parameter-group')
                     .classList.toggle('text-muted', isAuto);
         });
@@ -1876,6 +1896,12 @@ Auteur : Mateo Bauvir
             if (file.type.includes('sheet') || file.name.endsWith('.xlsx') || file.name.endsWith('.xls')) {
                 dropZone.classList.add('has-file');
                 fileInfo.textContent = `✓ ${file.name}`;
+                // Modifier texte et masquer icône
+                const icon = dropZone.querySelector('.file-icon');
+                const text = dropZone.querySelector('.file-subtext');
+                if (icon) icon.style.display = 'none'; // masque le logo
+                if (text) text.style.display = 'none'; // masque le texte
+                fileInfo.innerHTML = `✓ ${file.name} <span style="font-style: italic; opacity: 0.7;">(ou changer de fichier)</span>`;
                 fileInfo.classList.add('active');
                 
                 if (fileInputId === 'disponibilites-file') {
@@ -1911,7 +1937,7 @@ Auteur : Mateo Bauvir
             }, 5000);
         }
 
-        // Fonction pour remplir les tableaux
+        // Fonction pour remplir les tableaux avec coloration par jour
         function fillTable(tableId, data, isRepartition = false) {
             const table = document.getElementById(tableId);
             const thead = table.querySelector('thead');
@@ -1922,11 +1948,10 @@ Auteur : Mateo Bauvir
 
             if (!data || data.length === 0) return;
 
-            
             function normalizeKeys(obj) {
                 const newObj = {};
                 Object.keys(obj).forEach(k => {
-                    newObj[k.toLowerCase()] = obj[k]; // Si je retire ce .toLowerCase(), ça fait buguer le tableau jsp pq
+                    newObj[k.toLowerCase()] = obj[k];
                 });
                 return newObj;
             }
@@ -1936,17 +1961,14 @@ Auteur : Mateo Bauvir
             let headerRow = document.createElement('tr');
 
             if (isRepartition) {
-                // Collect all keys except 'jour', 'heures', 'morceau'
                 musiciens = Object.keys(firstRow).filter(
                     key => key !== 'jour' && key !== 'heures' && key !== 'morceau'
                 );
-                // Always put 'Jour', 'Heures', 'Morceau' first
                 headerRow.innerHTML = '<th>Jour</th><th>Heures</th><th>Morceau</th>';
                 musiciens.forEach(key => {
                     headerRow.innerHTML += `<th>${key}</th>`;
                 });
             } else {
-                // Collect all keys except 'jour', 'heures'
                 musiciens = Object.keys(firstRow).filter(
                     key => key !== 'jour' && key !== 'heures'
                 );
@@ -1957,13 +1979,25 @@ Auteur : Mateo Bauvir
             }
             thead.appendChild(headerRow);
 
+            // Grouper les données par jour pour la coloration
+            let currentDay = null;
+            let dayGroupIndex = 1;
+            
             data.forEach(rowOrig => {
                 const row = normalizeKeys(rowOrig);
                 const tr = document.createElement('tr');
+                
+                // Détecter le changement de jour
+                if (row['jour'] !== currentDay) {
+                    currentDay = row['jour'];
+                    dayGroupIndex = dayGroupIndex === 1 ? 2 : 1; // Alterne entre 1 et 2
+                }
+                
+                // Appliquer la classe de coloration par jour
+                tr.classList.add(`day-group-${dayGroupIndex}`);
 
                 if (isRepartition) {
                     tr.innerHTML = `<td>${row['jour'] || ''}</td><td>${row['heures'] || ''}</td><td>${row['morceau'] || ''}</td>`;
-                    // Then all musiciens
                     musiciens.forEach(key => {
                         let cellClass = '';
                         let cellText = '';
@@ -1997,7 +2031,7 @@ Auteur : Mateo Bauvir
                 tbody.appendChild(tr);
             });
         }
-       // Remplacez cette fonction dans votre code JavaScript
+
         function createDynamicTabs(dispoObj, repartObj) {
             const tabs = document.getElementById('dynamic-tabs');
             const panes = document.getElementById('dynamic-tab-contents');
@@ -2046,13 +2080,13 @@ Auteur : Mateo Bauvir
                 // Créer l'onglet Planning avec sa structure complète
                 const planningBtn = document.createElement('button');
                 planningBtn.className = 'tab';
-                planningBtn.dataset.tab = 'planning-final';  // ⚠️ Changé ici
+                planningBtn.dataset.tab = 'planning-final'; 
                 planningBtn.textContent = '📅 Planning Final';
                 tabs.appendChild(planningBtn);
 
                 // Créer le contenu de l'onglet Planning
                 const planningDiv = document.createElement('div');
-                planningDiv.id = 'planning-final';  // ⚠️ Changé ici
+                planningDiv.id = 'planning-final'; 
                 planningDiv.className = 'tab-content';
                 planningDiv.innerHTML = `
                     <h2>🎯 Planning Final</h2>
@@ -2122,20 +2156,33 @@ Auteur : Mateo Bauvir
                         true);
             });
         }
-        // Fonction pour générer les dates d'une semaine
         function generateWeekDates(weekNum) {
             const days = ['Lundi', 'Mardi', 'Mercredi', 'Jeudi', 'Vendredi', 'Samedi', 'Dimanche'];
-            const currentMonth = getCurrentMonth();
-            const weekStart = (parseInt(weekNum) - 1) * 7;
-            
+
+            // Point de départ : date du lundi de la semaine
+            const currentDate = new Date();
+            const year = currentDate.getFullYear();
+
+            // Calcule le lundi de la semaine n
+            const firstMonday = new Date(year, 0, 1 + (weekNum - 1) * 7); // 1er janvier + 7*(n-1)
+
+            // S'assure qu'on est bien sur un lundi
+            while (firstMonday.getDay() !== 1) {
+                firstMonday.setDate(firstMonday.getDate() - 1);
+            }
+
             const dates = {};
-            days.forEach((day, index) => {
-                const dayNumber = weekStart + index;
-                dates[day] = `${dayNumber.toString().padStart(2, '0')}/${currentMonth}`;
-            });
-            
+            for (let i = 0; i < 7; i++) {
+                const d = new Date(firstMonday);
+                d.setDate(firstMonday.getDate() + i);
+                const dayName = days[i];
+                const dateStr = `${d.getDate().toString().padStart(2, '0')}/${(d.getMonth() + 1).toString().padStart(2, '0')}`;
+                dates[dayName] = dateStr;
+            }
+
             return dates;
         }
+
 
         // Fonction pour obtenir le mois actuel
         function getCurrentMonth() {
@@ -2215,7 +2262,6 @@ Auteur : Mateo Bauvir
             return h * 60 + m;
         }
 
-        // 4. REMPLACER complètement la fonction renderPlanningCalendar par cette version corrigée
         function renderPlanningCalendar(planning) {
             console.log("🎯 renderPlanningCalendar appelée avec:", planning);
             
@@ -2279,20 +2325,29 @@ Auteur : Mateo Bauvir
                     }));
                 });
                 
-                // Lignes horaires + slots
-                for (let m = startH * 60; m < endH * 60; m += step) {
-                    const hh = pad(Math.floor(m / 60)), mm = pad(m % 60);
-                    cal.appendChild(Object.assign(document.createElement('div'), {
-                        className: 'time-cell',
-                        textContent: `${hh}:${mm}`
-                    }));
+                const totalRows = (24 - 7) * 2; // 7h à minuit = 17h = 34 créneaux
+                for (let i = 0; i < totalRows; i++) {
+                    const totalMin = 7 * 60 + i * 30;
+                    const hh = pad(Math.floor(totalMin / 60));
+                    const mm = pad(totalMin % 60);
+
+                    // Colonne 1 = horaire
+                    const timeCell = document.createElement('div');
+                    timeCell.className = 'time-cell';
+                    timeCell.textContent = `${hh}:${mm}`;
+                    timeCell.style.gridRow = i + 2;     // +2 car ligne 1 = entête
+                    timeCell.style.gridColumn = 1;
+                    cal.appendChild(timeCell);
+
+                    // Colonnes 2 à 8 = créneaux
                     for (let d = 0; d < 7; d++) {
-                        cal.appendChild(Object.assign(document.createElement('div'), {
-                            className: 'slot-cell'
-                        }));
+                        const slot = document.createElement('div');
+                        slot.className = 'slot-cell';
+                        slot.style.gridRow = i + 2;
+                        slot.style.gridColumn = d + 2;
+                        cal.appendChild(slot);
                     }
                 }
-
                 // Placer les événements
                 weeks[sem].events.forEach(ev => {
                     const col = days.indexOf(ev.day);
@@ -2301,12 +2356,18 @@ Auteur : Mateo Bauvir
                         return;
                     }
                     
-                    const topMin = toMin(ev.debut) - startH * 60;
-                    const heightMin = toMin(ev.fin) - toMin(ev.debut);
-                    const rowStart = Math.floor(topMin / step) + 2;
-                    const rowSpan = Math.ceil(heightMin / step);
-                    
+                    const debutMin = toMin(ev.debut);
+                    const finMin = toMin(ev.fin);
+                    const startMin = 7 * 60; // 07:00
+                    const topMin = debutMin - startMin;
+                    const heightMin = finMin - debutMin;
+
+                    const rowStart = Math.floor(topMin / 30) + 2;
+                    const rowSpan = Math.ceil(heightMin / 30);
                     const e = document.createElement('div');
+
+                    e.style.gridColumn = col + 2;
+                    e.style.gridRow = `${rowStart} / span ${rowSpan}`;
                     e.className = 'event tooltip';
 
                     // Créer le contenu avec tooltip
@@ -2324,6 +2385,7 @@ Auteur : Mateo Bauvir
                         <div style="font-size: 10px; opacity: 0.8;">${ev.debut}-${ev.fin}</div>
                         <span class="tooltiptext">${tooltipContent}</span>
                     `;
+
                     // Positionnement du tooltip au survol
                     e.addEventListener('mouseenter', function() {
                         const tooltip = this.querySelector('.tooltiptext');
@@ -2420,6 +2482,7 @@ Auteur : Mateo Bauvir
                 });
             console.log("✅ renderPlanningCalendar terminée");
         });}
+        // Fonction generatePlanning modifiée avec timeout
         async function generatePlanning() {
             const formData = new FormData();
             formData.append('repartition', repartitionFile);
@@ -2428,6 +2491,11 @@ Auteur : Mateo Bauvir
             formData.append('max_load', document.getElementById('max-load').value);
             formData.append('load_penalty', document.getElementById('load-penalty').value);
             formData.append('group_bonus', document.getElementById('group-bonus').value);
+            
+            // Nouveau paramètre timeout
+            const timeoutSeconds = parseInt(document.getElementById('timeout-limit').value);
+            formData.append('timeout_limit', timeoutSeconds);
+            
             const isAuto = document.getElementById('auto_seuil').checked;
             const mode = isAuto ? 'auto' : 'fixed';
             const seuil = isAuto ? 0 : parseInt(document.getElementById('absence-threshold').value, 10);
@@ -2441,13 +2509,22 @@ Auteur : Mateo Bauvir
             loading.classList.add('active');
             generateBtn.disabled = true;
 
+            // Créer un AbortController pour le timeout côté client
+            const controller = new AbortController();
+            const clientTimeout = setTimeout(() => {
+                controller.abort();
+            }, (timeoutSeconds + 10) * 1000); // Ajoute 10 secondes de marge
+
             try {
-                console.log("📤 Envoi de la requête au backend...");
+                console.log(`📤 Envoi de la requête au backend avec timeout de ${timeoutSeconds}s...`);
 
                 const response = await fetch(`${API_URL}/upload`, {
                     method: 'POST',
-                    body: formData
+                    body: formData,
+                    signal: controller.signal
                 });
+
+                clearTimeout(clientTimeout);
 
                 if (!response.ok) {
                     throw new Error(`Erreur HTTP: ${response.status}`);
@@ -2462,22 +2539,13 @@ Auteur : Mateo Bauvir
                     planning = []
                 } = data;
 
-                console.log("► dispoObj:", disponibilites);
-                console.log("► repartObj:", repartition);
-                console.log("► planning:", planning);
-
                 if (data.error) throw new Error(data.error);
 
-                // 1) génère les onglets et les tables vides
+                // Suite du code identique...
                 createDynamicTabs(disponibilites, repartition);
-
-                // 2) appelle votre fillTable habituelle, mais pour chaque semaine de façon dynamique
                 fillDynamicTables(disponibilites, repartition);
-
-                // 3) *** IMPORTANT : Render le calendrier APRÈS avoir créé les onglets ***
                 renderPlanningCalendar(planning);
 
-                // 4) affiche le bouton download
                 const downloadBtn = document.getElementById('download-btn');
                 if (downloadBtn) {
                     downloadBtn.style.display = 'block';
@@ -2486,8 +2554,15 @@ Auteur : Mateo Bauvir
                 results.classList.add('active');
 
             } catch (error) {
+                clearTimeout(clientTimeout);
                 console.error('Erreur:', error);
-                showError(`Erreur lors de la génération: ${error.message}`);
+                
+                if (error.name === 'AbortError') {
+                    showError(`Timeout: La génération a pris plus de ${timeoutSeconds} secondes. Essayez d'augmenter le temps limite ou de simplifier les paramètres.`);
+                } else {
+                    showError(`Erreur lors de la génération: ${error.message}`);
+                }
+                
                 loading.classList.remove('active');
                 emptyState.style.display = 'block';
             } finally {
@@ -2495,7 +2570,6 @@ Auteur : Mateo Bauvir
                 loading.classList.remove('active');
             }
         }
-
         // Fonction de téléchargement
         async function downloadExcel() {
             try {
