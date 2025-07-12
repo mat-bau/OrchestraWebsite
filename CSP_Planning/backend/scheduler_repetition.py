@@ -27,6 +27,8 @@ class RepetitionScheduler:
             repartitions_file: Fichier Excel des répartitions donc avec les morceaux et participants
             disponibilites_file: Fichier Excel (avec Cally normalement) avec les disponibilités de chacun
         """
+        self.repartitions_file = repartitions_file
+        self.disponibilites_file = disponibilites_file
         self.repartitions_df = pd.read_excel(repartitions_file)
         self.disponibilites_df = pd.read_excel(disponibilites_file)
 
@@ -427,10 +429,13 @@ class RepetitionScheduler:
         self.build_model()
         self.solve()
 
-    def export_planning(self, output_file):
+    def export_planning(self, directory=".", base_filename="planning"):
+        import os
         from openpyxl import load_workbook
         from openpyxl.styles import PatternFill
-
+        os.makedirs(directory, exist_ok=True)
+        filename = f"{base_filename}_maybe{self.maybe_penalty}_load{self.max_load}_abs{self.seuil_absence}_timeout{self.generation_time_limit}.xlsx"
+        path = os.path.join(directory, filename)
         # Constantes pour le tri et formatage (comme dans get_json_data)
         DAY_ORDER = {"Lundi":1, "Mardi":2, "Mercredi":3, "Jeudi":4,"Vendredi":5,"Samedi":6,"Dimanche":7, 
                     "LUN":1, "MAR":2, "MER":3, "JEU":4, "VEN":5, "SAM":6, "DIM":7}
@@ -463,8 +468,8 @@ class RepetitionScheduler:
                     "Morceau": morceau,
                     "Jour": "Non assigné",
                     "Heures": "—",
-                    "Participants": ", ".join(self.repartition.get(morceau, []))
-                })
+                    "Participants": ", ".join(self.repartition.get(morceau, [])),
+                    })
             else:
                 slot = self.solution[morceau]
                 jour, heures = format_slot(slot)
@@ -474,7 +479,6 @@ class RepetitionScheduler:
                     "Heures": heures,
                     "Participants": ", ".join(self.repartition.get(morceau, []))
                 })
-        
         df_planning = pd.DataFrame(planning_rows)
         
         # Tri du planning par jour
@@ -525,7 +529,7 @@ class RepetitionScheduler:
             repart_dfs[f"Repart_Semaine_{w}"] = pd.DataFrame(repart_rows)
 
         # --- 3) Écriture initiale via pandas ---
-        with pd.ExcelWriter(output_file, engine="openpyxl") as writer:
+        with pd.ExcelWriter(filename, engine="openpyxl") as writer:
             df_planning.to_excel(writer, sheet_name="Planning", index=False)
             
             # Écriture des onglets par semaine
@@ -536,7 +540,7 @@ class RepetitionScheduler:
                 df.to_excel(writer, sheet_name=sheet_name, index=False)
 
         # --- 4) Re-ouverture et stylage avec openpyxl ---
-        wb = load_workbook(output_file)
+        wb = load_workbook(filename)
         
         # Styles pour les disponibilités
         fill_yes    = PatternFill(fill_type="solid", fgColor="C6EFCE")  # Vert
@@ -576,9 +580,27 @@ class RepetitionScheduler:
                     else:
                         cell.fill = fill_vide
 
-        wb.save(output_file)
-        print(f"✅ Planning exporté dans {output_file}")
-        print(f"📊 Onglets créés : Planning + {len(dispo_dfs)} onglets de disponibilités + {len(repart_dfs)} onglets de répartition")
+
+        # --- Feuille Paramètres ---
+        ws_params = wb.create_sheet(title="Paramètres")
+        params_data = [
+            ["Paramètre", "Valeur"],
+            ["Fichier répartitions", self.repartitions_file],
+            ["Fichier disponibilités", self.disponibilites_file],
+            ["Pénalité maybe", self.maybe_penalty],
+            ["Charge max", self.max_load],
+            ["Pénalité charge", self.load_penalty],
+            ["Bonus groupe", self.group_bonus],
+            ["Mode absence", self.mode_absence],
+            ["Seuil absence", self.seuil_absence],
+            ["Temps limite génération", self.generation_time_limit]
+        ]
+
+        for row in params_data:
+            ws_params.append(row)
+
+        wb.save(path)
+        return path
 
     def get_json_data(self):
         # pour trier et formater

@@ -8,7 +8,7 @@ app = Flask(__name__)
 CORS(app, resources={r"/*": {"origins": "http://localhost:8000"}})
 
 UPLOAD_FOLDER = "uploads"
-RESULT_FILE = "planning_repetitions.xlsx"
+GENERATED_FILE_PATH = None
 os.makedirs(UPLOAD_FOLDER, exist_ok=True)
 
 @app.route('/upload', methods=['POST'])
@@ -48,8 +48,10 @@ def upload():
         # print(" generer_planning() terminé.")
 
         # 3) Export Excel
-        #print(f"💾 Export vers {RESULT_FILE} …")
-        planner.export_planning(RESULT_FILE)
+
+        global GENERATED_FILE_PATH
+
+        GENERATED_FILE_PATH = planner.export_planning("exports", base_filename="planning")
         #print("✅ export_planning() terminé.")
 
         # 4) Sérialisation JSON
@@ -63,10 +65,13 @@ def upload():
         traceback.print_exc()
         return jsonify({"error": str(e)}), 500
 
-@app.route('/download', methods=['GET'])
+@app.route('/download')
 def download():
     try:
-        return send_file(RESULT_FILE, as_attachment=True)
+        if GENERATED_FILE_PATH and os.path.exists(GENERATED_FILE_PATH):
+            return send_file(GENERATED_FILE_PATH, as_attachment=True)
+        else:
+            return jsonify({"error": "Fichier introuvable"}), 404
     except Exception as e:
         return jsonify({"error": str(e)}), 500
 
