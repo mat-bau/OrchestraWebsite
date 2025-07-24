@@ -2,6 +2,7 @@ from flask import Flask, request, jsonify, send_file
 from flask_cors import CORS
 import os
 from scheduler_repetition import RepetitionScheduler
+from scheduler import OptimizedRepetitionScheduler
 import traceback
 
 app = Flask(__name__)
@@ -34,7 +35,7 @@ def upload():
         print("🧾 Params :", maybe_penalty, max_load, load_penalty, group_bonus, mode_absence, seuil_absence, f"timeout={timeout_limit}s")
 
         # print("Instanciation du planner...")
-        planner = RepetitionScheduler(
+        planner = OptimizedRepetitionScheduler(
             repart_path, dispo_path,
             maybe_penalty, max_load, load_penalty, group_bonus,
             mode_absence, seuil_absence,
