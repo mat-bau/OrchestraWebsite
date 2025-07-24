@@ -10,7 +10,8 @@ Auteur : Mateo Bauvir
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Planificateur de répétitions</title>
+    <title>OrchestraKot</title>
+    <link rel="shortcut icon" type="image/x-icon" href="images/NewLogoSmall.png" />
     <style>
         /* Import de Google Fonts - Vous pouvez changer la police ici */
         @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap');
@@ -31,7 +32,7 @@ Auteur : Mateo Bauvir
 
         .container {
             display: flex;
-            height: 98vh;
+            height: 92.5vh;
             max-width: 2500px;
             margin: 0 auto;
             background: rgba(255, 255, 255, 0.95);
@@ -44,7 +45,7 @@ Auteur : Mateo Bauvir
 
         /* Container principal pour éviter les débordements */
         .container {
-            max-width: 99%;
+            max-width: 100%;
             margin: 1 auto;
             padding: 1px;
             overflow-x: hidden;
@@ -1361,6 +1362,16 @@ Auteur : Mateo Bauvir
             font-weight: 500;
         }
 
+        .status-assigned-maybe {
+            background: #fff3cd;
+            color: #856404;
+            padding: 6px 10px;
+            border-radius: 6px;
+            font-size: 12px;
+            font-weight: 500;
+        }
+
+
         .loading {
             display: none;
             text-align: center;
@@ -1546,8 +1557,8 @@ Auteur : Mateo Bauvir
             font-size: 1.7rem;   
         }
 
-        .logo–header {
-            height: 1em;        /* adapte à la hauteur de la ligne */
+        .logo-header {
+            height: 40px;        /* adapte à la hauteur de la ligne */
             width: auto;
         }
 
@@ -1664,152 +1675,226 @@ Auteur : Mateo Bauvir
                 opacity: 0.7;
             }
         }
+
+        body, html {
+            font-family: 'Poppins', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            /* Gradient bordeaux - Vous pouvez modifier ces couleurs */
+            background: linear-gradient(135deg, #8B0000 0%, #A0522D 50%, #8B0000 100%);
+            min-height: 100vh;
+            color: #333;
+        }
+
+        /* Wrapper global */
+        .site-wrapper {
+        width: 100%;
+        }
+
+        .site-header {
+        color: #fff;
+        margin-top: 25px;     /* espace au-dessus */
+        padding: 0;  /* padding-top uniquement */
+        }
+
+        /*
+        .site-logo {
+        height: 50px;   
+        width: auto;    
+        filter: brightness(0) invert(1);
+        }
+        */
+        .header-container {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 0px;
+        }
+
+        /* Navigation */
+        .main-navigation .menu {
+        list-style: none;
+        display: flex;
+        }
+
+        .main-navigation .menu-item a {
+        color: #fff;
+        text-decoration: none;
+        padding: 10px 15px;
+        transition: background-color 0.3s;
+        }
+
+        .main-navigation .menu-item a:hover,
+        .main-navigation .menu-item.current-menu-item a {
+        background: linear-gradient(135deg, #b1543c 0%, #8a2a2a 50%, #b1543c 100%);
+        color: #fdf9f9;
+        }
     </style>
 </head>
 <body>
+  <!-- Wrapper principal pour l'ensemble de la page -->
+  <div class="site-wrapper">
+    <!-- Header -->
+    <header class="site-header">
+      <div class="header-container">
+        <a href="index.html" id="branding">
+          <!-- <img src="logo_orchestra.png" alt="Site Title" class="site-logo"> -->
+        </a>
+        <nav class="main-navigation">
+          <!-- <button type="button" class="toggle-menu"><i class="fa fa-bars"></i></button> -->
+          <ul class="menu">
+            <li class="menu-item"><a href="index.html">Home</a></li>
+            <li class="menu-item"><a href="about.html">About</a></li>
+            <!-- <li class="menu-item"><a href="gallery.html">Gallery</a></li> -->
+            <li class="menu-item"><a href="videos.html">Vidéos</a></li>
+            <li class="menu-item current-menu-item"><a href="front.html">Plannifier</a></li>
+            <li class="menu-item"><a href="contact.html">Contact</a></li>
+          </ul>
+        </nav>
+        <div class="mobile-menu"></div>
+      </div>
+    </header>
+    
+    <!-- Contenu principal : sidebar + contenu -->
     <div class="container">
-        <div class="sidebar">
-            <div>
-                <h1 class="site-title">
-                    <img src="logo_orchestra.png" alt="Logo Orchestra" class="logo–header">
-                    Orchestranificateur
-                </h1>
-                <p class="subtitle">Créez votre planning de répétitions automatiquement</p>
-            </div>
-
-            <div class="file-drop-zone" id="disponibilites-drop">
-                <div class="file-icon">📊</div>
-                <div class="file-text">Fichier des disponibilités</div>
-                <div class="file-subtext">Glissez-déposez ou cliquez pour le sélectionner</div>
-                <div class="file-info" id="disponibilites-info"></div>
-                <input type="file" id="disponibilites-file" accept=".xlsx,.xls">
-            </div>
-
-            <div class="file-drop-zone" id="repartition-drop">
-                <div class="file-icon">🎵</div>
-                <div class="file-text">Fichier de répartition</div>
-                <div class="file-subtext">Glissez-déposez ou cliquez pour le sélectionner</div>
-                <div class="file-info" id="repartition-info"></div>
-                <input type="file" id="repartition-file" accept=".xlsx,.xls">
-            </div>
-
-            <!-- Box paramètres compacte -->
-            <div class="parametres-compact">
-                <div class="parametres-header" id="parametres-toggle">
-                    <span>Paramètres</span>
-                    <i class="fas fa-cog parametres-icon"></i>
-                </div>
-            </div>
-
-            <!-- Modal overlay -->
-            <div class="modal-overlay" id="parametres-modal-overlay">
-                <div class="parametres-modal">
-                    <div class="parametres-modal-header">
-                        <span>Paramètres du planning</span>
-                        <button class="close-modal" id="close-parametres-modal">×</button>
-                    </div>
-                    <div class="parametres-modal-content">
-                        <div class="parameter-group">
-                            <label class="parameter-label">Pénalité "Peut-être" (0-50)</label>
-                            <div class="slider-container">
-                                <input type="range" class="slider" id="maybe-penalty" min="0" max="50" value="10">
-                                <span class="slider-value" id="maybe-penalty-value">10</span>
-                            </div>
-                        </div>
-
-                        <div class="parameter-group">
-                            <label class="parameter-label">Morceau par jour (1-5)</label>
-                            <div class="slider-container">
-                                <input type="range" class="slider" id="max-load" min="0" max="5" value="3">
-                                <span class="slider-value" id="max-load-value">3</span>
-                            </div>
-                        </div>
-
-                        <div class="parameter-group">
-                            <label class="parameter-label">Pénalité de surcharge (0-50)</label>
-                            <div class="slider-container">
-                                <input type="range" class="slider" id="load-penalty" min="0" max="50" value="50">
-                                <span class="slider-value" id="load-penalty-value">50</span>
-                            </div>
-                        </div>
-
-                        <div class="parameter-group">
-                            <label class="parameter-label">Laisser le solveur choisir le nombre d'absents</label>
-                            <div class="checkbox-container">
-                                <input type="checkbox" id="auto_seuil" name="auto_seuil">
-                            </div>
-                        </div>
-
-                        <div class="parameter-group">
-                            <label class="parameter-label">Absent(s) autorisé(s) (0-10)</label>
-                            <div class="slider-container">
-                                <input type="range" class="slider" id="absence-threshold" min="0" max="10" value="0">
-                                <span class="slider-value" id="absence-threshold-value">0</span>
-                            </div>
-                        </div>
-
-                        <div class="parameter-group">
-                            <label class="parameter-label">Bonus répétitions groupées (0-100)</label>
-                            <div class="slider-container">
-                                <input type="range" class="slider" id="group-bonus" min="0" max="100" value="100">
-                                <span class="slider-value" id="group-bonus-value">100</span>
-                            </div>
-                        </div>
-                        <div class="parameter-group">
-                            <label class="parameter-label">Limite de temps (30-600 sec)</label>
-                            <div class="slider-container">
-                                <input type="range" class="slider" id="timeout-limit" min="30" max="600" value="30">
-                                <span class="slider-value" id="timeout-limit-value">30</span>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-
-            <button class="generate-button" id="generate-btn" disabled>
-                🎭 Faire mon planning
-            </button>
-
-            <div class="error-message" id="error-message"></div>
+      <div class="sidebar">
+        <div>
+          <h1 class="site-title">
+            <img src="logo_orchestra.png" alt="Logo Orchestra" class="logo-header">
+            Orchestranificateur
+          </h1>
+          <p class="subtitle">Créez votre planning de répétitions automatiquement</p>
         </div>
 
-        <div class="main-content">
-            <div class="empty-state" id="empty-state">
-                <div class="empty-state-icon">🎼</div>
-                <div class="empty-state-title">Prêt à créer votre planning ?</div>
-                <div class="empty-state-text">
-                    Uploadez vos fichiers de disponibilités et de répartition, puis cliquez sur "Faire mon planning" pour générer automatiquement votre planning de répétitions optimisé.
-                </div>
-            </div>
-
-            <div class="loading" id="loading">
-                <div class="spinner"></div>
-                <div>Génération du planning en cours...</div>
-            </div>
-
-            <div class="results-section" id="results">
-                <div class="tabs" id="dynamic-tabs">
-                    <!-- Les onglets seront générés dynamiquement -->
-                </div>
-                <div id="dynamic-tab-contents">
-                    <!-- Le contenu des onglets sera généré dynamiquement -->
-                </div>
-            </div>
+        <!-- Zone de dépôt des fichiers -->
+        <div class="file-drop-zone" id="disponibilites-drop">
+          <div class="file-icon">📊</div>
+          <div class="file-text">Fichier des disponibilités</div>
+          <div class="file-subtext">Glissez-déposez ou cliquez pour le sélectionner</div>
+          <div class="file-info" id="disponibilites-info"></div>
+          <input type="file" id="disponibilites-file" accept=".xlsx,.xls">
         </div>
+
+        <div class="file-drop-zone" id="repartition-drop">
+          <div class="file-icon">🎵</div>
+          <div class="file-text">Fichier de répartition</div>
+          <div class="file-subtext">Glissez-déposez ou cliquez pour le sélectionner</div>
+          <div class="file-info" id="repartition-info"></div>
+          <input type="file" id="repartition-file" accept=".xlsx,.xls">
+        </div>
+
+        <!-- Box paramètres compacte -->
+        <div class="parametres-compact">
+          <div class="parametres-header" id="parametres-toggle">
+            <span>Paramètres</span>
+            <i class="fas fa-cog parametres-icon"></i>
+          </div>
+        </div>
+
+        <!-- Modal overlay des paramètres -->
+        <div class="modal-overlay" id="parametres-modal-overlay">
+          <div class="parametres-modal">
+            <div class="parametres-modal-header">
+              <span>Paramètres du planning</span>
+              <button class="close-modal" id="close-parametres-modal">×</button>
+            </div>
+            <div class="parametres-modal-content">
+              <!-- Paramètres : sliders et cases -->
+              <div class="parameter-group">
+                <label class="parameter-label">Pénalité "Peut-être" (0-100)</label>
+                <div class="slider-container">
+                  <input type="range" class="slider" id="maybe-penalty" min="0" max="100" value="50">
+                  <span class="slider-value" id="maybe-penalty-value">50</span>
+                </div>
+              </div>
+              <div class="parameter-group">
+                <label class="parameter-label">Morceau par jour (1-5)</label>
+                <div class="slider-container">
+                  <input type="range" class="slider" id="max-load" min="0" max="5" value="3">
+                  <span class="slider-value" id="max-load-value">3</span>
+                </div>
+              </div>
+              <div class="parameter-group">
+                <label class="parameter-label">Pénalité de surcharge (0-100)</label>
+                <div class="slider-container">
+                  <input type="range" class="slider" id="load-penalty" min="0" max="100" value="50">
+                  <span class="slider-value" id="load-penalty-value">50</span>
+                </div>
+              </div>
+              <div class="parameter-group">
+                <label class="parameter-label">Laisser le solveur choisir le nombre d'absents</label>
+                <div class="checkbox-container">
+                  <input type="checkbox" id="auto_seuil" name="auto_seuil">
+                </div>
+              </div>
+              <div class="parameter-group">
+                <label class="parameter-label">Absent(s) autorisé(s) (0-10)</label>
+                <div class="slider-container">
+                  <input type="range" class="slider" id="absence-threshold" min="0" max="10" value="0">
+                  <span class="slider-value" id="absence-threshold-value">0</span>
+                </div>
+              </div>
+              <div class="parameter-group">
+                <label class="parameter-label">Bonus répétitions groupées (0-1000)</label>
+                <div class="slider-container">
+                  <input type="range" class="slider" id="group-bonus" min="0" max="1000" value="100">
+                  <span class="slider-value" id="group-bonus-value">100</span>
+                </div>
+              </div>
+              <div class="parameter-group">
+                <label class="parameter-label">Limite de temps (10-300 itérations)</label>
+                <div class="slider-container">
+                  <input type="range" class="slider" id="timeout-limit" min="10" max="300" value="10">
+                  <span class="slider-value" id="timeout-limit-value">10</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <button class="generate-button" id="generate-btn" disabled>
+          🎭 Faire mon planning
+        </button>
+
+        <div class="error-message" id="error-message"></div>
+      </div>
+
+      <div class="main-content">
+        <div class="empty-state" id="empty-state">
+          <div class="empty-state-icon">🎼</div>
+          <div class="empty-state-title">Prêt à créer votre planning ?</div>
+          <div class="empty-state-text">
+            Uploadez vos fichiers de disponibilités et de répartition, puis cliquez sur "Faire mon planning" pour générer automatiquement votre planning de répétitions optimisé.
+          </div>
+        </div>
+
+        <div class="loading" id="loading">
+          <div class="spinner"></div>
+          <div>Génération du planning en cours...</div>
+        </div>
+
+        <div class="results-section" id="results">
+          <div class="tabs" id="dynamic-tabs">
+            <!-- Onglets générés dynamiquement -->
+          </div>
+          <div id="dynamic-tab-contents">
+            <!-- Contenu généré dynamiquement -->
+          </div>
+        </div>
+      </div>
     </div>
-    <!-- Modal pour agrandir les tableaux -->
-    <div id="table-modal-overlay" class="table-modal-overlay">
-        <div class="table-modal">
-            <div class="table-modal-header">
-                <h3 class="table-modal-title"></h3>
-                <button class="table-modal-close">&times;</button>
-            </div>
-            <div class="table-modal-content">
-                <div class="table-container-modal"></div>
-            </div>
-        </div>
+  </div>
+
+  <!-- Modal pour agrandir les tableaux -->
+  <div id="table-modal-overlay" class="table-modal-overlay">
+    <div class="table-modal">
+      <div class="table-modal-header">
+        <h3 class="table-modal-title"></h3>
+        <button class="table-modal-close">&times;</button>
+      </div>
+      <div class="table-modal-content">
+        <div class="table-container-modal"></div>
+      </div>
     </div>
+  </div>
     <script>
         // Configuration de l'API
         const API_URL = 'http://localhost:5050';
@@ -1999,6 +2084,7 @@ Auteur : Mateo Bauvir
                 if (isRepartition) {
                     tr.innerHTML = `<td>${row['jour'] || ''}</td><td>${row['heures'] || ''}</td><td>${row['morceau'] || ''}</td>`;
                     musiciens.forEach(key => {
+                        // console.log(`Cellule pour ${key} à ${row['jour']} ${row['heures']} => ${row[key]}`);
                         let cellClass = '';
                         let cellText = '';
                         if (row[key] === 'repete') {
@@ -2006,6 +2092,9 @@ Auteur : Mateo Bauvir
                             cellText = 'Répète';
                         } else if (row[key] === 'absent') {
                             cellClass = 'status-assigned-absent';
+                            cellText = 'Répète';
+                        } else if (row[key] === 'maybe_absent') {
+                            cellClass = 'status-assigned-maybe';
                             cellText = 'Répète';
                         } else {
                             cellClass = 'status-no-repeat';
@@ -2191,15 +2280,15 @@ Auteur : Mateo Bauvir
         }
 
         function groupByWeek(planning) {
-            console.log("🔍 groupByWeek appelée avec:", planning);
+            //console.log("groupByWeek appelée avec:", planning);
             
             const weeks = {};
             
             planning.forEach((ev, index) => {
-                console.log(`📝 Traitement événement ${index}:`, ev);
+                //console.log(`Traitement événement ${index}:`, ev);
                 
                 if (!ev.Jour || ev.Jour.startsWith('Non')) {
-                    console.log(`⏭️ Événement ignoré (pas de jour valide): ${ev.Jour}`);
+                    // console.log(`Événement ignoré (pas de jour valide): ${ev.Jour}`);
                     return;
                 }
                 
@@ -2212,7 +2301,7 @@ Auteur : Mateo Bauvir
                 }
                 
                 const [, dayName, dayNumber] = jourMatch;
-                console.log(`✅ Format détecté: ${dayName}, ${dayNumber}`);
+                //console.log(`Format détecté: ${dayName}, ${dayNumber}`);
                 
                 const [deb, fin] = (ev.Heures || '').split('-');
                 
@@ -2231,7 +2320,7 @@ Auteur : Mateo Bauvir
                         events: [],
                         dates: generateWeekDates(weekNum) // Fonction à créer
                     };
-                    console.log(`📅 Nouvelle semaine créée: ${weekNum}`);
+                    //console.log(`Nouvelle semaine créée: ${weekNum}`);
                 }
                 
                 // Ajouter l'événement à la semaine
@@ -2245,10 +2334,10 @@ Auteur : Mateo Bauvir
                     musiciens: ev.Participants ? ev.Participants.split(', ') : []
                 });
                 
-                console.log(`✅ Événement ajouté à semaine ${weekNum}: ${dayName} ${dayNumber} ${deb}-${fin} ${ev.Morceau}`);
+                //console.log(`Événement ajouté à semaine ${weekNum}: ${dayName} ${dayNumber} ${deb}-${fin} ${ev.Morceau}`);
             });
             
-            console.log("📊 Résultat groupByWeek:", weeks);
+            //console.log("Résultat groupByWeek:", weeks);
             return weeks;
         }
 
@@ -2263,7 +2352,7 @@ Auteur : Mateo Bauvir
         }
 
         function renderPlanningCalendar(planning) {
-            console.log("🎯 renderPlanningCalendar appelée avec:", planning);
+            // console.log("renderPlanningCalendar appelée avec:", planning);
             
             const container = document.getElementById('planning');
             if (!container) {
@@ -2282,16 +2371,16 @@ Auteur : Mateo Bauvir
             paness.innerHTML = '';
             
             const weeks = groupByWeek(planning);
-            console.log("📅 Semaines groupées:", weeks);
+            // console.log("Semaines groupées:", weeks);
             
             const days = ['Lundi', 'Mardi', 'Mercredi', 'Jeudi', 'Vendredi', 'Samedi', 'Dimanche'];
             const startH = 8, endH = 21, step = 30;
 
             const weekKeys = Object.keys(weeks).sort((a, b) => parseInt(a) - parseInt(b));
-            console.log("🔢 Clés des semaines:", weekKeys);
+            // console.log("🔢 Clés des semaines:", weekKeys);
             
             weekKeys.forEach((sem, i) => {
-                console.log(`📝 Création semaine ${sem}, index ${i}`);
+                // console.log(`📝 Création semaine ${sem}, index ${i}`);
                 
                 // Onglet semaine
                 const btn = document.createElement('button');
@@ -2433,7 +2522,7 @@ Auteur : Mateo Bauvir
                     });
                     
                     cal.appendChild(e);
-                    console.log(`✅ Événement ajouté: ${ev.morceau} le ${ev.day} ${ev.date} de ${ev.debut} à ${ev.fin}`, ev.musiciens);
+                    // console.log(`Événement ajouté: ${ev.morceau} le ${ev.day} ${ev.date} de ${ev.debut} à ${ev.fin}`, ev.musiciens);
                 });
 
 
@@ -2463,7 +2552,7 @@ Auteur : Mateo Bauvir
                 document.querySelectorAll('#planning-weeks-tabs .tab').forEach(tab => {
                     tab.addEventListener('click', () => {
                         const sem = tab.dataset.week;
-                        console.log(`🔄 Changement vers semaine ${sem}`);
+                        //console.log(`Changement vers semaine ${sem}`);
                         
                         // Désactiver tous les sous-onglets et contenus
                         document.querySelectorAll('#planning-weeks-tabs .tab').forEach(t => t.classList.remove('active'));
@@ -2474,13 +2563,13 @@ Auteur : Mateo Bauvir
                         const targetContent = document.querySelector(`#planning-weeks-contents .week-content[data-week="${sem}"]`);
                         if (targetContent) {
                             targetContent.classList.add('active');
-                            console.log(`✅ Semaine ${sem} activée`);
+                            //console.log(`Semaine ${sem} activée`);
                         } else {
-                            console.error(`❌ Contenu pour semaine ${sem} introuvable`);
+                            //console.error(`Contenu pour semaine ${sem} introuvable`);
                         }
                     });
                 });
-            console.log("✅ renderPlanningCalendar terminée");
+            //console.log("renderPlanningCalendar terminée");
         });}
         // Fonction generatePlanning modifiée avec timeout
         async function generatePlanning() {
@@ -2491,15 +2580,24 @@ Auteur : Mateo Bauvir
             formData.append('max_load', document.getElementById('max-load').value);
             formData.append('load_penalty', document.getElementById('load-penalty').value);
             formData.append('group_bonus', document.getElementById('group-bonus').value);
-            
-            // Nouveau paramètre timeout
             const timeoutSeconds = parseInt(document.getElementById('timeout-limit').value);
             formData.append('timeout_limit', timeoutSeconds);
             
             const isAuto = document.getElementById('auto_seuil').checked;
-            const mode = isAuto ? 'auto' : 'fixed';
-            const seuil = isAuto ? 0 : parseInt(document.getElementById('absence-threshold').value, 10);
+            let mode;
+            let seuil;
 
+            if (isAuto) {
+                mode = 'auto';
+                seuil = 0; // Par convention
+            } else {
+                seuil = parseInt(document.getElementById('absence-threshold').value, 10);
+                if (seuil === 0) {
+                    mode = 'strict';
+                } else {
+                    mode = 'flexible';
+                }
+            }
             formData.append('mode_absence', mode);
             formData.append('seuil_absence', seuil);
 
@@ -2516,7 +2614,7 @@ Auteur : Mateo Bauvir
             }, (timeoutSeconds + 10) * 1000); // Ajoute 10 secondes de marge
 
             try {
-                console.log(`📤 Envoi de la requête au backend avec timeout de ${timeoutSeconds}s...`);
+                //console.log(`Envoi de la requête au backend avec timeout de ${timeoutSeconds}s...`);
 
                 const response = await fetch(`${API_URL}/upload`, {
                     method: 'POST',
@@ -2531,7 +2629,7 @@ Auteur : Mateo Bauvir
                 }
 
                 const data = await response.json();
-                console.log("► back JSON:", data);
+                //console.log("► back JSON:", data);
                 
                 const {
                     disponibilites = {},
@@ -2541,7 +2639,6 @@ Auteur : Mateo Bauvir
 
                 if (data.error) throw new Error(data.error);
 
-                // Suite du code identique...
                 createDynamicTabs(disponibilites, repartition);
                 fillDynamicTables(disponibilites, repartition);
                 renderPlanningCalendar(planning);
