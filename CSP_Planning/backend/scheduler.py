@@ -33,7 +33,6 @@ class OptimizedRepetitionScheduler:
         self.seuil_absence = seuil_absence
         self.generation_time_limit = generation_time_limit
         
-        # Données (compatibilité avec l'ancien code)
         self.musiciens: Set[str] = set()
         self.morceaux: List[str] = []
         self.creneaux: List[str] = []
@@ -49,8 +48,8 @@ class OptimizedRepetitionScheduler:
         # Variables CSP Min-Conflicts
         self.assignment: Dict[str, Optional[str]] = {}  # morceau -> creneau (ou None)
         self.conflicts: Dict[str, int] = {}  # morceau -> nombre de conflits
-        self.solution: Dict[str, str] = {}  # Solution finale (morceau -> creneau)
-        self.status = None  # Statut de la résolution pour compatibilité
+        self.solution: Dict[str, str] = {}          # Solution finale (morceau -> creneau)
+        self.status = None  
         
         # Cache pour optimisation
         self._conflict_cache: Dict[Tuple[str, str], int] = {}
@@ -83,13 +82,9 @@ class OptimizedRepetitionScheduler:
     
     def load_data(self):
         """Charge les données depuis les fichiers Excel."""
-        print("Chargement des données...")
-        
-        # Chargement compatible avec l'ancien format
+        # print("Chargement des données...")
         self.repartitions_df = pd.read_excel(self.repartitions_file)
         self.disponibilites_df = pd.read_excel(self.disponibilites_file)
-        
-        # Chargement des répartitions
         instrument_cols = self.repartitions_df.columns[6:]
         
         for _, row in self.repartitions_df.iterrows():
@@ -116,7 +111,6 @@ class OptimizedRepetitionScheduler:
                         self.repartition[morceau].add(nom)
                         self._musicien_morceaux[nom].append(morceau)
         
-        # Chargement des disponibilités
         dispo_cols = self.disponibilites_df.columns[2:]
         all_dates = set()
         
@@ -143,7 +137,6 @@ class OptimizedRepetitionScheduler:
                 val = str(row[col]).strip().lower() if not pd.isna(row[col]) else "non"
                 self.disponibilites[musicien][slot] = val
         
-        # Construction des créneaux (compatibilité)
         if self.disponibilites:
             premier = next(iter(self.disponibilites.values()))
             
@@ -161,7 +154,6 @@ class OptimizedRepetitionScheduler:
                 jour = slot.split("_")[0]
                 self.creneaux_par_jour[jour].append(slot)
         
-        # Mappage date → semaine (compatibilité)
         dates_sorted = sorted(all_dates)
         if dates_sorted:
             base = dates_sorted[0]
@@ -180,8 +172,6 @@ class OptimizedRepetitionScheduler:
         self._conflict_cache.clear()
         self.musiciens_absents_force.clear()
         self.absent_participants.clear()
-        
-        # Initialisation des variables
         for morceau in self.morceaux:
             self.assignment[morceau] = None
             self.conflicts[morceau] = 0
@@ -219,14 +209,14 @@ class OptimizedRepetitionScheduler:
         # 2. Conflit de créneau (un seul morceau par créneau)
         for autre_morceau, autre_creneau in self.assignment.items():
             if autre_morceau != morceau and autre_creneau == creneau:
-                conflicts += 100000000  # Conflit majeur
+                conflicts += 100000000  # sinon on aurait des double assignation
         
         # 3. Conflits de charge quotidienne
         jour = creneau.split("_")[0]
         for musicien in musiciens_morceau:
             charge_jour = self._get_daily_load(musicien, jour, exclude_morceau=morceau)
             
-            # Simuler l'ajout de ce créneau
+            # Simuler l'ajout du créneau
             if any(self.assignment.get(m) == creneau for m in self._musicien_morceaux[musicien] if m != morceau):
                 charge_jour += 1
             
@@ -297,7 +287,7 @@ class OptimizedRepetitionScheduler:
                     best_creneau = creneau
             
             # Assigner si acceptable
-            if best_creneau and min_conflicts < 1000:  # Seuil de faisabilité
+            if best_creneau and min_conflicts < 1000:
                 self.assignment[morceau] = best_creneau
             
         self._update_conflicts()
@@ -324,7 +314,7 @@ class OptimizedRepetitionScheduler:
         # Sélection avec biais vers les plus gros conflits
         morceaux_conflits.sort(key=lambda x: x[1], reverse=True)
         
-        # Prendre l'un des morceaux les plus conflictuels
+        # most conflicted variable
         top_conflicted = morceaux_conflits[:min(3, len(morceaux_conflits))]
         morceau = random.choice([m for m, _ in top_conflicted])
         
@@ -336,15 +326,12 @@ class OptimizedRepetitionScheduler:
         options = self.creneaux + [None]
         
         for creneau in options:
-            # Sauvegarder l'état actuel
             old_creneau = self.assignment[morceau]
             self.assignment[morceau] = creneau
-            
-            # Calculer les conflits
             if creneau:
                 conflicts = self.calculate_conflicts(morceau, creneau)
             else:
-                conflicts = 500  # Pénalité modérée pour non-assignation
+                conflicts = 500  # pénalitépour non-assignation
             
             if conflicts < min_conflicts:
                 min_conflicts = conflicts
@@ -353,7 +340,6 @@ class OptimizedRepetitionScheduler:
             # Restaurer l'état
             self.assignment[morceau] = old_creneau
         
-        # Appliquer le meilleur choix si différent
         if best_creneau != self.assignment[morceau]:
             self.assignment[morceau] = best_creneau
             self._update_conflicts()
@@ -375,13 +361,11 @@ class OptimizedRepetitionScheduler:
             if time.time() - start_time > self.generation_time_limit:
                 print("Limite de temps atteinte")
                 break
-            
-            # Initialisation
+        
             self.initialize_assignment()
             
             # Algorithme min-conflicts
             for iteration in range(self.max_iterations):
-                # Vérifier la limite de temps
                 if time.time() - start_time > self.generation_time_limit:
                     break
                 
@@ -390,13 +374,7 @@ class OptimizedRepetitionScheduler:
                     self.status = "OPTIMAL"
                     self._finalize_solution()
                     return
-                
-                # Affichage du progrès
-                if iteration % 1000 == 0:
-                    total_conflicts = sum(self.conflicts.values())
-                    assigned = sum(1 for v in self.assignment.values() if v is not None)
-                    print(f"  Itération {iteration}: {assigned}/{len(self.morceaux)} assignés, {total_conflicts} conflits")
-            
+                            
             # Sauvegarder la meilleure solution de ce restart
             current_cost = self._calculate_total_cost()
             if current_cost < best_cost:
@@ -414,7 +392,7 @@ class OptimizedRepetitionScheduler:
         
         self._finalize_solution()
         
-        # Affichage des statistiques finales
+        # Affichage finale
         duration = time.time() - start_time
         assigned = sum(1 for v in self.assignment.values() if v is not None)
         total_conflicts = sum(self.conflicts.values())
