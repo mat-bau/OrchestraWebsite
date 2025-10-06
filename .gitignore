@@ -1,0 +1,28 @@
+# Global ignores
+
+# IDEs and editor configs
+.vscode/
+settings.json
+
+# macOS
+.DS_Store
+
+# Python
+**/__pycache__/
+*.pyc
+*.pyo
+
+# Virtualenv
+.venv/
+venv/
+CSP_Planning/.venv/
+CSP_Planning/backend/venv/
+
+# Data files
+*.xlsx
+*.csv
+*.json
+
+# Logs / temp
+*.log
+*.tmp

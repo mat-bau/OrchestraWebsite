@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0,maximum-scale=1">
+	<meta name="description" content="Official website of the Louvain-la-Neuve based Orchestrakot.">
+
+	<link rel="shortcut icon" type="image/x-icon" href="../images/support_graphique/Logo_Orchestrakot_SQUARE.png"" />
+	<title>OrchestraKot</title>
+	
+	<!-- Loading third party fonts -->
+	<link href="http://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,600,700,900" rel="stylesheet" type="text/css">
+	<link href="../fonts/font-awesome.min.css" rel="stylesheet" type="text/css">
+	
+	<!-- Loading main css file -->
+	<link rel="stylesheet" href="style.css">
+
+</head>
+
+<body>
+	<div id="site-content">
+		<header class="site-header">
+			<div class="container">
+				<a href="index.html" id="branding">
+					<img src="http://images.orchestra.kapucl.be/uploads/Logo_Orchestrakot_SQUARE.png" alt="Site Title" class="head_logo">
+				</a> <!-- #branding -->
+
+				<nav class="main-navigation">
+					<button type="button" class="toggle-menu"><i class="fa fa-bars"></i></button>
+					<ul class="menu">
+						<li class="menu-item"><a href="index.html">Home</a></li>
+						<li class="menu-item"><a href="about.html">About</a></li>
+						<li class="menu-item current-menu-item"><a href="gallery.html">Galerie</a></li>
+						<li class="menu-item"><a href="videos.html">Vidéos</a></li>
+						<li class="menu-item"><a href="front.html">Planifier</a></li>
+						<li class="menu-item"><a href="contact.html">Contact</a></li>
+					</ul> <!-- .menu -->
+				</nav> <!-- .main-navigation -->
+				<div class="mobile-menu"></div>
+			</div>
+		</header> <!-- .site-header -->
+
+		<main class="main-content">
+			<div class="fullwidth-block gallery">
+				<div class="container">
+					<div class="content fullwidth">
+						<h2 class="entry-title">Gallery</h2>
+						<div class="filter-links filterable-nav">
+							<select class="mobile-filter">
+								<option value="*">Show all</option>
+								<!-- Options générées dynamiquement -->
+							</select>
+							<!-- Boutons de filtre générés dynamiquement -->
+						</div>
+						<div class="filterable-items">
+							<!-- Images générées dynamiquement par JavaScript -->
+						</div>
+					</div>
+				</div>
+			</div> <!-- .testimonial-section -->
+		</main> <!-- .main-content -->
+
+		<footer class="site-footer">
+			<div class="container">
+				<img src="../images/Orchestra.png" alt="Site Name">
+
+				<address>
+					<p>1 Rampes des Ardennais, Louvain-la-Neuve, Belgique <br><a href="tel:354543543">(+32) 494 71 85 52</a> <br> <a href="mailto:orchestrakot.ucl@gmail.com">orchestrakot.ucl@gmail.com</a></p>
+				</address>
+
+				<div class="social-links">
+					<a href="https://www.facebook.com/orchestrakot/"><i class="fa fa-facebook-square"></i></a>
+					<a href="https://www.instagram.com/orchestrakot/?hl=en"><i class="fa fa-instagram"></i></a>
+				</div> <!-- .social-links -->
+			</div>
+		</footer> <!-- .site-footer -->
+	</div> <!-- #site-content -->
+
+	<script src="js/jquery-1.11.1.min.js"></script>
+
+	<script src="js/app.js"></script>
+	
+	<!-- Script pour la galerie dynamique -->
+	<script src="js/gallery-loader.js"></script>
+</body>
+</html>

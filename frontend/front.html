@@ -1,0 +1,3329 @@
+<!--
+Désolé à celui qui va devoir nettoyer ce code, c'est un peu le bazar. (Je crois sur toi pour que tu fasses un meilleur travail que moi)
+Description : Planificateur de répétitions pour l'Orchestraaaaa
+Licence : On devrait peut-être mettre une licence hein
+Anno : 43
+Auteur : Mateo Bauvir
+-->
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>OrchestraKot</title>
+    <link rel="shortcut icon" type="image/x-icon" href="http://images.orchestra.kapucl.be/uploads/Logo_Orchestrakot_SQUARE.png" />
+    <style>
+        /* Import de Google Fonts - Vous pouvez changer la police ici */
+        @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap');
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Poppins', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            /* Gradient bordeaux - Vous pouvez modifier ces couleurs */
+            background: linear-gradient(135deg, #8B0000 0%, #A0522D 50%, #8B0000 100%);
+            min-height: 100vh;
+            color: #333;
+        }
+
+        .container {
+            display: flex;
+            height: 92.5vh;
+            max-width: 2500px;
+            margin: 0 auto;
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            margin: 20px;
+            overflow: hidden;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+        }
+
+        /* Container principal pour éviter les débordements */
+        .container {
+            max-width: 100%;
+            margin: 1 auto;
+            padding: 1px;
+            overflow-x: hidden;
+        }
+
+        /* Responsive pour le container */
+        @media (max-width: 768px) {
+            .container {
+                padding: 15px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .container {
+                padding: 10px;
+            }
+        }
+
+        .sidebar {
+            width: 400px;
+            background: #f8f9fa;
+            padding: 30px;
+            display: flex;
+            flex-direction: column;
+            gap: 25px;
+            border-right: 1px solid #e9ecef;
+            overflow-y: auto;
+            height: 100%; 
+        }
+
+        .main-content {
+            flex: 1;
+            padding: 30px;
+            background: white;
+            overflow-y: auto;
+        }
+
+        h1 {
+            color: #8B0000; /* Couleur bordeaux pour le titre */
+            font-size: 28px;
+            font-weight: 600;
+            margin-bottom: 10px;
+        }
+        /* Titre plus visible pour la section répartition */
+        .repartition-section h3 {
+            font-size: 20px;
+            color: #74140b;
+            border-bottom: 3px solid #74140b;
+            padding-bottom: 12px;
+        }
+
+        /* Titre plus discret pour la section disponibilités */
+        .dispo-section h3 {
+            font-size: 16px;
+            color: #666;
+            border-bottom: 2px solid #ccc;
+            padding-bottom: 8px;
+        }
+
+        /* Ombre plus marquée pour la section principale */
+        .repartition-section {
+            box-shadow: 0 4px 15px rgba(116, 20, 11, 0.15);
+            border-radius: 10px;
+            padding: 20px;
+            background: #fff;
+        }
+
+        .dispo-section {
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+            border-radius: 8px;
+            padding: 15px;
+            background: #fafafa;
+        }
+
+        .subtitle {
+            color: #6c757d;
+            font-size: 16px;
+            margin-bottom: 30px;
+        }
+
+        .file-drop-zone {
+            border: 3px dashed #dee2e6;
+            border-radius: 12px;
+            padding: 30px;
+            text-align: center;
+            transition: all 0.3s ease;
+            cursor: pointer;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .file-drop-zone:hover {
+            border-color: #74140b;
+            background: rgba(139, 0, 0, 0.05);
+        }
+
+        .file-drop-zone.dragover {
+            border-color: #74140b;
+            background: rgba(139, 0, 0, 0.1);
+            transform: scale(1.02);
+        }
+
+        .file-drop-zone.has-file {
+            border-color: #28a745;
+            background: rgba(40, 167, 69, 0.1);
+        }
+
+        .file-icon {
+            font-size: 32px;
+            margin-bottom: 15px;
+            color: #6c757d;
+        }
+
+        .file-drop-zone.has-file .file-icon {
+            color: #28a745;
+        }
+        
+        .file-drop-zone {
+            min-height: 150px; /* Hauteur minimum garantie */
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .file-icon {
+            font-size: clamp(24px, 5vw, 32px); /* Taille responsive */
+            margin-bottom: 10px;
+            transition: font-size 0.3s ease;
+        }
+
+        .file-drop-zone p {
+            font-size: clamp(12px, 2.5vw, 16px); /* Texte responsive */
+            margin: 5px 0;
+            line-height: 1.4;
+            word-wrap: break-word;
+        }
+
+        .file-drop-zone span {
+            font-size: clamp(10px, 2vw, 14px); /* Sous-texte responsive */
+            display: block;
+            margin-top: 5px;
+        }
+
+        /* Responsive pour petits écrans */
+        @media (max-width: 768px) {
+            .file-drop-zone {
+                padding: 20px 15px;
+                min-height: 100px;
+            }
+            
+            .file-icon {
+                font-size: 32px;
+                margin-bottom: 8px;
+            }
+            
+            .file-drop-zone p {
+                font-size: 14px;
+                margin: 3px 0;
+            }
+            
+            .file-drop-zone span {
+                font-size: 12px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .file-drop-zone {
+                padding: 15px 10px;
+                min-height: 80px;
+            }
+            
+            .file-icon {
+                font-size: 24px;
+                margin-bottom: 5px;
+            }
+            
+            .file-drop-zone p {
+                font-size: 12px;
+                margin: 2px 0;
+            }
+            
+            .file-drop-zone span {
+                font-size: 10px;
+            }
+        }
+
+        /* Container pour les deux zones de drop */
+        .drop-zones {
+            display: flex;
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+
+        .drop-zones .file-drop-zone {
+            flex: 1;
+            max-width: 50%;
+        }
+
+        @media (max-width: 768px) {
+            .drop-zones {
+                flex-direction: column;
+                gap: 15px;
+            }
+            
+            .drop-zones .file-drop-zone {
+                max-width: 100%;
+            }
+        }
+
+        #assignation-box {
+        display: none;
+        align-items: center;
+        background-color: #f0f9f2;
+        color: #1e5d37;
+        border: 1px solid #a4d4ae;
+        padding: 8px 12px;
+        border-radius: 8px;
+        font-weight: 600;
+        font-size: 14px;
+        cursor: pointer;
+        transition: all 0.2s ease;
+        position: fixed;
+        top: 20px;
+        right: 20px;
+        z-index: 1000;
+        }
+
+        .assignation-text {
+        margin-left: 1px;
+        opacity: 0;
+        max-width: 0;
+        overflow: hidden;
+        white-space: nowrap;
+        transition: all 0.3s ease;
+        }
+
+        #assignation-box:hover .assignation-text {
+        opacity: 1;
+        max-width: 300px; /* Assez pour le texte complet */
+        }
+
+        #non-assigned-modal {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(0,0,0,0.4);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        z-index: 2000;
+        }
+
+        .modal-content {
+        background: white;
+        padding: 20px 30px;
+        border-radius: 10px;
+        box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+        max-height: 80vh;
+        overflow-y: auto;
+        }
+
+        .close-modal-assignation {
+            background: none;
+            border: none;
+            color: rgb(214, 210, 210);
+            font-size: 24px;
+            cursor: pointer;
+            padding: 5px;
+            border-radius: 50%;
+            transition: all 0.3s ease;
+            width: 35px;
+            height: 35px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: absolute;
+            top: 130px;
+            right: 510px;
+        }
+
+        .close-modal-assignation:hover {
+            background: rgba(255, 255, 255, 0.2);
+            transform: rotate(90deg);
+        }
+
+        .parameters-section {
+            background: white;
+            border-radius: 12px;
+            padding: 25px;
+            border: 1px solid #e9ecef;
+        }
+
+        .parameters-title {
+            font-size: 18px;
+            font-weight: 600;
+            color: #74140b;
+            margin-bottom: 20px;
+        }
+
+        .parameter-group {
+            margin-bottom: 20px;
+        }
+
+        .parameter-label {
+            display: block;
+            font-size: 14px;
+            font-weight: 500;
+            color: #495057;
+            margin-bottom: 8px;
+        }
+
+        .creneau-input-group {
+        display: flex;
+        gap: 8px;
+        margin-bottom: 12px;
+        align-items: center;
+        }
+
+        .creneau-select {
+        flex: 1.5;
+        padding: 8px 12px;
+        border: 2px solid #e5e7eb;
+        border-radius: 6px;
+        font-size: 14px;
+        font-family: inherit;
+        font-weight: 500;
+        background-color: white;
+        cursor: pointer;
+        transition: all 0.2s;
+        }
+
+        .creneau-input {
+        flex: 1;
+        padding: 8px 12px;
+        border: 2px solid #e5e7eb;
+        border-radius: 6px;
+        font-size: 14px;
+        font-family: inherit;
+        font-weight: 500;
+        text-align: center;
+        transition: all 0.2s;
+        }
+
+        .creneau-select:focus,
+        .creneau-input:focus {
+        outline: none;
+        border-color: #7c3aed;
+        box-shadow: 0 0 0 3px rgba(124, 58, 237, 0.1);
+        }
+
+        .creneau-select:hover,
+        .creneau-input:hover {
+        border-color: #d1d5db;
+        }
+
+        /* Placeholder styling */
+        .creneau-input::placeholder {
+        color: #9ca3af;
+        font-weight: 400;
+        }
+
+        .btn-add-creneau {
+        padding: 10px;
+        background: linear-gradient(135deg, #b1546f 0%, #b1546f 50%, #b84e7d 100%);
+        color: white;
+        border: none;
+        border-radius: 8px;
+        cursor: pointer;
+        font-size: 16px;
+        transition: all 0.2s;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        min-width: 42px;
+        height: 42px;
+        box-shadow: 0 2px 4px rgba(124, 58, 237, 0.2);
+        }
+
+        .btn-add-creneau:hover {
+        background: linear-gradient(135deg, #ad7283 0%, #b07989 50%, #a88896 100%);
+        transform: translateY(-0.5px);
+        box-shadow: 0 4px 8px rgba(124, 58, 237, 0.3);
+        }
+
+        .btn-add-creneau:active {
+        transform: translateY(0);
+        box-shadow: 0 2px 4px rgba(124, 58, 237, 0.2);
+        }
+
+        .btn-add-creneau svg {
+        display: block;
+        }
+
+        .creneaux-list {
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
+        max-height: 200px;
+        overflow-y: auto;
+        padding: 8px;
+        background-color: #f9fafb;
+        border-radius: 6px;
+        border: 1px solid #e5e7eb;
+        margin-bottom: 8px;
+        }
+
+        .creneaux-list:empty {
+        display: none;
+        }
+
+        .creneau-item {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 10px 12px;
+        background-color: white;
+        border-radius: 6px;
+        border: 1px solid #e5e7eb;
+        font-size: 14px;
+        transition: all 0.2s;
+        }
+
+        .creneau-item:hover {
+        border-color: #d1d5db;
+        box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+        }
+
+        .creneau-item-text {
+        flex: 1;
+        color: #374151;
+        font-weight: 500;
+        }
+
+        .btn-remove-creneau {
+        padding: 6px 10px;
+        background-color: #ef4444;
+        color: white;
+        border: none;
+        border-radius: 4px;
+        cursor: pointer;
+        font-size: 12px;
+        font-weight: 600;
+        transition: all 0.2s;
+        display: flex;
+        align-items: center;
+        gap: 4px;
+        }
+
+        .btn-remove-creneau:hover {
+        background-color: #dc2626;
+        transform: scale(1.05);
+        }
+
+        .btn-remove-creneau:active {
+        transform: scale(0.95);
+        }
+
+        .help-text {
+        display: block;
+        margin-top: 4px;
+        font-size: 12px;
+        color: #6b7280;
+        font-style: italic;
+        }
+
+        .help-text strong {
+        color: #7c3aed;
+        font-weight: 600;
+        }
+
+        /* Custom scrollbar pour la liste */
+        .creneaux-list::-webkit-scrollbar {
+        width: 6px;
+        }
+
+        .creneaux-list::-webkit-scrollbar-track {
+        background: #f1f5f9;
+        border-radius: 3px;
+        }
+
+        .creneaux-list::-webkit-scrollbar-thumb {
+        background: #cbd5e1;
+        border-radius: 3px;
+        }
+
+        .creneaux-list::-webkit-scrollbar-thumb:hover {
+        background: #94a3b8;
+        }
+
+        /* Box paramètres compacte bordeaux */
+        .parametres-compact {
+            background: linear-gradient(135deg, #8a2f4a 0%, #b1546f 50%, #c98c88 100%);
+            border-radius: 12px;
+            box-shadow: 0 4px 15px rgba(168, 87, 122, 0.3);
+            margin-bottom: 20px;
+            position: relative;
+            z-index: 1;
+        }
+
+        .parametres-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px 20px;
+            cursor: pointer;
+            color: white;
+            font-weight: 600;
+            font-size: 16px;
+            border-radius: 12px;
+            transition: all 0.3s ease;
+            min-height: 50px; /* Hauteur garantie */
+        }
+
+        .parametres-header:hover {
+            background: rgba(255, 255, 255, 0.1);
+        }
+
+        .parametres-header span {
+            flex: 1;
+            text-align: left;
+        }
+
+        .parametres-icon {
+            font-size: 18px;
+            transition: transform 0.3s ease;
+            color: rgba(255, 255, 255, 0.8);
+        }
+
+        /* Modal overlay */
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            backdrop-filter: blur(3px);
+            z-index: 1000;
+            display: none;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+
+        .modal-overlay.active {
+            display: flex;
+        }
+
+        /* Modal content */
+        .parametres-modal {
+            background: linear-gradient(135deg, #a8577a 0%, #c9738d 50%, #d4a5a0 100%);
+            border-radius: 15px;
+            padding: 0;
+            max-width: 600px;
+            width: 100%;
+            max-height: 90vh;
+            overflow-y: auto;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+            animation: modalSlideIn 0.3s ease;
+            position: relative;
+        }
+
+        @keyframes modalSlideIn {
+            from {
+                opacity: 0;
+                transform: translateY(-30px) scale(0.95);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0) scale(1);
+            }
+        }
+
+        /* Header modal */
+        .parametres-modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 20px 25px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+            color: white;
+            font-weight: 600;
+            font-size: 18px;
+        }
+
+        .close-modal {
+            background: none;
+            border: none;
+            color: white;
+            font-size: 24px;
+            cursor: pointer;
+            padding: 5px;
+            border-radius: 50%;
+            transition: all 0.3s ease;
+            width: 35px;
+            height: 35px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .close-modal:hover {
+            background: rgba(255, 255, 255, 0.2);
+            transform: rotate(90deg);
+        }
+
+        /* Contenu modal */
+        .parametres-modal-content {
+            padding: 25px;
+            max-height: 70vh;
+            overflow-y: auto;
+        }
+
+        .parametres-modal-content .parameter-group {
+            margin-bottom: 25px;
+            padding-bottom: 20px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .parametres-modal-content .parameter-group:last-child {
+            border-bottom: none;
+            margin-bottom: 0;
+        }
+
+        .parametres-modal-content .parameter-label {
+            display: block;
+            color: white;
+            font-weight: 600;
+            margin-bottom: 12px;
+            font-size: 14px;
+        }
+
+        .parametres-modal-content .slider-container {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .parametres-modal-content .slider {
+            flex: 1;
+            height: 6px;
+            -webkit-appearance: none;
+            appearance: none;
+            background: rgba(255, 255, 255, 0.3);
+            border-radius: 3px;
+            outline: none;
+        }
+
+        .parametres-modal-content .slider::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            appearance: none;
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            background: white;
+            cursor: pointer;
+            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
+        }
+
+        .parametres-modal-content .slider::-moz-range-thumb {
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            background: white;
+            cursor: pointer;
+            border: none;
+            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
+        }
+
+        .parametres-modal-content .slider-value {
+            color: white;
+            font-weight: 600;
+            min-width: 35px;
+            text-align: center;
+            background: rgba(255, 255, 255, 0.2);
+            padding: 4px 10px;
+            border-radius: 6px;
+            font-size: 14px;
+        }
+
+        .parametres-modal-content .checkbox-container {
+            display: flex;
+            align-items: center;
+        }
+
+        .parametres-modal-content .checkbox-container input[type="checkbox"] {
+            width: 20px;
+            height: 20px;
+            accent-color: white;
+            cursor: pointer;
+        }
+
+        /* Responsive modal */
+        @media (max-width: 768px) {
+            .modal-overlay {
+                padding: 10px;
+            }
+            
+            .parametres-modal {
+                max-width: 100%;
+                max-height: 95vh;
+            }
+            
+            .parametres-modal-header {
+                padding: 15px 20px;
+                font-size: 16px;
+            }
+            
+            .parametres-modal-content {
+                padding: 20px;
+            }
+            
+            .parametres-modal-content .slider-container {
+                flex-direction: column;
+                align-items: stretch;
+                gap: 10px;
+            }
+            
+            .parametres-modal-content .slider-value {
+                align-self: center;
+            }
+        }
+        /* Modal pour agrandir les tableaux */
+        .table-modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.7);
+            backdrop-filter: blur(8px);
+            z-index: 2000;
+            display: none;
+            justify-content: stretch;
+            align-items: center;
+            padding: 20px;
+        }
+
+        .table-modal-overlay.active {
+            display: flex;
+        }
+
+        .table-modal {
+            background: white;
+            border-radius: 15px;
+            padding: 0;
+            max-width: 95vw;
+            max-height: 95vh;
+            width: 100%;
+            overflow: hidden;
+            box-shadow: 0 25px 50px rgba(0, 0, 0, 0.5);
+            animation: tableModalSlideIn 0.3s ease;
+            position: relative;
+        }
+
+        @keyframes tableModalSlideIn {
+            from {
+                opacity: 0;
+                transform: translateY(-30px) scale(0.95);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0) scale(1);
+            }
+        }
+
+        .table-modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 5px 25px;
+            border-bottom: 2px solid #e9ecef;
+            background: linear-gradient(135deg, #8a2f4a 0%, #b1546f 50%, #c98c88 100%);
+            color: white;
+        }
+
+        .table-modal-title {
+            font-size: 20px;
+            font-weight: 600;
+            margin: 0;
+        }
+
+        .table-modal-close {
+            background: none;
+            border: none;
+            color: white;
+            font-size: 28px;
+            cursor: pointer;
+            padding: 5px;
+            border-radius: 50%;
+            transition: all 0.3s ease;
+            width: 40px;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .table-modal-close:hover {
+            background: rgba(255, 255, 255, 0.2);
+            transform: rotate(90deg);
+        }
+
+        .table-modal-content {
+            padding: 25px;
+            max-height: 80vh;
+            overflow: auto;
+        }
+
+        .table-modal-content .table-container {
+            max-height: none !important;
+            overflow: auto !important;
+            border-radius: 8px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+        }
+
+        .table-modal-content table {
+            font-size: 14px !important;
+        }
+
+        .table-modal-content th,
+        .table-modal-content td {
+            padding: 12px 15px !important;
+            font-size: 14px !important;
+        }
+
+        .zoom-wrapper {
+            display: inline-block;
+            transform-origin: top left;
+        }
+
+        /* Responsive modal */
+        @media (max-width: 768px) {
+            .table-modal {
+                max-width: 100%;
+                max-height: 100%;
+                border-radius: 0;
+            }
+            
+            .table-modal-header {
+                padding: 15px 20px;
+            }
+            
+            .table-modal-title {
+                font-size: 18px;
+            }
+            
+            .table-modal-content {
+                padding: 20px;
+            }
+        }
+        /* Effet hover pour indiquer que les tableaux sont cliquables */
+        .dispo-section, .repartition-section {
+            cursor: pointer;
+            transition: all 0.3s ease;
+            position: relative;
+        }
+
+        .dispo-section:hover, .repartition-section:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15) !important;
+        }
+
+        /* Icône d'agrandissement */
+        .dispo-section::before, .repartition-section::before {
+            content: "🔍";
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            font-size: 18px;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+            z-index: 10;
+            background: rgba(255, 255, 255, 0.9);
+            border-radius: 50%;
+            width: 35px;
+            height: 35px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+        }
+
+        .dispo-section:hover::before, .repartition-section:hover::before {
+            opacity: 1;
+        }
+        .slider-container {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .slider {
+            flex: 1;
+            height: 6px;
+            border-radius: 3px;
+            background: #e9ecef;
+            outline: none;
+            appearance: none;
+        }
+
+        .slider::-webkit-slider-thumb {
+            appearance: none;
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            background: #74140b;
+            cursor: pointer;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+        }
+
+        .slider::-moz-range-thumb {
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            background: #74140b;
+            cursor: pointer;
+            border: none;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+        }
+
+        .slider-value {
+            min-width: 40px;
+            text-align: center;
+            font-weight: 600;
+            color: #74140b;
+        }
+
+        .generate-button {
+            background: linear-gradient(135deg, #74140b 0%, #8a2f4a 50%, #b1546f 100%);
+            color: white;
+            border: none;
+            padding: 15px 30px;
+            border-radius: 12px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 12px rgba(139, 0, 0, 0.3);
+        }
+
+        .generate-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 16px rgba(139, 0, 0, 0.4);
+        }
+
+        .generate-button:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .results-section {
+            display: none;
+        }
+
+        .results-section.active {
+            display: block;
+        }
+
+        .tabs {
+            display: flex;
+            margin-bottom: 25px;
+            border-bottom: 2px solid #e9ecef;
+        }
+        /* Conteneur des tableaux échangés */
+        .tableaux-container {
+            display: flex;
+            gap: 20px;
+            margin-top: 20px;
+        }
+
+        /* Tableau répartition en premier (à gauche) */
+        .repartition-container {
+            flex: 3;
+            order: 1;
+        }
+
+        /* Tableau dispo en second (à droite) */
+        .dispo-container {
+            flex: 3;
+            order: 2;
+        }
+
+        /* Tableaux compacts */
+        .table-responsive {
+            max-height: 400px;
+            overflow-y: auto;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+
+        .table-responsive table {
+            font-size: 11px; /* Plus petit */
+            line-height: 1.2;
+        }
+
+        .table-responsive th,
+        .table-responsive td {
+            padding: 6px 8px; /* Plus compact */
+            white-space: nowrap;
+        }
+
+        .table-responsive th {
+            background: #f8f9fa;
+            position: sticky;
+            top: 0;
+            z-index: 10;
+            font-size: 10px;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .tableaux-container {
+                flex-direction: column;
+            }
+            
+            .table-responsive {
+                max-height: 300px;
+            }
+            
+            .table-responsive table {
+                font-size: 9px;
+            }
+        }
+
+
+        .tab {
+            padding: 12px 24px;
+            background: none;
+            border: none;
+            border-bottom: 2px solid transparent;
+            cursor: pointer;
+            font-size: 16px;
+            font-weight: 500;
+            color: #6c757d;
+            transition: all 0.3s ease;
+        }
+
+        .tab.active {
+            color: #74140b;
+            border-bottom-color: #74140b;
+        }
+
+        .tab:hover {
+            color: #74140b;
+        }
+
+        .tab-content {
+            display: none;
+        }
+        /* Règle spécifique pour les contenus d'onglets (sauf planning) */
+        .tab-content.active {
+            display: block !important;
+        }
+
+        /* Container des tableaux dans les semaines */
+        .tables-container {
+            display: flex;
+            gap: 20px;
+            margin-top: 20px;
+            overflow-x: auto;
+            padding-bottom: 10px;
+            align-items: flex-start;
+            width: 100%;
+        }
+
+        /* Sections avec proportions correctes */
+        .dispo-section {
+            flex: 1 !important; /* Force 25% */
+        }
+
+        .repartition-section {
+            flex: 1 !important; /* Prend tout l'espace restant */
+        }
+
+        /* Style des sections */
+        .dispo-section, .repartition-section {
+            display: flex;
+            flex-direction: column;
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            padding: 15px;
+            transition: all 0.3s ease;
+        }
+        .table-title {
+            font-size: 16px;
+            font-weight: 600;
+            color: #74140b;
+            margin-bottom: 10px;
+            text-align: center;
+            flex-shrink: 0;
+        }
+
+        .table-container {
+            flex: 1;
+            overflow: auto;
+            border-radius: 6px;
+            border: 1px solid #e9ecef;
+        }
+
+        .table-container table {
+            width: 100%;
+            font-size: 10px;
+            border-collapse: collapse;
+        }
+
+        .table-container th {
+            background: #f8f9fa;
+            position: sticky;
+            top: 0;
+            z-index: 10;
+            padding: 6px 4px;
+            font-size: 9px;
+            border: 1px solid #dee2e6;
+            text-align: center;
+        }
+
+        .table-container td {
+            border: 1px solid #dee2e6; /* Bordure fine pour les cellules */
+            text-align: center;
+            font-size: clamp(8px, 0.8vw, 11px);
+        }
+
+        /* Coloration par jour (et pas alternée) */
+        .day-group-2 {
+            background-color: #ffffff !important;
+        }
+
+        .day-group-
+         {
+            background-color: #f0f0f0 !important;
+        }
+
+        table tbody tr:hover {
+            background-color: #e3f2fd !important;
+            transition: background-color 0.2s ease;
+        }
+        /* Mobile */
+        @media (max-width: 768px) {
+            .tab-content.active {
+                flex-direction: column;
+                height: auto;
+            }
+            
+            .table-section {
+                max-height: 40vh;
+            }
+            
+            .table-container table {
+                font-size: 8px;
+            }
+            
+            .table-container th,
+            .table-container td {
+                padding: 2px 1px;
+                font-size: 8px;
+            }
+        }
+
+        /* les sous-contenus de planning sont week-content */
+        .week-content {
+        display: none;
+        }
+        .week-content.active {
+        display: block;
+        }
+
+        /* le container des sous-contenus peut être scrolable si besoin */
+        #planning-weeks-contents {
+        overflow-y: auto;
+        }
+
+        /* Assurer que l'onglet planning s'affiche correctement */
+        #planning {
+            display: block;
+        }
+
+        #planning.active {
+            display: block !important;
+        }
+
+        /* Style pour les sous-onglets du planning */
+        #planning-weeks-tabs {
+            display: flex;
+            margin-bottom: 20px;
+            border-bottom: 2px solid #e9ecef;
+        }
+
+        #planning-weeks-tabs .tab {
+            padding: 12px 24px;
+            background: none;
+            border: none;
+            border-bottom: 2px solid transparent;
+            cursor: pointer;
+            font-size: 16px;
+            font-weight: 500;
+            color: #6c757d;
+            transition: all 0.3s ease;
+        }
+
+        #planning-weeks-tabs .tab.active {
+            color: #74140b;
+            border-bottom-color: #74140b;
+        }
+
+        #planning-weeks-tabs .tab:hover {
+            color: #74140b;
+        }
+
+        /* S'assurer que le planning ne s'affiche que dans l'onglet actif */
+        #planning-final:not(.active) #planning {
+            display: none !important;
+        }
+
+        #planning-final.active #planning {
+            display: block !important;
+        }
+
+        .table-section {
+            margin-bottom: 40px;
+        }
+
+        .table-title {
+            font-size: 20px;
+            font-weight: 600;
+            color: #74140b;
+            margin-bottom: 15px;
+        }
+
+        .table-container {
+            background: white;
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            border: 1px solid #e9ecef;
+        }
+
+        .tables-container {
+            display: flex;
+            flex-direction: column !important; 
+            gap: 20px;
+            margin-top: 20px;
+            overflow-x: auto;
+            padding-bottom: 10px;
+            align-items: flex-start; /* Aligne les tableaux en haut */
+            width: 100%; /* Force la largeur complète */
+        }
+
+        .dispo-section {
+            flex: 1; 
+            min-width: 200px; 
+        }
+        .repartition-section {
+            flex: 1; 
+            min-width: 200px; 
+        }
+
+        /* Titres des sections */
+        .dispo-section h3, .repartition-section h3 {
+            color: #333;
+            margin-bottom: 15px;
+            font-size: 18px;
+            font-weight: 600;
+            text-align: center;
+            padding-bottom: 10px;
+            border-bottom: 2px solid #a8577a;
+        }
+
+        /* Onglets des semaines */
+        .week-tabs {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 5px;
+            margin-bottom: 15px;
+            justify-content: center;
+        }
+
+        .week-tab {
+            padding: 8px 12px;
+            background: #f8f9fa;
+            border: 1px solid #dee2e6;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-size: 12px;
+            white-space: nowrap;
+            flex: 1;
+            min-width: 70px;
+            text-align: center;
+        }
+
+        .week-tab.active {
+            background: linear-gradient(135deg, #a8577a 0%, #c9738d 100%);
+            color: white;
+            border-color: #a8577a;
+        }
+
+        .week-tab:hover {
+            background: #e9ecef;
+        }
+
+        .week-tab.active:hover {
+            background: linear-gradient(135deg, #954a6b 0%, #b8677e 100%);
+        }
+
+        /* Conteneur des tableaux avec scroll horizontal */
+        .table-container {
+            overflow-x: auto;
+            margin-bottom: 10px;
+            border-radius: 8px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        /* Tableaux responsifs */
+        .planning-table {
+            width: 100%;
+            min-width: 400px; /* Largeur minimum pour lisibilité */
+            border-collapse: collapse;
+            font-size: 11px; /* Taille réduite pour plus de contenu */
+            background: white;
+        }
+
+        .planning-table th {
+            background: linear-gradient(135deg, #a8577a 0%, #c9738d 100%);
+            color: white;
+            padding: 8px 4px;
+            text-align: center;
+            font-weight: 600;
+            font-size: 10px;
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            max-width: 80px;
+        }
+
+        .planning-table td {
+            padding: 6px 4px;
+            text-align: center;
+            border: 1px solid #e9ecef;
+            font-size: 10px;
+            line-height: 1.2;
+            max-width: 80px;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+
+        .planning-table tr:nth-child(even) {
+            background-color: #f8f9fa;
+        }
+
+        .planning-table tr:hover {
+            background-color: #e9ecef;
+        }
+
+        /* Noms des personnes */
+        .planning-table td:first-child {
+            font-weight: 600;
+            background: #f1f3f4;
+            position: sticky;
+            left: 0;
+            z-index: 10;
+            max-width: 100px;
+            min-width: 80px;
+        }
+
+        /* Cellules avec émojis */
+        .planning-table td.emoji-cell {
+            font-size: 14px;
+            padding: 4px 2px;
+        }
+
+        @media (max-width: 1024px) {
+            .tables-container {
+                flex-direction: column;
+                gap: 15px;
+            }
+            
+            .dispo-section, .repartition-section {
+                flex: none; /* Annule le flex sur mobile */
+                min-width: auto;
+                width: 100%; /* Prend toute la largeur sur mobile */
+            }
+            
+            .planning-table {
+                font-size: 10px;
+                min-width: 350px;
+            }
+            
+            .planning-table th, .planning-table td {
+                padding: 4px 2px;
+                max-width: 60px;
+            }
+            
+            .planning-table td:first-child {
+                max-width: 80px;
+                min-width: 60px;
+            }
+        }
+
+        /* Responsive pour mobiles */
+        @media (max-width: 768px) {
+            .tables-container {
+                gap: 10px;
+                margin-top: 15px;
+            }
+            
+            .dispo-section, .repartition-section {
+                padding: 15px;
+            }
+            
+            .planning-table {
+                font-size: 9px;
+                min-width: 300px;
+            }
+            
+            .planning-table th, .planning-table td {
+                padding: 3px 1px;
+                max-width: 45px;
+                font-size: 8px;
+            }
+            
+            .planning-table td:first-child {
+                max-width: 60px;
+                min-width: 50px;
+                font-size: 9px;
+            }
+            
+            .planning-table td.emoji-cell {
+                font-size: 12px;
+            }
+            
+            .week-tabs {
+                gap: 3px;
+            }
+            
+            .week-tab {
+                padding: 6px 8px;
+                font-size: 10px;
+                min-width: 60px;
+            }
+        }
+
+        /* Très petits écrans */
+        @media (max-width: 480px) {
+            .planning-table {
+                min-width: 280px;
+            }
+            
+            .planning-table th, .planning-table td {
+                max-width: 35px;
+                padding: 2px 1px;
+                font-size: 7px;
+            }
+            
+            .planning-table td:first-child {
+                max-width: 50px;
+                min-width: 40px;
+                font-size: 8px;
+            }
+            
+            .planning-table td.emoji-cell {
+                font-size: 10px;
+            }
+            
+            .week-tab {
+                padding: 4px 6px;
+                font-size: 9px;
+                min-width: 50px;
+            }
+        }
+
+        /* Scroll horizontal personnalisé */
+        .table-container::-webkit-scrollbar {
+            height: 6px;
+        }
+
+        .table-container::-webkit-scrollbar-track {
+            background: #f1f1f1;
+            border-radius: 3px;
+        }
+
+        .table-container::-webkit-scrollbar-thumb {
+            background: linear-gradient(135deg, #a8577a 0%, #c9738d 100%);
+            border-radius: 3px;
+        }
+
+        .table-container::-webkit-scrollbar-thumb:hover {
+            background: linear-gradient(135deg, #954a6b 0%, #b8677e 100%);
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        th, td {
+            padding: 12px 15px;
+            text-align: left;
+            border-bottom: 1px solid #e9ecef;
+        }
+
+        th {
+            background: #f8f9fa;
+            font-weight: 600;
+            color: #495057;
+            font-size: 14px;
+        }
+
+        td {
+            font-size: 14px;
+            color: #495057;
+        }
+
+        .status-available {
+            background: #d4edda;
+            color: #155724;
+            padding: 6px 10px;
+            border-radius: 6px;
+            font-size: 12px;
+            font-weight: 500;
+        }
+
+        .status-maybe {
+            background: #fff3cd;
+            color: #856404;
+            padding: 6px 10px;
+            border-radius: 6px;
+            font-size: 12px;
+            font-weight: 500;
+        }
+
+        .status-unavailable {
+            background: #f8d7da;
+            color: #721c24;
+            padding: 6px 10px;
+            border-radius: 6px;
+            font-size: 12px;
+            font-weight: 500;
+        }
+
+        .status-repeat {
+            background: #d4edda;
+            color: #155724;
+            padding: 6px 10px;
+            border-radius: 6px;
+            font-size: 12px;
+            font-weight: 500;
+        }
+
+        .status-no-repeat {
+            background: #e2e3e5;
+            color: #6c757d;
+            padding: 6px 10px;
+            border-radius: 6px;
+            font-size: 12px;
+            font-weight: 500;
+        }
+
+        .status-assigned-absent {
+            background: #f8d7da;
+            color: #b62914;
+            padding: 6px 10px;
+            border-radius: 6px;
+            font-size: 12px;
+            font-weight: 500;
+        }
+
+        .status-assigned-maybe {
+            background: #fff3cd;
+            color: #856404;
+            padding: 6px 10px;
+            border-radius: 6px;
+            font-size: 12px;
+            font-weight: 500;
+        }
+
+
+        .loading {
+            display: none;
+            text-align: center;
+            padding: 40px;
+            color: #6c757d;
+        }
+
+        .loading.active {
+            display: block;
+        }
+
+        .spinner {
+            width: 40px;
+            height: 40px;
+            border: 4px solid #e9ecef;
+            border-top: 4px solid #8B0000;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 20px;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 60px 20px;
+            color: #6c757d;
+        }
+
+        .empty-state-icon {
+            font-size: 64px;
+            margin-bottom: 20px;
+        }
+
+        .empty-state-title {
+            font-size: 20px;
+            font-weight: 600;
+            margin-bottom: 10px;
+        }
+
+        .empty-state-text {
+            font-size: 16px;
+            line-height: 1.5;
+        }
+
+        .file-info {
+            display: none;
+            margin-top: 10px;
+            font-size: 14px;
+            color: #28a745;
+        }
+
+        .file-info.active {
+            display: block;
+        }
+
+        input[type="file"] {
+            display: none;
+        }
+
+        .error-message {
+            background: #f8d7da;
+            color: #721c24;
+            padding: 10px;
+            border-radius: 6px;
+            margin-top: 10px;
+            display: none;
+        }
+
+        .error-message.active {
+            display: block;
+        }
+
+        #planning-weeks-contents .week-content {
+            display: none;
+        }
+
+        #planning-weeks-contents .week-content.active {
+            display: block;
+        }
+
+        #planning-weeks-contents .week-content.active .calendar {
+            display: grid;
+            grid-template-columns: 60px repeat(7, 1fr);
+            grid-template-rows: 30px repeat(34, 24px); /* 👈 34 créneaux de 30min */
+            gap: 0;
+            border: 1px solid #ddd;
+            margin-top: 20px;
+        }
+
+
+        /* entêtes de jour */
+        .calendar .day-header {
+        grid-row: 1;
+        text-align: center;
+        font-weight: bold;
+        border-bottom: 1px solid #ccc;
+        font-size: 10px;
+        background: #f8f9fa;
+        }
+
+        /* 1ère colonne : heure */
+        .calendar .time-cell {
+        grid-column: 1;
+        border-bottom: 1px solid #eee;
+        font-size:12px;
+        padding:2px;
+        text-align:right;
+        color:#666;
+        }
+
+        /* toutes les autres cellules vides */
+        .calendar .slot-cell {
+            border: 1px solid #f0f0f0;
+        }
+
+        .calendar .event {
+            height: 98%;
+            overflow: hidden;
+            font-size: 11px;
+            line-height: 1.2;
+            padding: 2px 4px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            background-color: #e2b8b8; 
+            border-left: 4px solid #74140b;
+            border-radius: 3px;
+        }
+
+        #planning-weeks-tabs {
+            display: flex;
+            margin-bottom: 20px;
+            border-bottom: 2px solid #e9ecef;
+        }
+
+        #planning-weeks-tabs .tab {
+            padding: 12px 24px;
+            background: none;
+            border: none;
+            border-bottom: 2px solid transparent;
+            cursor: pointer;
+            font-size: 16px;
+            font-weight: 500;
+            color: #6c757d;
+            transition: all 0.3s ease;
+        }
+
+        #planning-weeks-tabs .tab.active {
+            color: #74140b;
+            border-bottom-color: #74140b;
+        }
+
+        #planning-weeks-tabs .tab:hover {
+            color: #74140b;
+        }
+
+        .download-button {
+            background: linear-gradient(135deg, #28a745 0%, #20c997 100%);
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 8px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin-top: 20px;
+        }
+
+        .download-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(40, 167, 69, 0.3);
+        }
+
+        .site-title {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;        /* espace entre logo et texte */
+            font-size: 1.7rem;   
+        }
+
+        .logo-header {
+            height: 40px;        /* adapte à la hauteur de la ligne */
+            width: auto;
+        }
+
+        /* Tooltip corrigé */
+        .tooltip {
+            position: relative;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .tooltip:hover {
+            transform: scale(1.02);
+            box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+        }
+
+        .tooltip .tooltiptext {
+            visibility: hidden;
+            width: 280px;
+            background-color: #2c3e50;
+            color: white;
+            text-align: left;
+            border-radius: 8px;
+            padding: 15px;
+            position: fixed;
+            z-index: 9999;
+            opacity: 0;
+            transition: all 0.3s ease;
+            font-size: 13px;
+            line-height: 1.5;
+            box-shadow: 0 8px 20px rgba(0,0,0,0.3);
+            border: 1px solid #34495e;
+            pointer-events: none;
+            /* 📌 AJOUT : Position par défaut hors écran */
+            top: -1000px;
+            left: -1000px;
+        }
+
+        .tooltip .tooltiptext::after {
+            content: "";
+            position: absolute;
+            top: 100%;
+            left: 50%;
+            margin-left: -6px;
+            border-width: 6px;
+            border-style: solid;
+            border-color: #2c3e50 transparent transparent transparent;
+        }
+
+        .tooltip:hover .tooltiptext,
+        .tooltip.active .tooltiptext {
+            visibility: visible;
+            opacity: 1;
+        }
+
+        .tooltip .tooltiptext strong {
+            color: #74c0fc;
+            font-weight: 600;
+        }
+
+
+
+        /* Pour les appareils tactiles */
+        @media (hover: none) {
+            .tooltip:active .tooltiptext {
+                visibility: visible;
+                opacity: 1;
+            }
+        }
+
+        /* Éviter que le tooltip dépasse de l'écran */
+        .tooltip .tooltiptext {
+            max-width: 90vw;
+            word-wrap: break-word;
+        }
+
+                /* Transition fluide pour les redimensionnements */
+        .dispo-section, .repartition-section {
+            transition: all 0.3s ease;
+        }
+
+        /* Scroll horizontal plus visible */
+        .tables-container::-webkit-scrollbar {
+            height: 8px;
+        }
+
+        .tables-container::-webkit-scrollbar-track {
+            background: #f1f1f1;
+            border-radius: 4px;
+        }
+
+        .tables-container::-webkit-scrollbar-thumb {
+            background: linear-gradient(135deg, #a8577a 0%, #c9738d 100%);
+            border-radius: 4px;
+        }
+
+        .tables-container::-webkit-scrollbar-thumb:hover {
+            background: linear-gradient(135deg, #954a6b 0%, #b8677e 100%);
+        }
+
+        /* Indicateur de scroll pour mobile */
+        @media (max-width: 768px) {
+            .tables-container {
+                position: relative;
+            }
+            
+            .tables-container::after {
+                content: "← Faites défiler →";
+                position: absolute;
+                bottom: -25px;
+                left: 50%;
+                transform: translateX(-50%);
+                font-size: 11px;
+                color: #6c757d;
+                opacity: 0.7;
+            }
+        }
+
+        body, html {
+            font-family: 'Poppins', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            /* Gradient bordeaux - Vous pouvez modifier ces couleurs */
+            background: linear-gradient(135deg, #8B0000 0%, #A0522D 50%, #8B0000 100%);
+            min-height: 100vh;
+            color: #333;
+        }
+
+        /* Wrapper global */
+        .site-wrapper {
+        width: 100%;
+        }
+
+        .site-header {
+        color: #fff;
+        margin-top: 25px;     /* espace au-dessus */
+        padding: 0;  /* padding-top uniquement */
+        }
+
+        /*
+        .site-logo {
+        height: 50px;   
+        width: auto;    
+        filter: brightness(0) invert(1);
+        }
+        */
+        .header-container {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 0px;
+        }
+
+        /* Navigation */
+        .main-navigation .menu {
+        list-style: none;
+        display: flex;
+        }
+
+        .main-navigation .menu-item a {
+        color: #fff;
+        text-decoration: none;
+        padding: 10px 15px;
+        transition: background-color 0.3s;
+        }
+
+        .main-navigation .menu-item a:hover,
+        .main-navigation .menu-item.current-menu-item a {
+        background: linear-gradient(135deg, #b1543c 0%, #8a2a2a 50%, #b1543c 100%);
+        color: #fdf9f9;
+        }
+    </style>
+</head>
+<body>
+  <!-- Wrapper principal pour l'ensemble de la page -->
+  <div class="site-wrapper">
+    <!-- Header -->
+    <header class="site-header">
+      <div class="header-container">
+        <a href="index.html" id="branding">
+          <!-- <img src="logo_orchestra.png" alt="Site Title" class="site-logo"> -->
+        </a>
+        <nav class="main-navigation">
+          <!-- <button type="button" class="toggle-menu"><i class="fa fa-bars"></i></button> -->
+          <ul class="menu">
+            <li class="menu-item"><a href="index.html">Home</a></li>
+            <li class="menu-item"><a href="about.html">About</a></li>
+            <li class="menu-item"><a href="gallery.html">Galerie</a></li>
+            <li class="menu-item"><a href="videos.html">Vidéos</a></li>
+            <li class="menu-item current-menu-item"><a href="front.html">Planifier</a></li>
+            <li class="menu-item"><a href="contact.html">Contact</a></li>
+          </ul>
+        </nav>
+        <div class="mobile-menu"></div>
+      </div>
+    </header>
+    
+    <!-- Contenu principal : sidebar + contenu -->
+    <div class="container">
+      <div class="sidebar">
+        <div>
+          <h1 class="site-title">
+            <img src="http://images.orchestra.kapucl.be/uploads/Logo_Orchestrakot_Rectangle.png" alt="Logo Orchestra" class="logo-header">
+            Orchestranificateur
+          </h1>
+          <p class="subtitle">Créez votre planning de répétitions automatiquement</p>
+        </div>
+
+        <!-- Zone de dépôt des fichiers -->
+        <div class="file-drop-zone" id="disponibilites-drop">
+          <div class="file-text">Fichier des disponibilités</div>
+          <div class="file-subtext">Glissez-déposez ou cliquez pour le sélectionner</div>
+          <div class="file-info" id="disponibilites-info"></div>
+          <input type="file" id="disponibilites-file" accept=".xlsx,.xls">
+        </div>
+
+        <div class="file-drop-zone" id="repartition-drop">
+          <div class="file-text">Fichier de répartition</div>
+          <div class="file-subtext">Glissez-déposez ou cliquez pour le sélectionner</div>
+          <div class="file-info" id="repartition-info"></div>
+          <input type="file" id="repartition-file" accept=".xlsx,.xls">
+        </div>
+
+        <!-- Box paramètres compacte -->
+        <div class="parametres-compact">
+          <div class="parametres-header" id="parametres-toggle">
+            <span>Paramètres</span>
+            <i class="fas fa-cog parametres-icon"></i>
+          </div>
+        </div>
+
+        <!-- Modal overlay des paramètres -->
+        <div class="modal-overlay" id="parametres-modal-overlay">
+          <div class="parametres-modal">
+            <div class="parametres-modal-header">
+              <span>Paramètres du planning</span>
+              <button class="close-modal" id="close-parametres-modal">✖</button>
+            </div>
+            <div class="parametres-modal-content">
+              <!-- Paramètres : sliders et cases -->
+              <div class="parameter-group">
+                <label class="parameter-label">Pénalité "Peut-être" (0-100)</label>
+                <div class="slider-container">
+                  <input type="range" class="slider" id="maybe-penalty" min="0" max="100" value="50">
+                  <span class="slider-value" id="maybe-penalty-value">50</span>
+                </div>
+              </div>
+              <div class="parameter-group">
+                <label class="parameter-label">Morceau par jour (1-5)</label>
+                <div class="slider-container">
+                  <input type="range" class="slider" id="max-load" min="0" max="5" value="3">
+                  <span class="slider-value" id="max-load-value">3</span>
+                </div>
+              </div>
+              <div class="parameter-group">
+                <label class="parameter-label">Pénalité de surcharge (0-100)</label>
+                <div class="slider-container">
+                  <input type="range" class="slider" id="load-penalty" min="0" max="100" value="50">
+                  <span class="slider-value" id="load-penalty-value">50</span>
+                </div>
+              </div>
+              <div class="parameter-group">
+                <label class="parameter-label">Laisser le solveur choisir le nombre d'absents</label>
+                <div class="checkbox-container">
+                  <input type="checkbox" id="auto_seuil" name="auto_seuil">
+                </div>
+              </div>
+              <div class="parameter-group">
+                <label class="parameter-label">Absent(s) autorisé(s) (0-10)</label>
+                <div class="slider-container">
+                  <input type="range" class="slider" id="absence-threshold" min="0" max="10" value="0">
+                  <span class="slider-value" id="absence-threshold-value">0</span>
+                </div>
+              </div>
+              <div class="parameter-group">
+                <label class="parameter-label">Bonus répétitions groupées (0-500)</label>
+                <div class="slider-container">
+                  <input type="range" class="slider" id="group-bonus" min="0" max="500" value="300">
+                  <span class="slider-value" id="group-bonus-value">300</span>
+                </div>
+              </div>
+              <div class="parameter-group">
+                <label class="parameter-label">Limite de temps (5-100 itérations)</label>
+                <div class="slider-container">
+                  <input type="range" class="slider" id="timeout-limit" min="5" max="100" value="5">
+                  <span class="slider-value" id="timeout-limit-value">5</span>
+                </div>
+              </div>
+              <div class="parameter-group">
+                <label class="parameter-label">Créneaux spéciaux (optionnel)</label>
+
+                <!-- Formulaire d'ajout -->
+                  <div class="creneau-input-group">
+                    <select class="creneau-select" id="jour-special">
+                      <option value="" disabled selected>JOUR</option>
+                      <option value="LUN">Lundi</option>
+                      <option value="MAR">Mardi</option>
+                      <option value="MER">Mercredi</option>
+                      <option value="JEU">Jeudi</option>
+                      <option value="VEN">Vendredi</option>
+                      <option value="SAM">Samedi</option>
+                      <option value="DIM">Dimanche</option>
+                    </select>
+
+                    <input type="number" class="creneau-input" id="date-special" 
+                      placeholder="04" min="1" max="31">
+
+                    <input type="number" class="creneau-input" id="heure-debut-special" 
+                        placeholder="14" min="0" max="23">
+
+                    <input type="number" class="creneau-input" id="heure-fin-special" 
+                        placeholder="16" min="0" max="23">
+
+                    <button type="button" class="btn-add-creneau" id="add-creneau-btn" title="Ajouter le créneau">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                        <line x1="12" y1="5" x2="12" y2="19"></line>
+                        <line x1="5" y1="12" x2="19" y2="12"></line>
+                        </svg>
+                    </button>
+                  </div>
+
+                  <!-- Liste des créneaux ajoutés -->
+                  <div class="creneaux-list" id="creneaux-list">
+                  <!-- Les créneaux ajoutés apparaîtront ici -->
+                  </div>
+
+                  <small class="help-text">Ex: Lundi 04, de 14h à 16h → Cliquez sur +</small>
+              </div>
+              <div class="parameter-group">
+                <label class="parameter-label">Absents autorisés (créneaux spéciaux) (0-10)</label>
+                <div class="slider-container">
+                    <input type="range" class="slider" id="special-absence-threshold" min="1" max="10" value="5">
+                    <span class="slider-value" id="special-absence-threshold-value">5</span>
+                </div>
+              </div>
+            </div>  
+          </div>
+        </div>
+
+        <button class="generate-button" id="generate-btn" disabled>
+          Faire mon planning
+        </button>
+
+        <div id="assignation-box">
+            <span class="emoji">✅</span>
+            <span class="assignation-text"> 0 morceaux assignés sur 0</span>
+        </div>
+
+        <div id="non-assigned-modal" style="display: none;">
+            <div class="modal-content">
+                <button class="close-modal-assignation" id="close-modal-assignation">✖</button>
+                <h3>Morceaux non assignés</h3>
+                <ul id="non-assigned-list"></ul>
+            </div>
+        </div>
+
+        <div class="error-message" id="error-message"></div>
+      </div>
+
+      <div class="main-content">
+        <div class="empty-state" id="empty-state">
+          <div class="empty-state-icon">🎼</div>
+          <div class="empty-state-title">Prêt à créer votre planning ?</div>
+          <div class="empty-state-text">
+            Uploadez vos fichiers de disponibilités et de répartition, puis cliquez sur "Faire mon planning" pour générer automatiquement votre planning de répétitions optimisé.
+          </div>
+        </div>
+
+        <div class="loading" id="loading">
+          <div class="spinner"></div>
+          <div>Génération du planning en cours...</div>
+        </div>
+
+        <div class="results-section" id="results">
+          <div class="tabs" id="dynamic-tabs">
+            <!-- Onglets générés dynamiquement -->
+          </div>
+          <div id="dynamic-tab-contents">
+            <!-- Contenu généré dynamiquement -->
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal pour agrandir les tableaux -->
+  <div id="table-modal-overlay" class="table-modal-overlay">
+    <div class="table-modal">
+      <div class="table-modal-header">
+        <h3 class="table-modal-title"></h3>
+        <button class="table-modal-close">&times;</button>
+      </div>
+      <div class="table-modal-content">
+        <div class="table-container-modal"></div>
+      </div>
+    </div>
+  </div>
+    <script>
+        // Configuration de l'API
+        const API_URL = '/api';
+
+        // Variables pour stocker les fichiers
+        let disponibilitesFile = null;
+        let repartitionFile = null;
+        let currentPlanningData = null; // Pour stocker les données du planning
+        
+        // Au sommet de ton <script> ou dans un bloc DOMContentLoaded
+        const emptyState   = document.getElementById('empty-state');
+        const loading      = document.getElementById('loading');
+        const results      = document.getElementById('results');
+        const generateBtn  = document.getElementById('generate-btn');
+        const downloadBtn  = document.getElementById('download-btn');
+        
+
+        // Gestion des sliders
+        const sliders = document.querySelectorAll('.slider');
+        sliders.forEach(slider => {
+            const valueSpan = document.getElementById(slider.id + '-value');
+            slider.addEventListener('input', function() {
+                valueSpan.textContent = this.value;
+            });
+        });
+        
+        // --- Gestion du mode auto vs fixed pour le seuil d'absence ---
+        const autoCheckbox     = document.getElementById('auto_seuil');
+        const absenceSlider    = document.getElementById('absence-threshold');
+        const absenceValueSpan = document.getElementById('absence-threshold-value');
+
+        // Initialisation (si la checkbox est déjà cochée au reload)
+        absenceSlider.disabled = autoCheckbox.checked;
+
+        // Quand on bouge le slider, on met à jour la petite valeur
+        absenceSlider.addEventListener('input', () => {
+        absenceValueSpan.textContent = absenceSlider.value;
+        });
+
+        // Quand on coche/déco, on lock/unlock le slider et on grise/dégrise
+        autoCheckbox.addEventListener('change', () => {
+        const isAuto = autoCheckbox.checked;
+        absenceSlider.disabled = isAuto;
+        // si tu veux un effet visuel "grisé", ajouter/enlever une classe CSS
+        absenceSlider.classList.toggle('disabled', isAuto);
+        absenceSlider.closest('.parameter-group')
+                    .classList.toggle('text-muted', isAuto);
+        });
+
+        // Gestion des zones de drop
+        function setupDropZone(dropZoneId, fileInputId, fileInfoId) {
+            const dropZone = document.getElementById(dropZoneId);
+            const fileInput = document.getElementById(fileInputId);
+            const fileInfo = document.getElementById(fileInfoId);
+
+            dropZone.addEventListener('click', () => fileInput.click());
+
+            dropZone.addEventListener('dragover', (e) => {
+                e.preventDefault();
+                dropZone.classList.add('dragover');
+            });
+
+            dropZone.addEventListener('dragleave', () => {
+                dropZone.classList.remove('dragover');
+            });
+
+            dropZone.addEventListener('drop', (e) => {
+                e.preventDefault();
+                dropZone.classList.remove('dragover');
+                
+                const files = e.dataTransfer.files;
+                if (files.length > 0) {
+                    handleFileSelect(files[0], dropZone, fileInfo, fileInputId);
+                }
+            });
+
+            fileInput.addEventListener('change', (e) => {
+                if (e.target.files.length > 0) {
+                    handleFileSelect(e.target.files[0], dropZone, fileInfo, fileInputId);
+                }
+            });
+        }
+
+        function handleFileSelect(file, dropZone, fileInfo, fileInputId) {
+            if (file.type.includes('sheet') || file.name.endsWith('.xlsx') || file.name.endsWith('.xls')) {
+                dropZone.classList.add('has-file');
+                fileInfo.textContent = `✓ ${file.name}`;
+                // Modifier texte et masquer icône
+                const icon = dropZone.querySelector('.file-icon');
+                const text = dropZone.querySelector('.file-subtext');
+                if (icon) icon.style.display = 'none'; // masque le logo
+                if (text) text.style.display = 'none'; // masque le texte
+                fileInfo.innerHTML = `✓ ${file.name} <span style="font-style: italic; opacity: 0.7;">(ou changer de fichier)</span>`;
+                fileInfo.classList.add('active');
+                
+                if (fileInputId === 'disponibilites-file') {
+                    disponibilitesFile = file;
+                } else {
+                    repartitionFile = file;
+                }
+                
+                checkFilesAndEnableButton();
+            } else {
+                alert('Veuillez sélectionner un fichier Excel (.xlsx ou .xls)');
+            }
+        }
+
+        function checkFilesAndEnableButton() {
+            const generateBtn = document.getElementById('generate-btn');
+            if (disponibilitesFile && repartitionFile) {
+                generateBtn.disabled = false;
+            }
+        }
+
+        // Configuration des zones de drop
+        setupDropZone('disponibilites-drop', 'disponibilites-file', 'disponibilites-info');
+        setupDropZone('repartition-drop', 'repartition-file', 'repartition-info');
+
+        // Fonction pour afficher les erreurs
+        function showError(message) {
+            const errorDiv = document.getElementById('error-message');
+            errorDiv.textContent = message;
+            errorDiv.classList.add('active');
+            setTimeout(() => {
+                errorDiv.classList.remove('active');
+            }, 5000);
+        }
+
+        // Fonction pour remplir les tableaux avec coloration par jour
+        function fillTable(tableId, data, isRepartition = false) {
+            const table = document.getElementById(tableId);
+            const thead = table.querySelector('thead');
+            const tbody = table.querySelector('tbody');
+
+            thead.innerHTML = '';
+            tbody.innerHTML = '';
+
+            if (!data || data.length === 0) return;
+
+            function normalizeKeys(obj) {
+                const newObj = {};
+                Object.keys(obj).forEach(k => {
+                    newObj[k.toLowerCase()] = obj[k];
+                });
+                return newObj;
+            }
+
+            const firstRow = normalizeKeys(data[0]);
+            let musiciens = [];
+            let headerRow = document.createElement('tr');
+
+            if (isRepartition) {
+                musiciens = Object.keys(firstRow).filter(
+                    key => key !== 'jour' && key !== 'heures' && key !== 'morceau'
+                );
+                headerRow.innerHTML = '<th>Jour</th><th>Heures</th><th>Morceau</th>';
+                musiciens.forEach(key => {
+                    headerRow.innerHTML += `<th>${key}</th>`;
+                });
+            } else {
+                musiciens = Object.keys(firstRow).filter(
+                    key => key !== 'jour' && key !== 'heures'
+                );
+                headerRow.innerHTML = '<th>Jour</th><th>Heures</th>';
+                musiciens.forEach(key => {
+                    headerRow.innerHTML += `<th>${key}</th>`;
+                });
+            }
+            thead.appendChild(headerRow);
+
+            // Grouper les données par jour pour la coloration
+            let currentDay = null;
+            let dayGroupIndex = 1;
+            
+            data.forEach(rowOrig => {
+                const row = normalizeKeys(rowOrig);
+                const tr = document.createElement('tr');
+                
+                // Détecter le changement de jour
+                if (row['jour'] !== currentDay) {
+                    currentDay = row['jour'];
+                    dayGroupIndex = dayGroupIndex === 1 ? 2 : 1; // Alterne entre 1 et 2
+                }
+                
+                // Appliquer la classe de coloration par jour
+                tr.classList.add(`day-group-${dayGroupIndex}`);
+
+                if (isRepartition) {
+                    tr.innerHTML = `<td>${row['jour'] || ''}</td><td>${row['heures'] || ''}</td><td>${row['morceau'] || ''}</td>`;
+                    musiciens.forEach(key => {
+                        // console.log(`Cellule pour ${key} à ${row['jour']} ${row['heures']} => ${row[key]}`);
+                        let cellClass = '';
+                        let cellText = '';
+                        if (row[key] === 'repete') {
+                            cellClass = 'status-repeat';
+                            cellText = 'Répète';
+                        } else if (row[key] === 'absent') {
+                            cellClass = 'status-assigned-absent';
+                            cellText = 'Répète';
+                        } else if (row[key] === 'maybe_absent') {
+                            cellClass = 'status-assigned-maybe';
+                            cellText = 'Répète';
+                        } else {
+                            cellClass = 'status-no-repeat';
+                            cellText = '  ';
+                        }
+                        tr.innerHTML += `<td><span class="${cellClass}">${cellText}</span></td>`;
+                    });
+                } else {
+                    tr.innerHTML = `<td>${row['jour'] || ''}</td><td>${row['heures'] || ''}</td>`;
+                    musiciens.forEach(key => {
+                        let cellClass = '';
+                        const value = row[key];
+                        if (value === 'yes' || value === 'oui') {
+                            cellClass = 'status-available';
+                        } else if (value === 'maybe' || value === 'peut-être') {
+                            cellClass = 'status-maybe';
+                        } else {
+                            cellClass = 'status-unavailable';
+                        }
+                        tr.innerHTML += `<td><span class="${cellClass}">${value || ''}</span></td>`;
+                    });
+                }
+                tbody.appendChild(tr);
+            });
+        }
+
+        function createDynamicTabs(dispoObj, repartObj) {
+            const tabs = document.getElementById('dynamic-tabs');
+            const panes = document.getElementById('dynamic-tab-contents');
+            tabs.innerHTML = '';
+            panes.innerHTML = '';
+
+            // Créer les onglets des semaines
+            Object.keys(dispoObj)
+                .sort((a, b) => {
+                    const na = parseInt(a.split('_')[1], 10);
+                    const nb = parseInt(b.split('_')[1], 10);
+                    return na - nb;
+                })
+                .forEach((sem, idx) => {
+                    const wkNum = sem.split('_')[1];
+                    const tabId = `semaine${wkNum}`;
+
+                    // onglet
+                    const btn = document.createElement('button');
+                    btn.className = idx === 0 ? 'tab active' : 'tab';
+                    btn.dataset.tab = tabId;
+                    btn.textContent = `Semaine ${wkNum}`;
+                    tabs.appendChild(btn);
+
+                    // contenu
+                    const div = document.createElement('div');
+                    div.id = tabId;
+                    div.className = idx === 0 ? 'tab-content active' : 'tab-content';
+                    div.innerHTML = `
+                        <div class="table-section repartition-section">
+                            <div class="table-title">Répartition - Semaine ${wkNum}</div>
+                            <div class="table-container">
+                                <table id="repartition-${tabId}"><thead></thead><tbody></tbody></table>
+                            </div>
+                        </div>
+                        <div class="table-section dispo-section">
+                            <div class="table-title">Disponibilités - Semaine ${wkNum}</div>
+                            <div class="table-container">
+                                <table id="disponibilites-${tabId}"><thead></thead><tbody></tbody></table>
+                            </div>
+                        </div>
+                    `;
+                    panes.appendChild(div);
+                });
+
+                // Créer l'onglet Planning avec sa structure complète
+                const planningBtn = document.createElement('button');
+                planningBtn.className = 'tab';
+                planningBtn.dataset.tab = 'planning-final'; 
+                planningBtn.textContent = '📅 Planning Final';
+                tabs.appendChild(planningBtn);
+
+                // Créer le contenu de l'onglet Planning
+                const planningDiv = document.createElement('div');
+                planningDiv.id = 'planning-final'; 
+                planningDiv.className = 'tab-content';
+                planningDiv.innerHTML = `
+                    <h2>🎯 Planning Final</h2>
+                    <div id="planning">
+                        <div id="planning-weeks-tabs"></div>
+                        <div id="planning-weeks-contents"></div>
+                    </div>
+                    <button class="download-button" id="download-btn" style="display: none;">
+                        📥 Télécharger le planning Excel
+                    </button>
+                `;
+                panes.appendChild(planningDiv);
+
+
+            // Réattacher les event listeners
+            attachTabListeners();
+            
+            // Réattacher l'event listener pour le bouton download
+            const downloadBtn = document.getElementById('download-btn');
+            if (downloadBtn) {
+                downloadBtn.addEventListener('click', downloadExcel);
+            }
+        }
+
+        // Fonction pour attacher les event listeners aux onglets
+        function attachTabListeners() {
+            const tabs = document.querySelectorAll('.tab');
+            const tabContents = document.querySelectorAll('.tab-content');
+
+            tabs.forEach(tab => {
+                tab.addEventListener('click', () => {
+                    const targetTab = tab.getAttribute('data-tab');
+                    
+                    tabs.forEach(t => t.classList.remove('active'));
+                    tabContents.forEach(tc => tc.classList.remove('active'));
+                    
+                    tab.classList.add('active');
+                    document.getElementById(targetTab).classList.add('active');
+                });
+            });
+        }
+
+        function fillDynamicTables(dispoObj = {}, repartObj = {}) {
+        // ici dispoObj === data.disponibilites
+        //     repartObj === data.repartition
+
+        // garde-fou trivial
+        if (Object.keys(dispoObj).length === 0
+        && Object.keys(repartObj).length === 0) {
+            console.warn("pas de créneaux dispo/repartition");
+            return;
+        }
+
+        Object
+            .keys(dispoObj)
+            .sort((a,b)=>
+            parseInt(a.split("_")[1],10)
+            - parseInt(b.split("_")[1],10)
+            )
+            .forEach(sem => {
+            const n = sem.split("_")[1];
+            fillTable(`disponibilites-semaine${n}`,
+                        dispoObj[sem],
+                        false);
+            fillTable(`repartition-semaine${n}`,
+                        repartObj[sem],
+                        true);
+            });
+        }
+        function generateWeekDates(weekNum) {
+            const days = ['Lundi', 'Mardi', 'Mercredi', 'Jeudi', 'Vendredi', 'Samedi', 'Dimanche'];
+
+            // Point de départ : date du lundi de la semaine
+            const currentDate = new Date();
+            const year = currentDate.getFullYear();
+
+            // Calcule le lundi de la semaine n
+            const firstMonday = new Date(year, 0, 1 + (weekNum - 1) * 7); // 1er janvier + 7*(n-1)
+
+            // S'assure qu'on est bien sur un lundi
+            while (firstMonday.getDay() !== 1) {
+                firstMonday.setDate(firstMonday.getDate() - 1);
+            }
+
+            const dates = {};
+            for (let i = 0; i < 7; i++) {
+                const d = new Date(firstMonday);
+                d.setDate(firstMonday.getDate() + i);
+                const dayName = days[i];
+                const dateStr = `${d.getDate().toString().padStart(2, '0')}/${(d.getMonth() + 1).toString().padStart(2, '0')}`;
+                dates[dayName] = dateStr;
+            }
+
+            return dates;
+        }
+
+
+        // Fonction pour obtenir le mois actuel
+        function getCurrentMonth() {
+            const now = new Date();
+            return (now.getMonth() + 1).toString().padStart(2, '0');
+        }
+
+        function groupByWeek(planning) {
+            //console.log("groupByWeek appelée avec:", planning);
+            
+            const weeks = {};
+            
+            planning.forEach((ev, index) => {
+                //console.log(`Traitement événement ${index}:`, ev);
+                
+                if (!ev.Jour || ev.Jour.startsWith('Non')) {
+                    // console.log(`Événement ignoré (pas de jour valide): ${ev.Jour}`);
+                    return;
+                }
+                
+                // Nouveau parsing pour le format "Vendredi 11" ou "Jeudi 30"
+                const jourMatch = ev.Jour.match(/^(\w+)\s+(\d{1,2})$/);
+                
+                if (!jourMatch) {
+                    console.warn(`⚠️ Format jour non reconnu: ${ev.Jour}`);
+                    return;
+                }
+                
+                const [, dayName, dayNumber] = jourMatch;
+                //console.log(`Format détecté: ${dayName}, ${dayNumber}`);
+                
+                const [deb, fin] = (ev.Heures || '').split('-');
+                
+                if (!deb || !fin || ev.Heures === '—') {
+                    console.warn(`⚠️ Heures invalides: ${ev.Heures}`);
+                    return;
+                }
+                
+                // Déterminer la semaine basée sur le numéro du jour
+                // Supposons que 1-7 = semaine 1, 8-14 = semaine 2, etc.
+                const weekNum = Math.ceil(parseInt(dayNumber) / 7).toString();
+                
+                // Si la semaine n'existe pas encore, la créer
+                if (!weeks[weekNum]) {
+                    weeks[weekNum] = {
+                        events: [],
+                        dates: generateWeekDates(weekNum) // Fonction à créer
+                    };
+                    //console.log(`Nouvelle semaine créée: ${weekNum}`);
+                }
+                
+                // Ajouter l'événement à la semaine
+                weeks[weekNum].events.push({
+                    day: dayName,
+                    date: `${dayNumber}/${getCurrentMonth()}`, // Format simple
+                    week: weekNum,
+                    debut: deb.trim(),
+                    fin: fin.trim(),
+                    morceau: (ev.Morceau || '').trim(),
+                    musiciens: ev.Participants ? ev.Participants.split(', ') : []
+                });
+                
+                //console.log(`Événement ajouté à semaine ${weekNum}: ${dayName} ${dayNumber} ${deb}-${fin} ${ev.Morceau}`);
+            });
+            
+            //console.log("Résultat groupByWeek:", weeks);
+            return weeks;
+        }
+
+        // Fonctions utilitaires manquantes
+        function pad(n) {
+            return n < 10 ? '0' + n : n;
+        }
+
+        function toMin(hm) {
+            const [h, m] = hm.split(':').map(Number);
+            return h * 60 + m;
+        }
+
+        function renderPlanningCalendar(planning) {
+            // console.log("renderPlanningCalendar appelée avec:", planning);
+            
+            const container = document.getElementById('planning');
+            if (!container) {
+                console.error('[Agenda] #planning introuvable !');
+                return;
+            }
+            
+            const tabss = container.querySelector('#planning-weeks-tabs');
+            const paness = container.querySelector('#planning-weeks-contents');
+            if (!tabss || !paness) {
+                console.error('[Agenda] planning-weeks-tabs ou planning-weeks-contents manquant.');
+                return;
+            }
+            
+            tabss.innerHTML = '';
+            paness.innerHTML = '';
+            
+            const weeks = groupByWeek(planning);
+            // console.log("Semaines groupées:", weeks);
+            
+            const days = ['Lundi', 'Mardi', 'Mercredi', 'Jeudi', 'Vendredi', 'Samedi', 'Dimanche'];
+            const startH = 8, endH = 21, step = 30;
+
+            const weekKeys = Object.keys(weeks).sort((a, b) => parseInt(a) - parseInt(b));
+            // console.log("🔢 Clés des semaines:", weekKeys);
+            
+            weekKeys.forEach((sem, i) => {
+                // console.log(`📝 Création semaine ${sem}, index ${i}`);
+                
+                // Onglet semaine
+                const btn = document.createElement('button');
+                btn.className = i === 0 ? 'tab active' : 'tab';
+                btn.dataset.week = sem;
+                btn.textContent = 'Semaine ' + sem;
+                tabss.appendChild(btn);
+
+                // Contenu semaine
+                const div = document.createElement('div');
+                div.className = i === 0 ? 'week-content active' : 'week-content';
+                div.dataset.week = sem;
+                div.innerHTML = '<div class="calendar"></div>';
+                paness.appendChild(div);
+                
+                const cal = div.querySelector('.calendar');
+
+                // Header jours avec dates
+                cal.appendChild(Object.assign(document.createElement('div'), {
+                    className: 'time-cell day-header',
+                    textContent: ''
+                }));
+                
+                days.forEach(d => {
+                    const dateForDay = weeks[sem].dates[d];
+                    const displayText = `${d} ${dateForDay}`;
+                    
+                    cal.appendChild(Object.assign(document.createElement('div'), {
+                        className: 'day-header',
+                        textContent: displayText
+                    }));
+                });
+                
+                const totalRows = (24 - 7) * 2; // 7h à minuit = 17h = 34 créneaux
+                for (let i = 0; i < totalRows; i++) {
+                    const totalMin = 7 * 60 + i * 30;
+                    const hh = pad(Math.floor(totalMin / 60));
+                    const mm = pad(totalMin % 60);
+
+                    // Colonne 1 = horaire
+                    const timeCell = document.createElement('div');
+                    timeCell.className = 'time-cell';
+                    timeCell.textContent = `${hh}:${mm}`;
+                    timeCell.style.gridRow = i + 2;     // +2 car ligne 1 = entête
+                    timeCell.style.gridColumn = 1;
+                    cal.appendChild(timeCell);
+
+                    // Colonnes 2 à 8 = créneaux
+                    for (let d = 0; d < 7; d++) {
+                        const slot = document.createElement('div');
+                        slot.className = 'slot-cell';
+                        slot.style.gridRow = i + 2;
+                        slot.style.gridColumn = d + 2;
+                        cal.appendChild(slot);
+                    }
+                }
+                // Placer les événements
+                weeks[sem].events.forEach(ev => {
+                    const col = days.indexOf(ev.day);
+                    if (col === -1) {
+                        console.warn(`⚠️ Jour non reconnu: ${ev.day}`);
+                        return;
+                    }
+                    
+                    const debutMin = toMin(ev.debut);
+                    const finMin = toMin(ev.fin);
+                    const startMin = 7 * 60; // 07:00
+                    const topMin = debutMin - startMin;
+                    const heightMin = finMin - debutMin;
+
+                    const rowStart = Math.floor(topMin / 30) + 2;
+                    const rowSpan = Math.ceil(heightMin / 30);
+                    const e = document.createElement('div');
+
+                    e.style.gridColumn = col + 2;
+                    e.style.gridRow = `${rowStart} / span ${rowSpan}`;
+                    e.className = 'event tooltip';
+
+                    // Créer le contenu avec tooltip
+                    let tooltipContent = `<strong>🎵 ${ev.morceau}</strong><br>`;
+                    tooltipContent += `<strong>🕐 ${ev.debut} - ${ev.fin}</strong><br>`;
+                    tooltipContent += `<strong>👥 Musiciens :</strong><br>`;
+                    if (ev.musiciens && Array.isArray(ev.musiciens) && ev.musiciens.length > 0) {
+                        tooltipContent += ev.musiciens.map(m => `• ${m}`).join('<br>');
+                    } else {
+                        tooltipContent += 'Informations non disponibles';
+                    }
+
+                    e.innerHTML = `
+                        <div style="font-weight: bold; margin-bottom: 2px; font-size: 12px;">${ev.morceau}</div>
+                        <div style="font-size: 10px; opacity: 0.8;">${ev.debut}-${ev.fin}</div>
+                        <span class="tooltiptext">${tooltipContent}</span>
+                    `;
+
+                    // Positionnement du tooltip au survol
+                    e.addEventListener('mouseenter', function() {
+                        const tooltip = this.querySelector('.tooltiptext');
+                        if (tooltip) {
+                            const rect = this.getBoundingClientRect();
+                            tooltip.style.top = (rect.top - tooltip.offsetHeight - 10) + 'px';
+                            tooltip.style.left = (rect.left + rect.width / 2 - tooltip.offsetWidth / 2) + 'px';
+                            
+                            // Vérifier les bords de l'écran
+                            const tooltipRect = tooltip.getBoundingClientRect();
+                            if (tooltipRect.left < 10) {
+                                tooltip.style.left = '10px';
+                            }
+                            if (tooltipRect.right > window.innerWidth - 10) {
+                                tooltip.style.left = (window.innerWidth - tooltipRect.width - 10) + 'px';
+                            }
+                        }
+                    });
+
+                    e.addEventListener('click', function(event) {
+                        event.stopPropagation();
+                        
+                        // Fermer tous les autres tooltips
+                        document.querySelectorAll('.tooltip.active').forEach(tooltip => {
+                            tooltip.classList.remove('active');
+                        });
+                        
+                        // Activer ce tooltip
+                        this.classList.add('active');
+                        
+                        // Positionner le tooltip
+                        const tooltip = this.querySelector('.tooltiptext');
+                        if (tooltip) {
+                            const rect = this.getBoundingClientRect();
+                            tooltip.style.left = (rect.left + rect.width / 2 - 140) + 'px';
+                            tooltip.style.top = (rect.top - 10) + 'px';
+                            tooltip.style.transform = 'translateY(-100%)';
+                        }
+                    });
+
+                    Object.assign(e.style, {
+                        gridColumnStart: col + 2,
+                        gridRowStart: rowStart,
+                        gridRowEnd: `span ${rowSpan}`
+                    });
+                    
+                    cal.appendChild(e);
+                    // console.log(`Événement ajouté: ${ev.morceau} le ${ev.day} ${ev.date} de ${ev.debut} à ${ev.fin}`, ev.musiciens);
+                });
+
+
+                // Ajouter les event listeners pour les onglets de semaines
+                const weekTabs = tabss.querySelectorAll('button[data-week]');
+                const weekContents = paness.querySelectorAll('.week-content');
+
+                weekTabs.forEach(tab => {
+                    tab.addEventListener('click', () => {
+                        const targetWeek = tab.dataset.week;
+                        
+                        // Désactiver tous les onglets et contenus
+                        weekTabs.forEach(t => t.classList.remove('active'));
+                        weekContents.forEach(wc => wc.classList.remove('active'));
+                        
+                        // Activer l'onglet et le contenu ciblé
+                        tab.classList.add('active');
+                        const targetContent = paness.querySelector(`[data-week="${targetWeek}"]`);
+                        if (targetContent) {
+                            targetContent.classList.add('active');
+                        }
+                    });
+                });
+
+
+                // Gestion des clics sous-onglets (une seule fois à la fin)
+                document.querySelectorAll('#planning-weeks-tabs .tab').forEach(tab => {
+                    tab.addEventListener('click', () => {
+                        const sem = tab.dataset.week;
+                        //console.log(`Changement vers semaine ${sem}`);
+                        
+                        // Désactiver tous les sous-onglets et contenus
+                        document.querySelectorAll('#planning-weeks-tabs .tab').forEach(t => t.classList.remove('active'));
+                        document.querySelectorAll('#planning-weeks-contents .week-content').forEach(w => w.classList.remove('active'));
+                        
+                        // Activer le sous-onglet cliqué
+                        tab.classList.add('active');
+                        const targetContent = document.querySelector(`#planning-weeks-contents .week-content[data-week="${sem}"]`);
+                        if (targetContent) {
+                            targetContent.classList.add('active');
+                            //console.log(`Semaine ${sem} activée`);
+                        } else {
+                            //console.error(`Contenu pour semaine ${sem} introuvable`);
+                        }
+                    });
+                });
+            //console.log("renderPlanningCalendar terminée");
+        });}
+
+        // Tableau pour stocker les créneaux spéciaux
+        let creneauxSpeciaux = [];
+
+        // Initialisation
+        document.addEventListener('DOMContentLoaded', function() {
+        // Gestion du slider pour absences spéciales
+        document.getElementById('special-absence-threshold').addEventListener('input', function(e) {
+            document.getElementById('special-absence-threshold-value').textContent = e.target.value;
+        });
+
+        // Gestion du bouton d'ajout de créneau
+        document.getElementById('add-creneau-btn').addEventListener('click', ajouterCreneau);
+        
+        // Permettre l'ajout avec la touche Entrée
+        ['jour-special', 'date-special', 'heure-debut-special', 'heure-fin-special'].forEach(id => {
+            document.getElementById(id).addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                ajouterCreneau();
+            }
+            });
+        });
+        });
+
+
+        function ajouterCreneau() {
+        const jour = document.getElementById('jour-special').value;
+        const date = document.getElementById('date-special').value;
+        const heureDebut = document.getElementById('heure-debut-special').value;
+        const heureFin = document.getElementById('heure-fin-special').value;
+        
+        // Validation
+        if (!jour || !date || !heureDebut || !heureFin) {
+            alert('Veuillez remplir tous les champs');
+            return;
+        }
+        
+        if (parseInt(date) < 1 || parseInt(date) > 31) {
+            alert('La date doit être entre 1 et 31');
+            return;
+        }
+        
+        if (parseInt(heureDebut) < 0 || parseInt(heureDebut) > 23 || 
+            parseInt(heureFin) < 0 || parseInt(heureFin) > 23) {
+            alert('Les heures doivent être entre 0 et 23');
+            return;
+        }
+        
+        if (parseInt(heureDebut) >= parseInt(heureFin)) {
+            alert('L\'heure de début doit être inférieure à l\'heure de fin');
+            return;
+        }
+        
+        // Formater le créneau
+        const dateFormatted = String(date).padStart(2, '0');
+        const heureDebutFormatted = String(heureDebut).padStart(2, '0');
+        const heureFinFormatted = String(heureFin).padStart(2, '0');
+        const creneau = `${jour}_${dateFormatted}_${heureDebutFormatted}:00-${heureFinFormatted}:00`;
+        
+        // Vérifier si le créneau existe déjà
+        if (creneauxSpeciaux.includes(creneau)) {
+            alert('Ce créneau a déjà été ajouté');
+            return;
+        }
+        
+        // Ajouter le créneau
+        creneauxSpeciaux.push(creneau);
+        afficherCreneaux();
+        
+        // Réinitialiser les champs
+        document.getElementById('jour-special').value = '';
+        document.getElementById('date-special').value = '';
+        document.getElementById('heure-debut-special').value = '';
+        document.getElementById('heure-fin-special').value = '';
+        }
+
+        function afficherCreneaux() {
+        const liste = document.getElementById('creneaux-list');
+        liste.innerHTML = '';
+        
+        creneauxSpeciaux.forEach((creneau, index) => {
+            const item = document.createElement('div');
+            item.className = 'creneau-item';
+            
+            const text = document.createElement('span');
+            text.className = 'creneau-item-text';
+            text.textContent = formatCreneauDisplay(creneau);
+            
+            const btnRemove = document.createElement('button');
+            btnRemove.className = 'btn-remove-creneau';
+            btnRemove.innerHTML = `
+            <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
+                <line x1="18" y1="6" x2="6" y2="18"></line>
+                <line x1="6" y1="6" x2="18" y2="18"></line>
+            </svg>
+            Supprimer
+            `;
+            btnRemove.onclick = () => supprimerCreneau(index);
+            
+            item.appendChild(text);
+            item.appendChild(btnRemove);
+            liste.appendChild(item);
+        });
+        }
+
+        function supprimerCreneau(index) {
+        creneauxSpeciaux.splice(index, 1);
+        afficherCreneaux();
+        }
+
+        function formatCreneauDisplay(creneau) {
+        const joursMap = {
+            'LUN': 'Lundi',
+            'MAR': 'Mardi',
+            'MER': 'Mercredi',
+            'JEU': 'Jeudi',
+            'VEN': 'Vendredi',
+            'SAM': 'Samedi',
+            'DIM': 'Dimanche'
+        };
+        
+        const [jour, date, horaire] = creneau.split('_');
+        return `${joursMap[jour]} ${parseInt(date)} • ${horaire}`;
+        }
+        // Fonction generatePlanning modifiée avec timeout
+        async function generatePlanning() {
+            // Récupérer tous les éléments DOM nécessaires
+
+            const maybePenaltyElem = document.getElementById('maybe-penalty');
+            const maxLoadElem = document.getElementById('max-load');
+            const loadPenaltyElem = document.getElementById('load-penalty');
+            const groupBonusElem = document.getElementById('group-bonus');
+            const timeoutLimitElem = document.getElementById('timeout-limit');
+            const specialAbsenceThresholdElem = document.getElementById('special-absence-threshold');
+            const autoSeuilElem = document.getElementById('auto_seuil');
+            const absenceThresholdElem = document.getElementById('absence-threshold');
+            
+            const emptyState = document.getElementById('empty-state');
+            const results = document.getElementById('results');
+            const loading = document.getElementById('loading');
+            const generateBtn = document.getElementById('generate-btn');
+            
+
+            const formData = new FormData();
+            formData.append('repartition', repartitionFile);
+            formData.append('disponibilites', disponibilitesFile);
+            formData.append('maybe_penalty', maybePenaltyElem ? maybePenaltyElem.value : '10');
+            formData.append('max_load', maxLoadElem ? maxLoadElem.value : '3');
+            formData.append('load_penalty', loadPenaltyElem ? loadPenaltyElem.value : '5');
+            formData.append('group_bonus', groupBonusElem ? groupBonusElem.value : '50');
+            const timeoutSeconds = timeoutLimitElem ? parseInt(timeoutLimitElem.value) : 300;
+            formData.append('timeout_limit', timeoutSeconds);
+            formData.append('creneaux_speciaux', JSON.stringify(creneauxSpeciaux));
+            formData.append('seuil_absence_creneau_special', specialAbsenceThresholdElem ? specialAbsenceThresholdElem.value : '0');
+
+
+            
+            const isAuto = autoSeuilElem ? autoSeuilElem.checked : true;
+            let mode;
+            let seuil;
+
+            if (isAuto) {
+                mode = 'auto';
+                seuil = 0; // Par convention
+            } else {
+                seuil = absenceThresholdElem ? parseInt(absenceThresholdElem.value, 10) : 0;
+                if (seuil === 0) {
+                    mode = 'strict';
+                } else {
+                    mode = 'flexible';
+                }
+            }
+            formData.append('mode_absence', mode);
+            formData.append('seuil_absence', seuil);
+
+            // Afficher le loading
+            if (emptyState) emptyState.style.display = 'none';
+            if (results) results.classList.remove('active');
+            if (loading) loading.classList.add('active');
+            if (generateBtn) generateBtn.disabled = true;
+
+            // Créer un AbortController pour le timeout côté client
+            const controller = new AbortController();
+            const clientTimeout = setTimeout(() => {
+                controller.abort();
+            }, (timeoutSeconds + 10) * 1000); // Ajoute 10 secondes de marge
+
+            try {
+                //console.log(`Envoi de la requête au backend avec timeout de ${timeoutSeconds}s...`);
+
+                const response = await fetch(`${API_URL}/upload`, {
+                    method: 'POST',
+                    body: formData,
+                    signal: controller.signal
+                });
+
+                clearTimeout(clientTimeout);
+
+                if (!response.ok) {
+                    throw new Error(`Erreur HTTP: ${response.status}`);
+                }
+
+                const data = await response.json();
+                //console.log("► back JSON:", data);
+                
+                const {
+                    disponibilites = {},
+                    repartition = {},
+                    planning = [],
+                    assigned = 0,
+                    total = 0
+                } = data;
+
+                if (data.error) throw new Error(data.error);
+
+                createDynamicTabs(disponibilites, repartition);
+                fillDynamicTables(disponibilites, repartition);
+                renderPlanningCalendar(planning);
+                afficherMessageAssignation(assigned, total, data.notassigned);
+
+                const downloadBtn = document.getElementById('download-btn');
+                if (downloadBtn) {
+                    downloadBtn.style.display = 'block';
+                }
+                
+                if (results) results.classList.add('active');
+
+            } catch (error) {
+                clearTimeout(clientTimeout);
+                console.error('Erreur:', error);
+                
+                if (error.name === 'AbortError') {
+                    showError(`Timeout: La génération a pris plus de ${timeoutSeconds} secondes. Essayez d'augmenter le temps limite ou de simplifier les paramètres.`);
+                } else {
+                    showError(`Erreur lors de la génération: ${error.message}`);
+                }
+                
+                if (loading) loading.classList.remove('active');
+                if (emptyState) emptyState.style.display = 'block';
+            } finally {
+                if (generateBtn) generateBtn.disabled = false;
+                if (loading) loading.classList.remove('active');
+            }
+        }
+
+        function afficherMessageAssignation(assignes, total, notassigned = []) {
+        const box = document.getElementById("assignation-box");
+        const text = box.querySelector(".assignation-text");
+        const modal = document.getElementById("non-assigned-modal");
+        const list = document.getElementById("non-assigned-list");
+        const closeBtn = document.getElementById("close-modal");
+
+        // Met à jour le texte
+        text.innerText = `  ${assignes} morceaux assignés sur ${total}`;
+        box.style.display = "inline-flex";
+
+        // Gère le clic pour ouvrir le modal
+        box.onclick = () => {
+            list.innerHTML = "";
+
+            if (notassigned.length === 0) {
+            const li = document.createElement("li");
+            li.innerText = "Tous les morceaux sont assignés 🎉";
+            list.appendChild(li);
+            } else {
+            notassigned.forEach(morceau => {
+                const li = document.createElement("li");
+                li.innerText = morceau;
+                list.appendChild(li);
+            });
+            }
+
+            modal.style.display = "flex";
+        };
+
+        // Fermer le modal
+        document.getElementById("close-modal-assignation").onclick = () => {
+            document.getElementById("non-assigned-modal").style.display = "none";
+        };
+
+        }
+
+        // Fonction de téléchargement
+        async function downloadExcel() {
+            try {
+                const response = await fetch(`${API_URL}/download`, {
+                    method: 'GET'
+                });
+
+                if (!response.ok) {
+                    throw new Error('Erreur lors du téléchargement');
+                }
+
+                const blob = await response.blob();
+                const url = window.URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = 'planning_repetitions.xlsx';
+                document.body.appendChild(a);
+                a.click();
+                document.body.removeChild(a);
+                window.URL.revokeObjectURL(url);
+
+            } catch (error) {
+                console.error('Erreur de téléchargement:', error);
+                showError('Erreur lors du téléchargement du fichier Excel');
+            }
+        }
+        // Fonction pour ouvrir la modal de tableau
+        function openTableModal(sectionElement, title) {
+            const modal = document.getElementById('table-modal-overlay');
+            const modalTitle = modal.querySelector('.table-modal-title');
+            const modalContent = modal.querySelector('.table-container-modal');
+
+            modalTitle.textContent = title;
+
+            // Vider la modal
+            modalContent.innerHTML = '';
+
+            // Cloner le contenu du tableau
+            const tableContainer = sectionElement.querySelector('.table-container');
+            if (tableContainer) {
+                const clone = tableContainer.cloneNode(true);
+                const wrapper = document.createElement('div');
+                wrapper.classList.add('zoom-wrapper');
+                wrapper.appendChild(clone);
+                modalContent.appendChild(wrapper);
+
+                // Attendre que le DOM soit prêt pour calculer le scale
+                setTimeout(() => {
+                    const modalBox = modalContent.getBoundingClientRect();
+                    const tableBox = clone.getBoundingClientRect();
+
+                    const scaleX = modalBox.width / tableBox.width;
+                    const scaleY = modalBox.height / tableBox.height;
+                    const scale = Math.min(scaleX, scaleY, 1);
+
+                    wrapper.style.transform = `scale(${scale})`;
+                    wrapper.style.transformOrigin = 'top left';
+                }, 50);
+            }
+
+            modal.classList.add('active');
+            document.body.style.overflow = 'hidden';
+        }
+
+        // Fonction pour fermer la modal
+        function closeTableModal() {
+            const modal = document.getElementById('table-modal-overlay');
+            if (modal) {
+                modal.classList.remove('active');
+                document.body.style.overflow = 'auto';
+            }
+        }
+
+        // Ajouter les événements de clic aux sections
+        document.addEventListener('click', function(e) {
+            // Vérifier si on clique sur une section de tableau
+            const dispoSection = e.target.closest('.dispo-section');
+            const repartitionSection = e.target.closest('.repartition-section');
+            
+            if (dispoSection) {
+                openTableModal(dispoSection, 'Disponibilités - Vue détaillée');
+            } else if (repartitionSection) {
+                openTableModal(repartitionSection, 'Répartition - Vue détaillée');
+            }
+        });
+
+        // Événements pour fermer la modal
+        document.addEventListener('DOMContentLoaded', function() {
+            const modal = document.getElementById('table-modal-overlay');
+            const closeBtn = modal.querySelector('.table-modal-close');
+            
+            closeBtn.addEventListener('click', closeTableModal);
+            
+            modal.addEventListener('click', function(e) {
+                if (e.target === modal) closeTableModal();
+            });
+            
+            // Fermer avec Escape
+            document.addEventListener('keydown', function(e) {
+                if (e.key === 'Escape' && modal.classList.contains('active')) {
+                    closeTableModal();
+                }
+            });
+        });
+        // Modal paramètres
+        document.getElementById('parametres-toggle').addEventListener('click', function() {
+            document.getElementById('parametres-modal-overlay').classList.add('active');
+            document.body.style.overflow = 'hidden'; // Empêche le scroll
+        });
+
+        document.getElementById('close-parametres-modal').addEventListener('click', function() {
+            document.getElementById('parametres-modal-overlay').classList.remove('active');
+            document.body.style.overflow = 'auto'; // Remet le scroll
+        });
+
+        // Fermer en cliquant sur l'overlay
+        document.getElementById('parametres-modal-overlay').addEventListener('click', function(e) {
+            if (e.target === this) {
+                this.classList.remove('active');
+                document.body.style.overflow = 'auto';
+            }
+        });
+
+        // Fermer avec Escape
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'Escape') {
+                const modal = document.getElementById('parametres-modal-overlay');
+                if (modal.classList.contains('active')) {
+                    modal.classList.remove('active');
+                    document.body.style.overflow = 'auto';
+                }
+            }
+        });
+                // Fermer avec Escape
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'Escape') {
+                const modal = document.getElementById('non-assigned-modal');
+                if (modal.style.display === 'flex') {
+                    modal.style.display = 'none';
+                    document.body.style.overflow = 'auto';
+                }
+            }
+        });
+
+
+        document.getElementById('generate-btn').addEventListener('click', generatePlanning);
+        document.addEventListener('click', function(event) {
+            if (!event.target.closest('.tooltip')) {
+                document.querySelectorAll('.tooltip.active').forEach(tooltip => {
+                    tooltip.classList.remove('active');
+                });
+            }
+        });
+        document.getElementById('download-btn').addEventListener('click', downloadExcel);
+    </script>
+</body>
+</html>
