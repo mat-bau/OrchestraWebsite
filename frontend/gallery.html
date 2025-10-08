@@ -14,7 +14,6 @@
     <link rel="stylesheet" href="style.css">
     
     <style>
-        /* Styles pour la galerie moderne */
         .gallery-container {
             padding: 20px 0;
         }
@@ -25,13 +24,13 @@
             gap: 8px;
             margin-bottom: 20px;
             padding: 12px;
-            background: #f5f5f5;
+            background: #191726;
             border-radius: 8px;
             flex-wrap: wrap;
         }
         
         .breadcrumb-item {
-            color: #333;
+            color: #f9f9f9;
             text-decoration: none;
             cursor: pointer;
             transition: color 0.2s;
@@ -53,8 +52,8 @@
         }
         
         .folder-card {
-            background: white;
-            border: 2px solid #e0e0e0;
+            background: #191726;
+            border: 1px solid #e0e0e0;
             border-radius: 12px;
             padding: 24px;
             text-align: center;
@@ -78,7 +77,7 @@
         .folder-name {
             font-size: 16px;
             font-weight: 600;
-            color: #333;
+            color: #f9f9f9;
             margin-bottom: 4px;
         }
         
@@ -237,7 +236,7 @@
         <header class="site-header">
             <div class="container">
                 <a href="index.html" id="branding">
-                    <img src="http://images.orchestra.kapucl.be/uploads/Logo_Orchestrakot_SQUARE.png" alt="Site Title" class="head_logo">
+                    <img src="images/support_graphique/Logo_Orchestrakot_SQUARE.png" alt="Site Title" class="head_logo">
                 </a>
                 
                 <nav class="main-navigation">
@@ -284,7 +283,7 @@
 
         <footer class="site-footer">
             <div class="container">
-                <img src="../images/Orchestra.png" alt="Site Name">
+                <img src="../images/support_graphique/Logo_Orchestrakot_Rectangle.png" alt="Site Name" class="foot_logo">
                 
                 <address>
                     <p>1 Rampes des Ardennais, Louvain-la-Neuve, Belgique <br>
@@ -422,9 +421,15 @@
             
             let html = '';
             images.forEach((image, index) => {
+                // Utiliser le thumbnail si disponible, sinon l'image normale
+                const thumbPath = image.path.replace('/images/', '/images/thumbnails/')
+                    .replace(/\.(jpg|jpeg|png|gif|bmp|webp)$/i, '_thumb.jpg');
+                const imgSrc = image.thumb ? `../${image.thumb}` : `../${thumbPath}`;
+                
                 html += `
                     <div class="image-card" onclick="openLightbox(${index})">
-                        <img src="../${image.path}" alt="${image.name}" loading="lazy">
+                        <img src="${imgSrc}" alt="${image.name}" loading="lazy" 
+                             onerror="this.src='../${image.path}'">
                     </div>
                 `;
             });
