@@ -1,87 +1,490 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="fr">
 <head>
-	<meta charset="UTF-8">
-	<meta http-equiv="X-UA-Compatible" content="IE=edge">
-	<meta name="viewport" content="width=device-width, initial-scale=1.0,maximum-scale=1">
-	<meta name="description" content="Official website of the Louvain-la-Neuve based Orchestrakot.">
-
-	<link rel="shortcut icon" type="image/x-icon" href="../images/support_graphique/Logo_Orchestrakot_SQUARE.png"" />
-	<title>OrchestraKot</title>
-	
-	<!-- Loading third party fonts -->
-	<link href="http://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,600,700,900" rel="stylesheet" type="text/css">
-	<link href="../fonts/font-awesome.min.css" rel="stylesheet" type="text/css">
-	
-	<!-- Loading main css file -->
-	<link rel="stylesheet" href="style.css">
-
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0,maximum-scale=1">
+    <meta name="description" content="Official website of the Louvain-la-Neuve based Orchestrakot.">
+    
+    <link rel="shortcut icon" type="image/x-icon" href="../images/support_graphique/Logo_Orchestrakot_SQUARE.png" />
+    <title>Galerie - OrchestraKot</title>
+    
+    <link href="http://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,600,700,900" rel="stylesheet" type="text/css">
+    <link href="../fonts/font-awesome.min.css" rel="stylesheet" type="text/css">
+    <link rel="stylesheet" href="style.css">
+    
+    <style>
+        /* Styles pour la galerie moderne */
+        .gallery-container {
+            padding: 20px 0;
+        }
+        
+        .breadcrumb {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-bottom: 20px;
+            padding: 12px;
+            background: #f5f5f5;
+            border-radius: 8px;
+            flex-wrap: wrap;
+        }
+        
+        .breadcrumb-item {
+            color: #333;
+            text-decoration: none;
+            cursor: pointer;
+            transition: color 0.2s;
+        }
+        
+        .breadcrumb-item:hover {
+            color: #e74c3c;
+        }
+        
+        .breadcrumb-separator {
+            color: #999;
+        }
+        
+        .folders-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            gap: 20px;
+            margin-bottom: 40px;
+        }
+        
+        .folder-card {
+            background: white;
+            border: 2px solid #e0e0e0;
+            border-radius: 12px;
+            padding: 24px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+        
+        .folder-card:hover {
+            border-color: #e74c3c;
+            transform: translateY(-4px);
+            box-shadow: 0 4px 16px rgba(231, 76, 60, 0.2);
+        }
+        
+        .folder-icon {
+            font-size: 48px;
+            color: #e74c3c;
+            margin-bottom: 12px;
+        }
+        
+        .folder-name {
+            font-size: 16px;
+            font-weight: 600;
+            color: #333;
+            margin-bottom: 4px;
+        }
+        
+        .folder-count {
+            font-size: 14px;
+            color: #666;
+        }
+        
+        .images-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+            gap: 20px;
+        }
+        
+        .image-card {
+            position: relative;
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            transition: transform 0.3s ease;
+            cursor: pointer;
+        }
+        
+        .image-card:hover {
+            transform: scale(1.05);
+            box-shadow: 0 4px 16px rgba(0,0,0,0.2);
+        }
+        
+        .image-card img {
+            width: 100%;
+            height: 250px;
+            object-fit: cover;
+            display: block;
+        }
+        
+        .empty-message {
+            text-align: center;
+            padding: 60px 20px;
+            color: #999;
+        }
+        
+        .empty-message i {
+            font-size: 64px;
+            margin-bottom: 16px;
+            opacity: 0.5;
+        }
+        
+        /* Lightbox pour afficher les images en grand */
+        .lightbox {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.95);
+            z-index: 10000;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .lightbox.active {
+            display: flex;
+        }
+        
+        .lightbox-content {
+            max-width: 90%;
+            max-height: 90%;
+            position: relative;
+        }
+        
+        .lightbox-content img {
+            max-width: 100%;
+            max-height: 90vh;
+            object-fit: contain;
+        }
+        
+        .lightbox-close {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            color: white;
+            font-size: 36px;
+            cursor: pointer;
+            z-index: 10001;
+            background: rgba(0, 0, 0, 0.5);
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .lightbox-nav {
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            color: white;
+            font-size: 48px;
+            cursor: pointer;
+            background: rgba(0, 0, 0, 0.5);
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            user-select: none;
+        }
+        
+        .lightbox-prev {
+            left: 20px;
+        }
+        
+        .lightbox-next {
+            right: 20px;
+        }
+        
+        .loading {
+            text-align: center;
+            padding: 60px 20px;
+            color: #666;
+        }
+        
+        .loading i {
+            font-size: 48px;
+            animation: spin 1s linear infinite;
+        }
+        
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        
+        @media (max-width: 768px) {
+            .folders-grid {
+                grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+                gap: 15px;
+            }
+            
+            .images-grid {
+                grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+                gap: 15px;
+            }
+            
+            .image-card img {
+                height: 150px;
+            }
+        }
+    </style>
 </head>
 
 <body>
-	<div id="site-content">
-		<header class="site-header">
-			<div class="container">
-				<a href="index.html" id="branding">
-					<img src="http://images.orchestra.kapucl.be/uploads/Logo_Orchestrakot_SQUARE.png" alt="Site Title" class="head_logo">
-				</a> <!-- #branding -->
+    <div id="site-content">
+        <header class="site-header">
+            <div class="container">
+                <a href="index.html" id="branding">
+                    <img src="http://images.orchestra.kapucl.be/uploads/Logo_Orchestrakot_SQUARE.png" alt="Site Title" class="head_logo">
+                </a>
+                
+                <nav class="main-navigation">
+                    <button type="button" class="toggle-menu"><i class="fa fa-bars"></i></button>
+                    <ul class="menu">
+                        <li class="menu-item"><a href="index.html">Home</a></li>
+                        <li class="menu-item"><a href="about.html">About</a></li>
+                        <li class="menu-item current-menu-item"><a href="gallery.html">Galerie</a></li>
+                        <li class="menu-item"><a href="videos.html">Vidéos</a></li>
+                        <li class="menu-item"><a href="front.html">Planifier</a></li>
+                        <li class="menu-item"><a href="contact.html">Contact</a></li>
+                    </ul>
+                </nav>
+                <div class="mobile-menu"></div>
+            </div>
+        </header>
 
-				<nav class="main-navigation">
-					<button type="button" class="toggle-menu"><i class="fa fa-bars"></i></button>
-					<ul class="menu">
-						<li class="menu-item"><a href="index.html">Home</a></li>
-						<li class="menu-item"><a href="about.html">About</a></li>
-						<li class="menu-item current-menu-item"><a href="gallery.html">Galerie</a></li>
-						<li class="menu-item"><a href="videos.html">Vidéos</a></li>
-						<li class="menu-item"><a href="front.html">Planifier</a></li>
-						<li class="menu-item"><a href="contact.html">Contact</a></li>
-					</ul> <!-- .menu -->
-				</nav> <!-- .main-navigation -->
-				<div class="mobile-menu"></div>
-			</div>
-		</header> <!-- .site-header -->
+        <main class="main-content">
+            <div class="fullwidth-block gallery">
+                <div class="container">
+                    <div class="content fullwidth">
+                        <h2 class="entry-title">Galerie Photos</h2>
+                        
+                        <div class="gallery-container">
+                            <!-- Fil d'Ariane -->
+                            <div class="breadcrumb" id="breadcrumb"></div>
+                            
+                            <!-- Dossiers -->
+                            <div class="folders-grid" id="folders-container"></div>
+                            
+                            <!-- Images -->
+                            <div class="images-grid" id="images-container"></div>
+                            
+                            <!-- Message de chargement -->
+                            <div class="loading" id="loading">
+                                <i class="fa fa-spinner"></i>
+                                <p>Chargement de la galerie...</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
 
-		<main class="main-content">
-			<div class="fullwidth-block gallery">
-				<div class="container">
-					<div class="content fullwidth">
-						<h2 class="entry-title">Gallery</h2>
-						<div class="filter-links filterable-nav">
-							<select class="mobile-filter">
-								<option value="*">Show all</option>
-								<!-- Options générées dynamiquement -->
-							</select>
-							<!-- Boutons de filtre générés dynamiquement -->
-						</div>
-						<div class="filterable-items">
-							<!-- Images générées dynamiquement par JavaScript -->
-						</div>
-					</div>
-				</div>
-			</div> <!-- .testimonial-section -->
-		</main> <!-- .main-content -->
+        <footer class="site-footer">
+            <div class="container">
+                <img src="../images/Orchestra.png" alt="Site Name">
+                
+                <address>
+                    <p>1 Rampes des Ardennais, Louvain-la-Neuve, Belgique <br>
+                    <a href="tel:+32494718552">(+32) 494 71 85 52</a> <br>
+                    <a href="mailto:orchestrakot.ucl@gmail.com">orchestrakot.ucl@gmail.com</a></p>
+                </address>
+                
+                <div class="social-links">
+                    <a href="https://www.facebook.com/orchestrakot/"><i class="fa fa-facebook-square"></i></a>
+                    <a href="https://www.instagram.com/orchestrakot/?hl=en"><i class="fa fa-instagram"></i></a>
+                </div>
+            </div>
+        </footer>
+    </div>
 
-		<footer class="site-footer">
-			<div class="container">
-				<img src="../images/Orchestra.png" alt="Site Name">
+    <!-- Lightbox pour afficher les images -->
+    <div class="lightbox" id="lightbox">
+        <div class="lightbox-close" onclick="closeLightbox()">×</div>
+        <div class="lightbox-nav lightbox-prev" onclick="navigateImage(-1)">‹</div>
+        <div class="lightbox-content">
+            <img id="lightbox-image" src="" alt="">
+        </div>
+        <div class="lightbox-nav lightbox-next" onclick="navigateImage(1)">›</div>
+    </div>
 
-				<address>
-					<p>1 Rampes des Ardennais, Louvain-la-Neuve, Belgique <br><a href="tel:354543543">(+32) 494 71 85 52</a> <br> <a href="mailto:orchestrakot.ucl@gmail.com">orchestrakot.ucl@gmail.com</a></p>
-				</address>
+    <script src="js/jquery-1.11.1.min.js"></script>
+    <script src="js/app.js"></script>
+    
+    <script>
+        // État de l'application
+        let galleryData = null;
+        let currentPath = [];
+        let currentImages = [];
+        let currentImageIndex = 0;
 
-				<div class="social-links">
-					<a href="https://www.facebook.com/orchestrakot/"><i class="fa fa-facebook-square"></i></a>
-					<a href="https://www.instagram.com/orchestrakot/?hl=en"><i class="fa fa-instagram"></i></a>
-				</div> <!-- .social-links -->
-			</div>
-		</footer> <!-- .site-footer -->
-	</div> <!-- #site-content -->
+        // Charger la structure de la galerie
+        async function loadGallery() {
+            try {
+                const response = await fetch('gallery-structure.json');
+                galleryData = await response.json();
+                
+                document.getElementById('loading').style.display = 'none';
+                renderGallery();
+            } catch (error) {
+                console.error('Erreur chargement galerie:', error);
+                document.getElementById('loading').innerHTML = 
+                    '<p>⚠️ Erreur de chargement. Veuillez exécuter le script Python pour générer la structure.</p>';
+            }
+        }
 
-	<script src="js/jquery-1.11.1.min.js"></script>
+        // Obtenir le dossier actuel
+        function getCurrentFolder() {
+            let current = galleryData;
+            for (const folderName of currentPath) {
+                current = current.folders.find(f => f.name === folderName);
+            }
+            return current;
+        }
 
-	<script src="js/app.js"></script>
-	
-	<!-- Script pour la galerie dynamique -->
-	<script src="js/gallery-loader.js"></script>
+        // Afficher la galerie
+        function renderGallery() {
+            const current = getCurrentFolder();
+            
+            renderBreadcrumb();
+            renderFolders(current.folders || []);
+            renderImages(current.images || []);
+        }
+
+        // Afficher le fil d'Ariane
+        function renderBreadcrumb() {
+            const breadcrumb = document.getElementById('breadcrumb');
+            let html = '<a class="breadcrumb-item" onclick="navigateToRoot()"><i class="fa fa-home"></i> Accueil</a>';
+            
+            currentPath.forEach((folder, index) => {
+                html += '<span class="breadcrumb-separator">/</span>';
+                html += `<a class="breadcrumb-item" onclick="navigateToPath(${index})">${folder}</a>`;
+            });
+            
+            breadcrumb.innerHTML = html;
+        }
+
+        // Afficher les dossiers
+        function renderFolders(folders) {
+            const container = document.getElementById('folders-container');
+            
+            if (folders.length === 0) {
+                container.innerHTML = '';
+                return;
+            }
+            
+            let html = '';
+            folders.forEach(folder => {
+                const imageCount = countImages(folder);
+                html += `
+                    <div class="folder-card" onclick="navigateToFolder('${folder.name}')">
+                        <div class="folder-icon"><i class="fa fa-folder"></i></div>
+                        <div class="folder-name">${folder.name}</div>
+                        <div class="folder-count">${imageCount} image${imageCount > 1 ? 's' : ''}</div>
+                    </div>
+                `;
+            });
+            
+            container.innerHTML = html;
+        }
+
+        // Compter les images dans un dossier
+        function countImages(folder) {
+            let count = folder.images ? folder.images.length : 0;
+            if (folder.folders) {
+                folder.folders.forEach(subfolder => {
+                    count += countImages(subfolder);
+                });
+            }
+            return count;
+        }
+
+        // Afficher les images
+        function renderImages(images) {
+            const container = document.getElementById('images-container');
+            currentImages = images;
+            
+            if (images.length === 0) {
+                if (document.getElementById('folders-container').innerHTML === '') {
+                    container.innerHTML = `
+                        <div class="empty-message">
+                            <i class="fa fa-image"></i>
+                            <p>Aucune image dans ce dossier</p>
+                        </div>
+                    `;
+                } else {
+                    container.innerHTML = '';
+                }
+                return;
+            }
+            
+            let html = '';
+            images.forEach((image, index) => {
+                html += `
+                    <div class="image-card" onclick="openLightbox(${index})">
+                        <img src="../${image.path}" alt="${image.name}" loading="lazy">
+                    </div>
+                `;
+            });
+            
+            container.innerHTML = html;
+        }
+
+        // Navigation
+        function navigateToRoot() {
+            currentPath = [];
+            renderGallery();
+        }
+
+        function navigateToPath(index) {
+            currentPath = currentPath.slice(0, index + 1);
+            renderGallery();
+        }
+
+        function navigateToFolder(folderName) {
+            currentPath.push(folderName);
+            renderGallery();
+        }
+
+        // Lightbox
+        function openLightbox(index) {
+            currentImageIndex = index;
+            showLightboxImage();
+            document.getElementById('lightbox').classList.add('active');
+            document.body.style.overflow = 'hidden';
+        }
+
+        function closeLightbox() {
+            document.getElementById('lightbox').classList.remove('active');
+            document.body.style.overflow = 'auto';
+        }
+
+        function showLightboxImage() {
+            const image = currentImages[currentImageIndex];
+            document.getElementById('lightbox-image').src = '../' + image.path;
+        }
+
+        function navigateImage(direction) {
+            currentImageIndex += direction;
+            if (currentImageIndex < 0) currentImageIndex = currentImages.length - 1;
+            if (currentImageIndex >= currentImages.length) currentImageIndex = 0;
+            showLightboxImage();
+        }
+
+        // Navigation au clavier
+        document.addEventListener('keydown', (e) => {
+            const lightbox = document.getElementById('lightbox');
+            if (lightbox.classList.contains('active')) {
+                if (e.key === 'Escape') closeLightbox();
+                if (e.key === 'ArrowLeft') navigateImage(-1);
+                if (e.key === 'ArrowRight') navigateImage(1);
+            }
+        });
+
+        // Initialisation
+        document.addEventListener('DOMContentLoaded', loadGallery);
+    </script>
 </body>
 </html>

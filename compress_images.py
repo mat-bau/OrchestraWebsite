@@ -18,7 +18,7 @@ for root, dirs, files in os.walk(input_folder):
 
             try:
                 img = Image.open(img_path)
-                img.save(output_path, optimize=True, quality=50)
+                img.save(output_path, optimize=True, quality=30) # 30 sinon on peut pas faire passer plus de 5 images dans le push
                 print(f"Compressed: {output_path}")
             except Exception as e:
                 print(f"Error compressing {img_path}: {e}")
