@@ -21,7 +21,7 @@ def scan_gallery_images():
         
         # Scanner le dossier images
         root_dir = Path(__file__).parent.absolute()
-        structure = scan_images_directory(str(root_dir / 'images'))
+        structure = scan_images_directory(str(root_dir / 'images' / 'public'))
         
         # Sauvegarder dans frontend/
         output_file = root_dir / 'frontend' / 'gallery-structure.json'

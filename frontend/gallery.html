@@ -422,7 +422,7 @@
             let html = '';
             images.forEach((image, index) => {
                 // Utiliser le thumbnail si disponible, sinon l'image normale
-                const thumbPath = image.path.replace('/images/', '/images/thumbnails/')
+                const thumbPath = image.path.replace('/images', '/images/thumbnails/')
                     .replace(/\.(jpg|jpeg|png|gif|bmp|webp)$/i, '_thumb.jpg');
                 const imgSrc = image.thumb ? `../${image.thumb}` : `../${thumbPath}`;
                 
