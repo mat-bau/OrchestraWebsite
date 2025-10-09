@@ -24,7 +24,7 @@ def scan_images_directory(base_path: str = None) -> Dict:
             project_root = current_dir.parent
         else:
             project_root = current_dir
-        base_path = project_root / 'images'
+        base_path = project_root / 'images' / 'public'
     else:
         base_path = Path(base_path)
     

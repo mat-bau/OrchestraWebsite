@@ -1,4 +1,4 @@
-from flask import Flask, request, jsonify, send_file
+from flask import Flask, request, jsonify, send_file, send_from_directory
 from flask_cors import CORS
 import os
 from pathlib import Path
@@ -55,17 +55,17 @@ def serve_frontend():
         return f"Erreur lors du chargement du frontend: {str(e)}", 500
 
 @app.route('/images/<path:filename>')
-def serve_images(filename):
-    """Servir les images depuis le dossier images/"""
-    try:
-        images_dir = ROOT_DIR / 'images'
-        image_path = images_dir / filename
-        if image_path.exists():
-            return send_file(str(image_path))
-        else:
-            return jsonify({'error': f'Image non trouvée: {filename}'}), 404
-    except Exception as e:
-        return jsonify({'error': f'Erreur serveur: {str(e)}'}), 500
+def serve_image(filename):
+    """Sert les images depuis le dossier images/"""
+    images_dir = os.path.join(os.path.dirname(os.path.dirname(__file__)), 'images')
+    return send_from_directory(images_dir, filename)
+
+# Si vous avez besoin de servir aussi depuis un sous-dossier public spécifique
+@app.route('/public/<path:filename>')
+def serve_public_image(filename):
+    """Sert les images depuis le dossier images/public/"""
+    images_dir = os.path.join(os.path.dirname(os.path.dirname(__file__)), 'images', 'public')
+    return send_from_directory(images_dir, filename)
 
 @app.route('/api/upload', methods=['POST'])
 def upload():

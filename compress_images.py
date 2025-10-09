@@ -45,7 +45,7 @@ def compress_image(img_path, output_path, max_size=(1920, 1080), quality=85):
         img.thumbnail(max_size, Image.Resampling.LANCZOS)
         
         # Essayer différentes qualités pour atteindre la taille cible
-        temp_path = output_path + '.tmp'
+        temp_path = str(output_path) + '.tmp'
         current_quality = quality
         
         while current_quality > 40:
@@ -53,7 +53,7 @@ def compress_image(img_path, output_path, max_size=(1920, 1080), quality=85):
             size_mb = get_file_size_mb(temp_path)
             
             if size_mb <= TARGET_SIZE_MB:
-                os.rename(temp_path, output_path)
+                os.rename(temp_path, str(output_path))
                 return {
                     'success': True,
                     'original_size': original_size,
@@ -66,13 +66,13 @@ def compress_image(img_path, output_path, max_size=(1920, 1080), quality=85):
         
         # Si on n'a pas atteint la cible, garder la dernière version
         if os.path.exists(temp_path):
-            os.rename(temp_path, output_path)
+            os.rename(temp_path, str(output_path))
         
         return {
             'success': True,
             'original_size': original_size,
             'new_size': img.size,
-            'file_size_mb': get_file_size_mb(output_path),
+            'file_size_mb': get_file_size_mb(str(output_path)),
             'quality': current_quality,
             'warning': 'Taille cible non atteinte'
         }
@@ -169,13 +169,13 @@ def main():
             thumb_file = thumb_dir / thumb_filename
             
             # Taille originale
-            original_size_mb = get_file_size_mb(img_path)
+            original_size_mb = get_file_size_mb(str(img_path))
             stats['original_size_mb'] += original_size_mb
             
             print(f"\n📸 {relative_path} ({original_size_mb:.2f} Mo)")
             
             # Compresser l'image principale
-            result = compress_image(img_path, output_file)
+            result = compress_image(str(img_path), str(output_file))
             
             if result['success']:
                 stats['success'] += 1
@@ -190,7 +190,7 @@ def main():
                     print(f"   ⚠️  {result['warning']}")
                 
                 # Créer le thumbnail
-                thumb_result = create_thumbnail(output_file, thumb_file)
+                thumb_result = create_thumbnail(str(output_file), str(thumb_file))
                 if thumb_result['success']:
                     stats['thumbs_size_mb'] += thumb_result['file_size_mb']
                     print(f"   🖼️  Thumbnail: {thumb_result['file_size_mb']:.2f} Mo")
