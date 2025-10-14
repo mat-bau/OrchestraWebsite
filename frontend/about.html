@@ -1,33 +1,170 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="fr">
 <head>
 	<meta charset="UTF-8">
 	<meta http-equiv="X-UA-Compatible" content="IE=edge">
 	<meta name="viewport" content="width=device-width, initial-scale=1.0,maximum-scale=1">
-	<meta name=”description” content=”Official website of the Louvain-la-Neuve based Orchestrakot.”>
+	<meta name="description" content="Official website of the Louvain-la-Neuve based Orchestrakot.">
 	<link rel="shortcut icon" type="image/x-icon" href="../images/support_graphique/Logo_Orchestrakot_SQUARE.png?v=2"/>
-	<title>OrchestraKot</title>
-	<!-- Loading third party fonts -->
+	<title>About - OrchestraKot</title>
+	
 	<link href="http://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,600,700,900" rel="stylesheet" type="text/css">
 	<link href="../fonts/font-awesome.min.css" rel="stylesheet" type="text/css">
-	<!-- Loading main css file -->
 	<link rel="stylesheet" href="style.css">
+	
+	<style>
+		/* Styles pour le système d'onglets */
+		.team-filters {
+			background: linear-gradient(135deg, #fff5f5 0%, #ffe8e8 100%);
+			border: 1px solid #f5d0d0;
+			border-radius: 12px;
+			padding: 20px;
+			margin-bottom: 25px;
+			box-shadow: 0 2px 8px rgba(231, 76, 60, 0.1);
+		}
 
-	<!--[if lt IE 9]>
-	<script src="js/ie-support/html5.js"></script>
-	<script src="js/ie-support/respond.js"></script>
-	<![endif]-->
+		.filter-btn {
+			background: white;
+			border: 2px solid #f5d0d0;
+			padding: 8px 16px;
+			border-radius: 6px;
+			cursor: pointer;
+			transition: all 0.3s ease;
+			font-size: 14px;
+			color: #666;
+			font-weight: 500;
+		}
 
+		.filter-btn:hover {
+			border-color: #e74c3c;
+			color: #e74c3c;
+			transform: translateY(-2px);
+			box-shadow: 0 3px 8px rgba(231, 76, 60, 0.2);
+		}
+
+		.filter-btn.active {
+			background: linear-gradient(135deg, #e74c3c 0%, #c0392b 100%);
+			color: white;
+			border-color: #e74c3c;
+			box-shadow: 0 3px 10px rgba(231, 76, 60, 0.3);
+		}
+		
+		.filter-section {
+			margin-bottom: 15px;
+		}
+		
+		.filter-section:last-child {
+			margin-bottom: 0;
+		}
+		
+		.filter-label {
+			font-weight: 600;
+			color: #333;
+			margin-bottom: 8px;
+			display: block;
+			font-size: 14px;
+		}
+		
+		.filter-buttons {
+			display: flex;
+			flex-wrap: wrap;
+			gap: 8px;
+		}
+		
+		.widget-title-dynamic {
+			color: #e74c3c;
+			margin-bottom: 10px;
+		}
+		
+		.breadcrumb-team {
+			font-size: 14px;
+			color: #666;
+			margin-bottom: 15px;
+		}
+		
+		.breadcrumb-team .separator {
+			margin: 0 5px;
+			color: #999;
+		}
+		
+		.breadcrumb-team .active {
+			color: #e74c3c;
+			font-weight: 600;
+		}
+		
+		.team-member {
+			display: none;
+			animation: fadeIn 0.3s ease;
+		}
+		
+		.team-member.visible {
+			display: block;
+		}
+		
+		@keyframes fadeIn {
+			from {
+				opacity: 0;
+				transform: translateY(10px);
+			}
+			to {
+				opacity: 1;
+				transform: translateY(0);
+			}
+		}
+		
+		.empty-state {
+			text-align: center;
+			padding: 40px 20px;
+			color: #999;
+			display: none;
+		}
+		
+		.empty-state.visible {
+			display: block;
+		}
+		
+		.empty-state i {
+			font-size: 48px;
+			margin-bottom: 10px;
+			opacity: 0.5;
+		}
+		
+		@media (max-width: 768px) {
+			.filter-buttons {
+				gap: 5px;
+			}
+			
+			.filter-btn {
+				padding: 6px 12px;
+				font-size: 12px;
+			}
+		}
+
+		.toggle-old-years {
+			background: #f8f8f8 !important;
+			border-color: #ddd !important;
+			color: #999 !important;
+		}
+
+		.toggle-old-years:hover {
+			background: #f0f0f0 !important;
+			border-color: #e74c3c !important;
+			color: #e74c3c !important;
+		}
+
+		.toggle-old-years i {
+			margin-right: 5px;
+		}
+	</style>
 </head>
 
 <body>
-
 	<div id="site-content">
 		<header class="site-header">
 			<div class="container">
 				<a href="index.html" id="branding">
 					<img src="../images/support_graphique/Logo_Orchestrakot_SQUARE.png" alt="Site Title" class="head_logo">
-				</a> <!-- #branding -->
+				</a>
 
 				<nav class="main-navigation">
 					<button type="button" class="toggle-menu"><i class="fa fa-bars"></i></button>
@@ -35,251 +172,417 @@
 						<li class="menu-item"><a href="index.html">Home</a></li>
 						<li class="menu-item current-menu-item"><a href="about.html">About</a></li>
 						<li class="menu-item"><a href="gallery.html">Galerie</a></li>
-                        <li class="menu-item"><a href="videos.html">Vidéos</a></li>
+						<li class="menu-item"><a href="videos.html">Vidéos</a></li>
 						<li class="menu-item"><a href="front.html">Planifier</a></li>
 						<li class="menu-item"><a href="contact.html">Contact</a></li>
-					</ul> <!-- .menu -->
-				</nav> <!-- .main-navigation -->
+					</ul>
+				</nav>
 				<div class="mobile-menu"></div>
 			</div>
-		</header> <!-- .site-header -->
+		</header>
 
 		<main class="main-content">
 			<div class="fullwidth-block inner-content">
 				<div class="container">
 					<div class="row">
 						<div class="col-md-7">
-
 							<div class="content">
 								<h2 class="entry-title">Offres musicales personnalisées</h2>
 								<p class="leading">L'OrchestraKot joue pour vous!</p>
-
-
 								<p>Nous accueillons à bras ouverts les demandes d'animation musicale lors de vos événements, aussi divers soient-ils.
-Que ce soit pour des kots à projets, pour des particuliers, des remises de diplômes ou encore d'autres activités, nous sommes ouverts à tout!</p>
+								Que ce soit pour des kots à projets, pour des particuliers, des remises de diplômes ou encore d'autres activités, nous sommes ouverts à tout!</p>
 								<img src="../images/public/Nos équipes/lequipe2024.jpg" width="100%" height="100%">
 							</div>
 
 							<div class="content">
 								<h2 class="entry-title">Le Concert</h2>
 								<p class="leading">L'événement principal de l'OrchestraKot.</p>
-								
-
-<p>
-	Chaque premier quadrimestre, nous faisons une représentation à la Ferme du Biéreau, avec chaque année un thème différent.
-	Notre concert c'est quoi ? C'est un concert de 2 heures tenu dans la grange de la Ferme du Biéreau où nous jouons de la musique autour d'un thème
-	pour vous ambiancez vous qui venez à cet événement !
-</p>
-								<p>
-									Il se déroule généralement à la mi novembre.
-									Pour être tenu au courant de quand et où cela se passe, allez sur notre page Facebook. Cette année, il se déroule le 14 novembre à 20h.
-									Reservez vos places :  <div class="social-links">
+								<p>Chaque premier quadrimestre, nous faisons une représentation à la Ferme du Biéreau, avec chaque année un thème différent.
+								Notre concert c'est quoi ? C'est un concert de 2 heures tenu dans la grange de la Ferme du Biéreau où nous jouons de la musique autour d'un thème
+								pour vous ambiancez vous qui venez à cet événement !</p>
+								<p>Il se déroule généralement à la mi novembre.
+								Pour être tenu au courant de quand et où cela se passe, allez sur notre page Facebook. Cette année, il se déroule le 14 novembre à 20h.
+								Reservez vos places : 
+									<div class="social-links">
 										<a href="https://www.facebook.com/events/1266644341134932?locale=fr_FR"><i class="fa fa-facebook-square"></i></a>
-									
-					
-									</div> <!-- .social-links -->
+									</div>
 								</p>
-
 								<p>Voici le trailer du concert pour vous donner un avant goût</p>
-
-
-
-<iframe width="700" height="400" src="https://www.youtube.com/embed/1JbgfiQ49IM" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>							</div>
+								<iframe width="700" height="400" src="https://www.youtube.com/embed/1JbgfiQ49IM" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+							</div>
 
 							<div class="content">
 								<h2 class="entry-title">Initiation aux instruments</h2>
 								<p class="leading">Jouer sur plus d'une dizaine d'instruments en une soirée? C'est par ici que ça se passe!</p>
-								<p>L'Orchestrakot permet à tout le monde de découvrir un ou plusieurs nouveaux instruments lors de nos soirées d'initiation. De la batterie à la clarinette en passant par la harpe, nous avons une belle panoplie d'instruments à vous faire (re)découvrir. Chaque membre de l'équipe aura le plaisir de vous apprendre à jouer quelques notes sur son instrument.
-
-Avant tout, l'initiation aux instruments est un moment de plaisir et de découverte, le tout dans une ambiance décontractée. Que vous n'ayez jamais touché un instrument ou que vous soyez un musicien aguerri, tous sont les bienvenus!  </p>
+								<p>L'Orchestrakot permet à tout le monde de découvrir un ou plusieurs nouveaux instruments lors de nos soirées d'initiation. De la batterie à la clarinette en passant par la harpe, nous avons une belle panoplie d'instruments à vous faire (re)découvrir. Chaque membre de l'équipe aura le plaisir de vous apprendre à jouer quelques notes sur son instrument.</p>
+								<p>Avant tout, l'initiation aux instruments est un moment de plaisir et de découverte, le tout dans une ambiance décontractée. Que vous n'ayez jamais touché un instrument ou que vous soyez un musicien aguerri, tous sont les bienvenus!</p>
 								<p>Pour être tenu au courant de quand et où cela se passe, allez sur notre page Facebook !</p>
-
 								<img src="../images/about/PhotoViolons.jpg" width="100%" height="100%">
 								<img src="../images/about/PhotoSax.jpg" width="100%" height="100%">
 								<img src="../images/about/PhotoGuitares.jpg" width="100%" height="100%">
 								<img src="../images/about/PhotoPiano.jpg" width="100%" height="100%">
-								
-
 							</div>
 						</div>
-						<div class="col-md-4 col-md-push-1">
+						
+						<div class="col-md-2">
 							<aside class="sidebar">
 								<div class="widget">
-									<h3 class="widget-title">L'équipe</h3>
-									<ul class="discography-list">
-										<li>
-											<figure class="cover"><img src="../images/team/team2024/julien.jpg" alt="thumbnail 1"></figure>
+									<!-- Filtres -->
+									<div class="team-filters">
+										<div class="filter-section">
+											<span class="filter-label">Année</span>
+											<div class="filter-buttons" id="year-filters">
+												<!-- <button class="filter-btn active" data-year="all">Toutes</button> -->
+												<button class="filter-btn active" data-year="2024-2025">Actuelle</button>
+												<button class="filter-btn toggle-old-years" id="toggle-years">
+													<i class="fa fa-clock-o"></i> Années précédentes
+												</button>
+												<div id="old-years" style="display: none; width: 100%; margin-top: 8px;">
+													<button class="filter-btn" data-year="2023-2024">2023-2024</button>
+													<button class="filter-btn" data-year="2022-2023">2022-2023</button>
+
+													<!-- Ajoutez d'autres années anciennes ici -->
+												</div>
+											</div>
+										</div>
+										
+										<div class="filter-section">
+											<span class="filter-label">Instrument</span>
+											<div class="filter-buttons" id="instrument-filters">
+												<button class="filter-btn active" data-instrument="all">Tous</button>
+												<button class="filter-btn" data-instrument="basse">Basse</button>
+												<button class="filter-btn" data-instrument="guitare">Guitare</button>
+												<button class="filter-btn" data-instrument="piano">Piano</button>
+												<button class="filter-btn" data-instrument="batterie">Batterie</button>
+												<button class="filter-btn" data-instrument="chant">Chant</button>
+												<button class="filter-btn" data-instrument="flute">Flûte</button>
+												<button class="filter-btn" data-instrument="trompette">Trompette</button>
+												<button class="filter-btn" data-instrument="violon">Violon</button>
+												<button class="filter-btn" data-instrument="trombone">Trombone</button>
+											</div>
+										</div>
+									</div>
+								</div>
+							</aside>
+						</div>
+									
+						<div class="col-md-3">
+							<aside class="sidebar">
+								<div class="widget">
+									<!-- Titre dynamique -->
+									<h3 class="widget-title widget-title-dynamic" id="team-title">L'équipe</h3>
+									<div class="breadcrumb-team" id="team-breadcrumb">
+										<span class="active">Tous les membres</span>
+									</div>
+									
+									<!-- Liste des membres -->
+									<ul class="discography-list" id="team-list">
+										<!-- 2024-2025 -->
+										<li class="team-member" data-year="2024-2025" data-instrument="basse" data-role="président">
+											<figure class="cover"><img src="../images/team/team2024/julien.jpg" alt="Julien David"></figure>
 											<div class="detail">
 												<h3><a href="#">Julien David</a></h3>
 												<span class="year">Basse</span>
 												<span class="track">Président</span><br>
-												<span
-														class = "track">EPL 1e master INGÉNIEUR CIVIL</span>
+												<span class="track">EPL 1e master INGÉNIEUR CIVIL</span>
 											</div>
 										</li>
-										<li>
-											<figure class="cover"><img src="../images/team/team2024/antoine.jpg" alt="thumbnail 2"></figure>
+										
+										<li class="team-member" data-year="2024-2025" data-instrument="basse" data-role="vice-président">
+											<figure class="cover"><img src="../images/team/team2024/antoine.jpg" alt="Antoine Sulon"></figure>
 											<div class="detail">
 												<h3><a href="#">Antoine Sulon</a></h3>
 												<span class="year">Basse</span>
 												<span class="track">Vice-président</span><br>
-                                                <span
-                                                class = "track">AGRO 1e master BIOINGÉNIEUR</span>
+												<span class="track">AGRO 1e master BIOINGÉNIEUR</span>
 											</div>
 										</li>
-										<li>
-											<figure class="cover"><img src="../images/team/team2024/adrien.jpg" alt="thumbnail 3"></figure>
+										
+										<li class="team-member" data-year="2024-2025" data-instrument="guitare" data-role="trésorier">
+											<figure class="cover"><img src="../images/team/team2024/adrien.jpg" alt="Adrien Antonutti"></figure>
 											<div class="detail">
 												<h3><a href="#">Adrien Antonutti</a></h3>
 												<span class="year">Guitare</span>
 												<span class="track">Trésorier</span><br>
-												<span
-														class = "track">EPL 1e master INGÉNIEUR CIVIL</span>
+												<span class="track">EPL 1e master INGÉNIEUR CIVIL</span>
 											</div>
 										</li>
-										<li>
-											<figure class="cover"><img src="../images/team/team2024/alice.jpg" alt="thumbnail 4"></figure>
+										
+										<li class="team-member" data-year="2024-2025" data-instrument="piano">
+											<figure class="cover"><img src="../images/team/team2024/alice.jpg" alt="Alice Sergent"></figure>
 											<div class="detail">
 												<h3><a href="#">Alice Sergent</a></h3>
 												<span class="year">Piano</span>
-												<span
-													class = "track">AGRO 3e bachelier BIOINGÉNIEUR</span>
+												<span class="track">AGRO 3e bachelier BIOINGÉNIEUR</span>
 											</div>
 										</li>
-										<li>
-											<figure class="cover"><img src="../images/team/team2024/felicie.jpg" alt="thumbnail 5"></figure>
+										
+										<li class="team-member" data-year="2024-2025" data-instrument="piano">
+											<figure class="cover"><img src="../images/team/team2024/felicie.jpg" alt="Félicie Van Der Cam"></figure>
 											<div class="detail">
-					 							<h3><a href="#">Félicie Van Der Cam</a></h3>
+												<h3><a href="#">Félicie Van Der Cam</a></h3>
 												<span class="year">Piano</span>
-                                                <span class = "track"></span>
 											</div>
 										</li>
-										<li>
-											<figure class="cover"><img src="../images/team/team2024/maxime.jpg" alt="thumbnail 6"></figure>
+										
+										<li class="team-member" data-year="2024-2025" data-instrument="guitare,chant">
+											<figure class="cover"><img src="../images/team/team2024/maxime.jpg" alt="Maxime Noël"></figure>
 											<div class="detail">
 												<h3><a href="#">Maxime Noël</a></h3>
 												<span class="year">Guitare, Chant</span>
-                                                <span
-                                                class = "track">EPL 2e master INGÉNIEUR CIVIL</span>
+												<span class="track">EPL 2e master INGÉNIEUR CIVIL</span>
 											</div>
 										</li>
-										<li>
-											<figure class="cover"><img src="../images/team/team2024/manon.jpg" alt="thumbnail 7"></figure>
+										
+										<li class="team-member" data-year="2024-2025" data-instrument="chant">
+											<figure class="cover"><img src="../images/team/team2024/manon.jpg" alt="Manon Piquepé"></figure>
 											<div class="detail">
 												<h3><a href="#">Manon Piquepé</a></h3>
 												<span class="year">Chant</span>
-                                                <span
-                                                class = "track">EPL 3e bachelier INGÉNIEUR CIVIL</span>
+												<span class="track">EPL 3e bachelier INGÉNIEUR CIVIL</span>
 											</div>
 										</li>
-										<li>
-											<figure class="cover"><img src="../images/team/team2024/louis.jpg" alt="thumbnail 8" width="100%" height="100%"></figure>
+										
+										<li class="team-member" data-year="2024-2025" data-instrument="batterie">
+											<figure class="cover"><img src="../images/team/team2024/louis.jpg" alt="Louis Beautrix"></figure>
 											<div class="detail">
 												<h3><a href="#">Louis Beautrix</a></h3>
 												<span class="year">Batterie</span>
-                                                <span
-                                                class = "track"></span>
 											</div>
 										</li>
-										<li>
-											<figure class="cover"><img src="../images/team/team2024/noe.jpg" alt="thumbnail 9"></figure>
+										
+										<li class="team-member" data-year="2024-2025" data-instrument="batterie">
+											<figure class="cover"><img src="../images/team/team2024/noe.jpg" alt="Noé Trifiro"></figure>
 											<div class="detail">
 												<h3><a href="#">Noé Trifiro</a></h3>
 												<span class="year">Batterie</span>
-                                                <span
-                                                class = "track">ESPO 2e master JOURNALISME</span>
+												<span class="track">ESPO 2e master JOURNALISME</span>
 											</div>
 										</li>
-										<li>
-											<figure class="cover"><img src="../images/team/team2024/mateo.jpg" alt="thumbnail 10"></figure>
+										
+										<li class="team-member" data-year="2024-2025" data-instrument="batterie">
+											<figure class="cover"><img src="../images/team/team2024/mateo.jpg" alt="Mateo Bauvir"></figure>
 											<div class="detail">
 												<h3><a href="#">Mateo Bauvir</a></h3>
 												<span class="year">Batterie</span>
-                                                <span
-                                                class = "track">EPL 3e bachelier INGÉNIEUR CIVIL</span>
+												<span class="track">EPL 3e bachelier INGÉNIEUR CIVIL</span>
 											</div>
 										</li>
-										<li>
-											<figure class="cover"><img src="../images/team/team2024/adele.jpg" alt="thumbnail 12"></figure>
+										
+										<li class="team-member" data-year="2024-2025" data-instrument="flute">
+											<figure class="cover"><img src="../images/team/team2024/adele.jpg" alt="Adèle Thiry"></figure>
 											<div class="detail">
 												<h3><a href="#">Adèle Thiry</a></h3>
 												<span class="year">Flûte</span>
-                                                <span
-                                                class = "track">EPL 2e master INGÉNIEUR CIVIL</span>
-											</div>	
+												<span class="track">EPL 2e master INGÉNIEUR CIVIL</span>
+											</div>
 										</li>
-										<li>
-											<figure class="cover"><img src="../images/team/team2024/camille.jpg" alt="thumbnail 13"></figure>
+										
+										<li class="team-member" data-year="2024-2025" data-instrument="trompette">
+											<figure class="cover"><img src="../images/team/team2024/camille.jpg" alt="Camille Maillard"></figure>
 											<div class="detail">
 												<h3><a href="#">Camille Maillard</a></h3>
 												<span class="year">Trompette</span>
-                                                <span
-                                                class = "track">EPL 2e bachelier INGÉNIEUR CIVIL</span>
+												<span class="track">EPL 2e bachelier INGÉNIEUR CIVIL</span>
 											</div>
 										</li>
-										<li>
-											<figure class="cover"><img src="../images/team/team2024/thibault.jpg" alt="thumbnail 14"></figure>
+										
+										<li class="team-member" data-year="2024-2025" data-instrument="trompette">
+											<figure class="cover"><img src="../images/team/team2024/thibault.jpg" alt="Thibaut Doyen"></figure>
 											<div class="detail">
 												<h3><a href="#">Thibaut Doyen</a></h3>
 												<span class="year">Trompette</span>
-                                                <span
-                                                class = "track">ESPO 2e master SCIENCES POLITIQUES</span>
+												<span class="track">ESPO 2e master SCIENCES POLITIQUES</span>
 											</div>
 										</li>
-										<li>
-											<figure class="cover"><img src="../images/team/team2024/geoffroy.jpg" alt="thumbnail 15"></figure>
+										
+										<li class="team-member" data-year="2024-2025" data-instrument="violon">
+											<figure class="cover"><img src="../images/team/team2024/geoffroy.jpg" alt="Geoffroy De Muyter"></figure>
 											<div class="detail">
 												<h3><a href="#">Geoffroy De Muyter</a></h3>
 												<span class="year">Violon</span>
-												<span
-                                                class = "track">EPL 2e master INGÉNIEUR CIVIL</span>
+												<span class="track">EPL 2e master INGÉNIEUR CIVIL</span>
 											</div>
 										</li>
-										<li>
-											<figure class="cover"><img src="../images/team/team2024/victor.jpg" alt="thumbnail 16"></figure>
+										
+										<li class="team-member" data-year="2024-2025" data-instrument="trompette,trombone">
+											<figure class="cover"><img src="../images/team/team2024/victor.jpg" alt="Victor Antonutti"></figure>
 											<div class="detail">
 												<h3><a href="#">Victor Antonutti</a></h3>
-												<span class="year">Trompette, Trombonne</span>
-												<span
-														class = "track">EPL 2e bachelier INGÉNIEUR CIVIL</span>
+												<span class="year">Trompette, Trombone</span>
+												<span class="track">EPL 2e bachelier INGÉNIEUR CIVIL</span>
 											</div>
-										</li>	
+										</li>
+										
+										<!-- AJOUTEZ ICI LES MEMBRES DES ANNÉES PRÉCÉDENTES -->
+										<!-- Exemple pour 2023-2024 : -->
+										<!--
+										<li class="team-member" data-year="2023-2024" data-instrument="basse">
+											<figure class="cover"><img src="../images/team/team2023/nom.jpg" alt="Nom"></figure>
+											<div class="detail">
+												<h3><a href="#">Nom Prénom</a></h3>
+												<span class="year">Basse</span>
+												<span class="track">Description</span>
+											</div>
+										</li>
+										-->
 									</ul>
+									
+									<!-- Message si aucun résultat -->
+									<div class="empty-state" id="empty-state">
+										<i class="fa fa-search"></i>
+										<p>Aucun membre trouvé pour cette sélection</p>
+									</div>
 								</div>
 							</aside>
 						</div>
 					</div>
 				</div>
-			</div> <!-- .testimonial-section -->
-
-
-		</main> <!-- .main-content -->
+			</div>
+		</main>
 
 		<footer class="site-footer">
 			<div class="container">
-				<img src="images/support_graphique/Logo_Orchestrakot_Rectangle.png" alt="Site Name" class="foot_logo">
-
+				<img src="../images/support_graphique/Logo_Orchestrakot_Rectangle.png" alt="Site Name" class="foot_logo">
 				<address>
-					<p>1 Rampes des Ardennais, Louvain-la-Neuve, Belgique <br><a href="tel:354543543">(+32) 494 71 85 52</a> <br> <a href="mailto:orchestrakot.ucl@gmail.com">orchestrakot.ucl@gmail.com</a></p>
+					<p>1 Rampes des Ardennais, Louvain-la-Neuve, Belgique <br>
+					<a href="tel:+32494718552">(+32) 494 71 85 52</a> <br>
+					<a href="mailto:orchestrakot.ucl@gmail.com">orchestrakot.ucl@gmail.com</a></p>
 				</address>
-
-
-
 				<div class="social-links">
 					<a href="https://www.facebook.com/orchestrakot/"><i class="fa fa-facebook-square"></i></a>
 					<a href="https://www.instagram.com/orchestrakot/?hl=en"><i class="fa fa-instagram"></i></a>
-
-				</div> <!-- .social-links -->
-
+				</div>
 			</div>
-		</footer> <!-- .site-footer -->
-
-	</div> <!-- #site-content -->
+		</footer>
+	</div>
 
 	<script src="../js/jquery-1.11.1.min.js"></script>
 	<script src="../js/plugins.js"></script>
 	<script src="../js/app.js"></script>
-
+	
+	<script>
+		// Système de filtrage des équipes
+		let currentYear = 'all';
+		let currentInstrument = 'all';
+		
+		// Noms des instruments en français
+		const instrumentNames = {
+			'basse': 'Basse',
+			'guitare': 'Guitare',
+			'piano': 'Piano',
+			'batterie': 'Batterie',
+			'chant': 'Chant',
+			'flute': 'Flûte',
+			'trompette': 'Trompette',
+			'violon': 'Violon',
+			'trombone': 'Trombone'
+		};
+		
+		function updateDisplay() {
+			const members = document.querySelectorAll('.team-member');
+			const emptyState = document.getElementById('empty-state');
+			let visibleCount = 0;
+			
+			members.forEach(member => {
+				const memberYear = member.dataset.year;
+				const memberInstruments = member.dataset.instrument.split(',');
+				
+				let showYear = currentYear === 'all' || memberYear === currentYear;
+				let showInstrument = currentInstrument === 'all' || 
+					memberInstruments.some(inst => inst.trim() === currentInstrument);
+				
+				if (showYear && showInstrument) {
+					member.classList.add('visible');
+					visibleCount++;
+				} else {
+					member.classList.remove('visible');
+				}
+			});
+			
+			// Afficher/cacher le message vide
+			if (visibleCount === 0) {
+				emptyState.classList.add('visible');
+			} else {
+				emptyState.classList.remove('visible');
+			}
+			
+			updateTitle();
+		}
+		// Toggle pour les années précédentes
+		document.getElementById('toggle-years').addEventListener('click', function(e) {
+			e.stopPropagation();
+			const oldYears = document.getElementById('old-years');
+			const icon = this.querySelector('i');
+			
+			if (oldYears.style.display === 'none') {
+				oldYears.style.display = 'flex';
+				oldYears.style.flexWrap = 'wrap';
+				oldYears.style.gap = '8px';
+				icon.classList.remove('fa-clock-o');
+				icon.classList.add('fa-chevron-up');
+			} else {
+				oldYears.style.display = 'none';
+				icon.classList.remove('fa-chevron-up');
+				icon.classList.add('fa-clock-o');
+			}
+		});
+		
+		function updateTitle() {
+			const title = document.getElementById('team-title');
+			const breadcrumb = document.getElementById('team-breadcrumb');
+			
+			let titleText = "L'équipe";
+			let breadcrumbHTML = '';
+			
+			// Construire le fil d'Ariane
+			if (currentYear !== 'all' || currentInstrument !== 'all') {
+				breadcrumbHTML = '<span>L\'équipe</span>';
+				
+				if (currentYear !== 'all') {
+					breadcrumbHTML += '<span class="separator">/</span>';
+					breadcrumbHTML += `<span class="active">${currentYear}</span>`;
+				}
+				
+				if (currentInstrument !== 'all') {
+					breadcrumbHTML += '<span class="separator">/</span>';
+					breadcrumbHTML += `<span class="active">${instrumentNames[currentInstrument]}</span>`;
+					titleText = instrumentNames[currentInstrument];
+				}
+			} else {
+				breadcrumbHTML = '<span class="active">Tous les membres</span>';
+			}
+			
+			title.textContent = titleText;
+			breadcrumb.innerHTML = breadcrumbHTML;
+		}
+		
+		// Event listeners pour les filtres d'année
+		document.querySelectorAll('#year-filters .filter-btn').forEach(btn => {
+			btn.addEventListener('click', function() {
+				document.querySelectorAll('#year-filters .filter-btn').forEach(b => 
+					b.classList.remove('active')
+				);
+				this.classList.add('active');
+				currentYear = this.dataset.year;
+				updateDisplay();
+			});
+		});
+		
+		// Event listeners pour les filtres d'instrument
+		document.querySelectorAll('#instrument-filters .filter-btn').forEach(btn => {
+			btn.addEventListener('click', function() {
+				document.querySelectorAll('#instrument-filters .filter-btn').forEach(b => 
+					b.classList.remove('active')
+				);
+				this.classList.add('active');
+				currentInstrument = this.dataset.instrument;
+				updateDisplay();
+			});
+		});
+		
+		// Affichage initial
+		updateDisplay();
+	</script>
 </body>
-
 </html>
