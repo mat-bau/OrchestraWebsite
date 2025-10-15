@@ -13,68 +13,6 @@
 	<link rel="stylesheet" href="style.css">
 	
 	<style>
-		/* Styles pour le système d'onglets */
-		.team-filters {
-			background: linear-gradient(135deg, #fff5f5 0%, #ffe8e8 100%);
-			border: 1px solid #f5d0d0;
-			border-radius: 12px;
-			padding: 20px;
-			margin-bottom: 25px;
-			box-shadow: 0 2px 8px rgba(231, 76, 60, 0.1);
-		}
-
-		.filter-btn {
-			background: white;
-			border: 2px solid #f5d0d0;
-			padding: 8px 16px;
-			border-radius: 6px;
-			cursor: pointer;
-			transition: all 0.3s ease;
-			font-size: 14px;
-			color: #666;
-			font-weight: 500;
-		}
-
-		.filter-btn:hover {
-			border-color: #e74c3c;
-			color: #e74c3c;
-			transform: translateY(-2px);
-			box-shadow: 0 3px 8px rgba(231, 76, 60, 0.2);
-		}
-
-		.filter-btn.active {
-			background: linear-gradient(135deg, #e74c3c 0%, #c0392b 100%);
-			color: white;
-			border-color: #e74c3c;
-			box-shadow: 0 3px 10px rgba(231, 76, 60, 0.3);
-		}
-		
-		.filter-section {
-			margin-bottom: 15px;
-		}
-		
-		.filter-section:last-child {
-			margin-bottom: 0;
-		}
-		
-		.filter-label {
-			font-weight: 600;
-			color: #333;
-			margin-bottom: 8px;
-			display: block;
-			font-size: 14px;
-		}
-		
-		.filter-buttons {
-			display: flex;
-			flex-wrap: wrap;
-			gap: 8px;
-		}
-		
-		.widget-title-dynamic {
-			color: #e74c3c;
-			margin-bottom: 10px;
-		}
 		
 		.breadcrumb-team {
 			font-size: 14px;
@@ -94,7 +32,7 @@
 		
 		.team-member {
 			display: none;
-			animation: fadeIn 0.3s ease;
+			animation: fadeIn 0.4s ease;
 		}
 		
 		.team-member.visible {
@@ -104,7 +42,7 @@
 		@keyframes fadeIn {
 			from {
 				opacity: 0;
-				transform: translateY(10px);
+				transform: translateY(8px);
 			}
 			to {
 				opacity: 1;
@@ -139,21 +77,37 @@
 				font-size: 12px;
 			}
 		}
-
-		.toggle-old-years {
-			background: #f8f8f8 !important;
-			border-color: #ddd !important;
-			color: #999 !important;
+				.team-navigation {
+			margin-bottom: 20px;
+			border-bottom: 1px solid #2a2a2a;
+			padding-bottom: 10px;
 		}
 
-		.toggle-old-years:hover {
-			background: #f0f0f0 !important;
-			border-color: #e74c3c !important;
-			color: #e74c3c !important;
+		.team-nav-link {
+			color: #999;
+			text-decoration: none;
+			font-size: 14px;
+			font-weight: 500;
+			margin-right: 20px;
+			padding-bottom: 3px;
+			transition: all 0.3s ease;
+			display: inline-block;
 		}
 
-		.toggle-old-years i {
-			margin-right: 5px;
+		.team-nav-link:hover {
+			color: #e74c3c;
+		}
+
+		.team-nav-link.active {
+			color: #e74c3c;
+			font-weight: 600;
+			border-bottom: 2px solid #e74c3c;
+		}
+
+		.team-nav-link i {
+			font-size: 11px;
+			margin-left: 4px;
+			opacity: 0.7;
 		}
 	</style>
 </head>
@@ -185,7 +139,7 @@
 			<div class="fullwidth-block inner-content">
 				<div class="container">
 					<div class="row">
-						<div class="col-md-7">
+						<div class="col-md-8">
 							<div class="content">
 								<h2 class="entry-title">Offres musicales personnalisées</h2>
 								<p class="leading">L'OrchestraKot joue pour vous!</p>
@@ -222,59 +176,37 @@
 								<img src="../images/about/PhotoGuitares.jpg" width="100%" height="100%">
 								<img src="../images/about/PhotoPiano.jpg" width="100%" height="100%">
 							</div>
-						</div>
-						
-						<div class="col-md-2">
+						</div>	
+						<div class="col-md-4">
 							<aside class="sidebar">
 								<div class="widget">
-									<!-- Filtres -->
-									<div class="team-filters">
-										<div class="filter-section">
-											<span class="filter-label">Année</span>
-											<div class="filter-buttons" id="year-filters">
-												<!-- <button class="filter-btn active" data-year="all">Toutes</button> -->
-												<button class="filter-btn active" data-year="2024-2025">Actuelle</button>
-												<button class="filter-btn toggle-old-years" id="toggle-years">
-													<i class="fa fa-clock-o"></i> Années précédentes
-												</button>
-												<div id="old-years" style="display: none; width: 100%; margin-top: 8px;">
-													<button class="filter-btn" data-year="2023-2024">2023-2024</button>
-													<button class="filter-btn" data-year="2022-2023">2022-2023</button>
+									<h3 class="widget-title widget-title-dynamic" id="team-title">
+										<a href="gallery.html" style="color: inherit; text-decoration: none;">
+											L'équipe
+										</a>
+									</h3>
+									<div style="margin-bottom: 20px; border-bottom: 1px solid #333; padding-bottom: 10px;">
+										<a href="#" id="current-team-link" 
+											style="color: #e74c3c; 
+													text-decoration: none; 
+													font-size: 14px;
+													font-weight: 600;
+													margin-right: 15px;
+													border-bottom: 2px solid #e74c3c;
+													padding-bottom: 3px;">
+											Équipe actuelle
+										</a>
+										<a href="gallery.html" 
+											style="color: #999; 
+													text-decoration: none; 
+													font-size: 14px;
+													font-weight: 500;
+													transition: color 0.3s ease;">
+											Toutes les équipes
+											<i class="fa fa-arrow-right" style="font-size: 12px; margin-left: 4px;"></i>
+										</a>
+									</div>
 
-													<!-- Ajoutez d'autres années anciennes ici -->
-												</div>
-											</div>
-										</div>
-										
-										<div class="filter-section">
-											<span class="filter-label">Instrument</span>
-											<div class="filter-buttons" id="instrument-filters">
-												<button class="filter-btn active" data-instrument="all">Tous</button>
-												<button class="filter-btn" data-instrument="basse">Basse</button>
-												<button class="filter-btn" data-instrument="guitare">Guitare</button>
-												<button class="filter-btn" data-instrument="piano">Piano</button>
-												<button class="filter-btn" data-instrument="batterie">Batterie</button>
-												<button class="filter-btn" data-instrument="chant">Chant</button>
-												<button class="filter-btn" data-instrument="flute">Flûte</button>
-												<button class="filter-btn" data-instrument="trompette">Trompette</button>
-												<button class="filter-btn" data-instrument="violon">Violon</button>
-												<button class="filter-btn" data-instrument="trombone">Trombone</button>
-											</div>
-										</div>
-									</div>
-								</div>
-							</aside>
-						</div>
-									
-						<div class="col-md-3">
-							<aside class="sidebar">
-								<div class="widget">
-									<!-- Titre dynamique -->
-									<h3 class="widget-title widget-title-dynamic" id="team-title">L'équipe</h3>
-									<div class="breadcrumb-team" id="team-breadcrumb">
-										<span class="active">Tous les membres</span>
-									</div>
-									
 									<!-- Liste des membres -->
 									<ul class="discography-list" id="team-list">
 										<!-- 2024-2025 -->
@@ -361,9 +293,15 @@
 										</li>
 										
 										<li class="team-member" data-year="2024-2025" data-instrument="batterie">
-											<figure class="cover"><img src="../images/team/team2024/mateo.jpg" alt="Mateo Bauvir"></figure>
+											<figure class="cover">
+												<a href="gallery.html?path=Nos instrumentistes/Batterie">
+													<img src="../images/team/team2024/mateo.jpg" alt="Mateo Bauvir">
+												</a>
+											</figure>
 											<div class="detail">
-												<h3><a href="#">Mateo Bauvir</a></h3>
+												<h3>
+													<a href="gallery.html?path=Nos instrumentistes/Batterie">Mateo Bauvir</a>
+												</h3>
 												<span class="year">Batterie</span>
 												<span class="track">EPL 3e bachelier INGÉNIEUR CIVIL</span>
 											</div>
@@ -388,7 +326,7 @@
 										</li>
 										
 										<li class="team-member" data-year="2024-2025" data-instrument="trompette">
-											<figure class="cover"><img src="../images/team/team2024/thibault.jpg" alt="Thibaut Doyen"></figure>
+											<figure class="cover"><img src="../images/team/team2024/thibaut.jpg" alt="Thibaut Doyen"></figure>
 											<div class="detail">
 												<h3><a href="#">Thibaut Doyen</a></h3>
 												<span class="year">Trompette</span>
@@ -534,26 +472,48 @@
 			
 			let titleText = "L'équipe";
 			let breadcrumbHTML = '';
+			let galleryButton = '';
 			
-			// Construire le fil d'Ariane
 			if (currentYear !== 'all' || currentInstrument !== 'all') {
 				breadcrumbHTML = '<span>L\'équipe</span>';
 				
 				if (currentYear !== 'all') {
 					breadcrumbHTML += '<span class="separator">/</span>';
 					breadcrumbHTML += `<span class="active">${currentYear}</span>`;
+					
+					// Bouton pour voir cette année en galerie
+					galleryButton = `
+						<a href="gallery.html?path=Nos équipes/${currentYear}" 
+						style="display: inline-block; margin-top: 10px; color: #e74c3c; font-size: 13px;">
+							<i class="fa fa-external-link"></i> Voir en galerie
+						</a>
+					`;
 				}
 				
 				if (currentInstrument !== 'all') {
 					breadcrumbHTML += '<span class="separator">/</span>';
 					breadcrumbHTML += `<span class="active">${instrumentNames[currentInstrument]}</span>`;
 					titleText = instrumentNames[currentInstrument];
+					
+					// Bouton pour voir cet instrument en galerie
+					galleryButton = `
+						<a href="gallery.html?path=Nos instrumentistes/${instrumentNames[currentInstrument]}" 
+						style="display: inline-block; margin-top: 10px; color: #e74c3c; font-size: 13px;">
+							<i class="fa fa-external-link"></i> Voir en galerie
+						</a>
+					`;
 				}
 			} else {
 				breadcrumbHTML = '<span class="active">Tous les membres</span>';
+				galleryButton = `
+					<a href="gallery.html?path=Nos équipes" 
+					style="display: inline-block; margin-top: 10px; color: #e74c3c; font-size: 13px;">
+						<i class="fa fa-external-link"></i> Voir toutes les équipes
+					</a>
+				`;
 			}
 			
-			title.textContent = titleText;
+			title.innerHTML = titleText + galleryButton;
 			breadcrumb.innerHTML = breadcrumbHTML;
 		}
 		

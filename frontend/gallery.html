@@ -85,6 +85,29 @@
             font-size: 14px;
             color: #666;
         }
+
+        .image-card .image-description {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: linear-gradient(to top, rgba(0,0,0,0.9), transparent);
+            color: white;
+            padding: 12px;
+            font-size: 12px;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .image-card:hover .image-description {
+            opacity: 1;
+        }
+
+        .image-description .name {
+            font-weight: 600;
+            font-size: 14px;
+            margin-bottom: 4px;
+        }
         
         .images-grid {
             display: grid;
@@ -313,13 +336,11 @@
     <script src="js/app.js"></script>
     
     <script>
-        // État de l'application
         let galleryData = null;
         let currentPath = [];
         let currentImages = [];
         let currentImageIndex = 0;
 
-        // Charger la structure de la galerie
         async function loadGallery() {
             try {
                 const response = await fetch('gallery-structure.json');
@@ -330,11 +351,10 @@
             } catch (error) {
                 console.error('Erreur chargement galerie:', error);
                 document.getElementById('loading').innerHTML = 
-                    '<p>⚠️ Erreur de chargement. Veuillez exécuter le script Python pour générer la structure.</p>';
+                    '<p> Erreur de chargement. Veuillez exécuter le script Python pour générer la structure.</p>';
             }
         }
 
-        // Obtenir le dossier actuel
         function getCurrentFolder() {
             let current = galleryData;
             for (const folderName of currentPath) {
@@ -343,7 +363,6 @@
             return current;
         }
 
-        // Afficher la galerie
         function renderGallery() {
             const current = getCurrentFolder();
             
@@ -352,7 +371,6 @@
             renderImages(current.images || []);
         }
 
-        // Afficher le fil d'Ariane
         function renderBreadcrumb() {
             const breadcrumb = document.getElementById('breadcrumb');
             let html = '<a class="breadcrumb-item" onclick="navigateToRoot()"><i class="fa fa-home"></i> Accueil</a>';
@@ -365,7 +383,6 @@
             breadcrumb.innerHTML = html;
         }
 
-        // Afficher les dossiers
         function renderFolders(folders) {
             const container = document.getElementById('folders-container');
             
@@ -389,7 +406,6 @@
             container.innerHTML = html;
         }
 
-        // Compter les images dans un dossier
         function countImages(folder) {
             let count = folder.images ? folder.images.length : 0;
             if (folder.folders) {
@@ -400,12 +416,26 @@
             return count;
         }
 
-        // Afficher les images
         function renderImages(images) {
             const container = document.getElementById('images-container');
-            currentImages = images;
             
-            if (images.length === 0) {
+            let sortedImages = [...images];
+            const isInstrumentistes = currentPath.includes('Nos instrumentistes');
+            
+            if (isInstrumentistes) {
+                sortedImages.sort((a, b) => {
+                    const yearA = extractFirstYear(a.description);
+                    const yearB = extractFirstYear(b.description);
+                    if (yearA === yearB) { // il termine plus tard que ceux qui ont commencé en meme temps
+                        return -(extractLastYear(a.description) - extractLastYear(b.description));
+                    }
+                    return yearB - yearA;
+                });
+            }
+            
+            currentImages = sortedImages;
+            
+            if (sortedImages.length === 0) {
                 if (document.getElementById('folders-container').innerHTML === '') {
                     container.innerHTML = `
                         <div class="empty-message">
@@ -420,8 +450,7 @@
             }
             
             let html = '';
-            images.forEach((image, index) => {
-                // Utiliser le thumbnail si disponible, sinon l'image normale
+            sortedImages.forEach((image, index) => {
                 const thumbPath = image.path.replace('/images', '/images/thumbnails/')
                     .replace(/\.(jpg|jpeg|png|gif|bmp|webp)$/i, '_thumb.jpg');
                 const imgSrc = image.thumb ? `../${image.thumb}` : `../${thumbPath}`;
@@ -429,7 +458,13 @@
                 html += `
                     <div class="image-card" onclick="openLightbox(${index})">
                         <img src="${imgSrc}" alt="${image.name}" loading="lazy" 
-                             onerror="this.src='../${image.path}'">
+                            onerror="this.src='../${image.path}'">
+                        ${image.description ? `
+                            <div class="image-description">
+                                <div class="name">${image.name}</div>
+                                <div>${image.description}</div>
+                            </div>
+                        ` : ''}
                     </div>
                 `;
             });
@@ -437,7 +472,19 @@
             container.innerHTML = html;
         }
 
-        // Navigation
+        function extractFirstYear(description) {
+            if (!description) return 0;
+            const match = description.match(/(\d{4})/);
+            return match ? parseInt(match[1]) : 0;
+        }
+        function extractLastYear(description) {
+            if (!description) return 0;
+            const matches = description.match(/(\d{4})/g);
+            if (!matches || matches.length === 0) return 0;
+            if (matches.length === 1) return parseInt(matches[0]);
+            return parseInt(matches[matches.length - 1]);
+        }
+
         function navigateToRoot() {
             currentPath = [];
             renderGallery();
@@ -453,7 +500,6 @@
             renderGallery();
         }
 
-        // Lightbox
         function openLightbox(index) {
             currentImageIndex = index;
             showLightboxImage();
@@ -478,7 +524,6 @@
             showLightboxImage();
         }
 
-        // Navigation au clavier
         document.addEventListener('keydown', (e) => {
             const lightbox = document.getElementById('lightbox');
             if (lightbox.classList.contains('active')) {
@@ -488,7 +533,6 @@
             }
         });
 
-        // Initialisation
         document.addEventListener('DOMContentLoaded', loadGallery);
     </script>
 </body>
