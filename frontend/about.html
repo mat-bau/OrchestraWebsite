@@ -139,13 +139,13 @@
 			<div class="fullwidth-block inner-content">
 				<div class="container">
 					<div class="row">
-						<div class="col-md-8">
-							<div class="content">
-								<h2 class="entry-title">Offres musicales personnalisées</h2>
-								<p class="leading">L'OrchestraKot joue pour vous!</p>
-								<p>Nous accueillons à bras ouverts les demandes d'animation musicale lors de vos événements, aussi divers soient-ils.
-								Que ce soit pour des kots à projets, pour des particuliers, des remises de diplômes ou encore d'autres activités, nous sommes ouverts à tout!</p>
-								<img src="../images/public/Général/lequipe2024.jpg" width="100%" height="100%">
+						<div class="col-md-8"> 
+							<div class="content"> 
+								<h2 class="entry-title">Offres musicales personnalisées</h2> 
+								<p class="leading">L'OrchestraKot joue pour vous!</p> 
+								<p>Nous accueillons à bras ouverts les demandes d'animation musicale lors de vos événements, aussi divers soient-ils. 
+								Que ce soit pour des kots à projets, pour des particuliers, des remises de diplômes ou encore d'autres activités, nous sommes ouverts à tout!</p> 
+								<img id="current-team-photo" src="../images/public/Général/lequipe2024.jpg" width="100%" height="100%"> 
 							</div>
 
 							<div class="content">
@@ -209,10 +209,9 @@
 
 									<!-- Liste des membres -->
 									<ul class="discography-list" id="team-list">
-										<!-- c'est géré dynamiquement ! il faut juste remplir le team-profiles.json-->
+										<!-- c'est géré dynamiquement ! il faut juste remplir le team-profiles.json situé dans la racine -->
 									</ul>
 									
-									<!-- Message si aucun résultat -->
 									<div class="empty-state" id="empty-state">
 										<i class="fa fa-search"></i>
 										<p>Aucun membre trouvé pour cette sélection</p>
@@ -413,6 +412,30 @@
 				}
 			}
 		}
+		async function loadCurrentTeamPhoto() {
+			try {
+				const response = await fetch('../team-profiles.json');
+				const data = await response.json();
+				
+				if (data.team_photos) {
+					const now = new Date();
+					const month = now.getMonth() + 1;
+					const year = now.getFullYear();
+					const schoolYear = month >= 9 
+						? `${year}-${year + 1}` 
+						: `${year - 1}-${year}`;
+					
+					const photoPath = data.team_photos[schoolYear];
+					
+					if (photoPath) {
+						document.getElementById('current-team-photo').src = '../' + photoPath;
+					}
+				}
+			} catch (error) {
+				console.error('Erreur chargement photo équipe:', error);
+			}
+		}
+		document.addEventListener('DOMContentLoaded', loadCurrentTeamPhoto);
 
 		document.addEventListener('DOMContentLoaded', function() {
 			loadTeamProfiles().then(() => {

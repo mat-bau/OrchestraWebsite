@@ -148,7 +148,6 @@
             opacity: 0.5;
         }
         
-        /* Lightbox pour afficher les images en grand */
         .lightbox {
             display: none;
             position: fixed;
@@ -284,16 +283,9 @@
                         <h2 class="entry-title">Galerie Photos</h2>
                         
                         <div class="gallery-container">
-                            <!-- Fil d'Ariane -->
                             <div class="breadcrumb" id="breadcrumb"></div>
-                            
-                            <!-- Dossiers -->
                             <div class="folders-grid" id="folders-container"></div>
-                            
-                            <!-- Images -->
                             <div class="images-grid" id="images-container"></div>
-                            
-                            <!-- Message de chargement -->
                             <div class="loading" id="loading">
                                 <i class="fa fa-spinner"></i>
                                 <p>Chargement de la galerie...</p>
@@ -322,7 +314,6 @@
         </footer>
     </div>
 
-    <!-- Lightbox pour afficher les images -->
     <div class="lightbox" id="lightbox">
         <div class="lightbox-close" onclick="closeLightbox()">×</div>
         <div class="lightbox-nav lightbox-prev" onclick="navigateImage(-1)">‹</div>
@@ -340,7 +331,6 @@
         let currentPath = [];
         let currentImages = [];
         let currentImageIndex = 0;
-
 
         function loadFromURL() {
             const urlParams = new URLSearchParams(window.location.search);
@@ -430,12 +420,23 @@
 
         function renderImages(images) {
             const container = document.getElementById('images-container');
-            
-            let sortedImages = [...images];
-            const isInstrumentistes = currentPath.includes('Nos instrumentistes');
-            const isParAnnee = currentPath.includes('Par année');
-            
-            // Ordre de priorité des rôles
+            const pathStr = currentPath.join('/').toLowerCase();
+            const isParAnnee = pathStr.includes('par année');
+            const isParInstrument = pathStr.includes('par instrument');
+            const isAccueil = pathStr === '' || pathStr.includes('accueil');
+
+            container.innerHTML = '';
+            let teamPhoto = null; 
+            const currentFolderName = currentPath[currentPath.length - 1]; 
+            if (galleryData.team_photos && galleryData.team_photos[currentFolderName]) {
+                const teamPhotoPath = galleryData.team_photos[currentFolderName];
+                teamPhoto = {
+                    name: "Photo d'équipe",
+                    path: teamPhotoPath,
+                    description: currentFolderName
+                };
+            }
+
             const ROLE_PRIORITY = {
                 "président": 0,
                 "vice-président": 1,
@@ -443,23 +444,18 @@
                 "trésorière": 2,
                 "secrétaire": 3
             };
-            
-            if (isParAnnee && currentPath.includes('Nos équipes')) {
-                // Tri par rôle pour la section "Par année"
+            let sortedImages = [...images];
+
+            if (isParAnnee) {
                 sortedImages.sort((a, b) => {
                     const roleA = (a.role || "").toLowerCase();
                     const roleB = (b.role || "").toLowerCase();
-                    
-                    const priorityA = ROLE_PRIORITY[roleA] !== undefined ? ROLE_PRIORITY[roleA] : 999;
-                    const priorityB = ROLE_PRIORITY[roleB] !== undefined ? ROLE_PRIORITY[roleB] : 999;
-                    
-                    if (priorityA !== priorityB) {
-                        return priorityA - priorityB;
-                    }
-                    
-                    return a.name.localeCompare(b.name);
+                    const pA = ROLE_PRIORITY[roleA] ?? 999;
+                    const pB = ROLE_PRIORITY[roleB] ?? 999;
+                    return pA !== pB ? pA - pB : a.name.localeCompare(b.name);
                 });
-            } else if (isInstrumentistes) {
+            } 
+            else if (isParInstrument) {
                 sortedImages.sort((a, b) => {
                     const yearA = extractFirstYear(a.description);
                     const yearB = extractFirstYear(b.description);
@@ -469,30 +465,24 @@
                     return yearB - yearA;
                 });
             }
-            currentImages = sortedImages;
-            if (sortedImages.length === 0) {
-                if (document.getElementById('folders-container').innerHTML === '') {
-                    container.innerHTML = `
-                        <div class="empty-message">
-                            <i class="fa fa-image"></i>
-                            <p>Aucune image dans ce dossier</p>
-                        </div>
-                    `;
-                } else {
-                    container.innerHTML = '';
-                }
+
+            currentImages = teamPhoto ? [teamPhoto, ...sortedImages] : sortedImages;
+
+            if (currentImages.length === 0 && !isAccueil) {
+                container.innerHTML = `
+                    <div class="empty-message">
+                        <i class="fa fa-image"></i>
+                        <p>Aucune image dans ce dossier</p>
+                    </div>
+                `;
                 return;
             }
-            
-            let html = '';
-            sortedImages.forEach((image, index) => {
+            const html = currentImages.map((image, index) => {
                 const thumbPath = image.path.replace('/images', '/images/thumbnails/')
-                    .replace(/\.(jpg|jpeg|png|gif|bmp|webp)$/i, '_thumb.jpg');
-                const imgSrc = image.thumb ? `../${image.thumb}` : `../${thumbPath}`;
-                
-                html += `
+                                        .replace(/\.(jpg|jpeg|png|gif|bmp|webp)$/i, '_thumb.jpg');
+                return `
                     <div class="image-card" onclick="openLightbox(${index})">
-                        <img src="${imgSrc}" alt="${image.name}" loading="lazy" 
+                        <img src="../${thumbPath}" alt="${image.name}" loading="lazy"
                             onerror="this.src='../${image.path}'">
                         ${image.description ? `
                             <div class="image-description">
@@ -502,8 +492,8 @@
                         ` : ''}
                     </div>
                 `;
-            });
-            
+            }).join('');
+
             container.innerHTML = html;
         }
 
@@ -512,6 +502,7 @@
             const match = description.match(/(\d{4})/);
             return match ? parseInt(match[1]) : 0;
         }
+        
         function extractLastYear(description) {
             if (!description) return 0;
             const matches = description.match(/(\d{4})/g);

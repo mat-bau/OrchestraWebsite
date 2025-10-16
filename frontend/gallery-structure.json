@@ -12,11 +12,6 @@
               "name": "2025-2026",
               "images": [
                 {
-                  "name": "Photo d'équipe 2025-2026",
-                  "path": "images/team/team2025/lequipe2025.jpg",
-                  "description": "L'équipe complète"
-                },
-                {
                   "name": "Victor Antonnuti",
                   "path": "images/team/team2024/victor.jpg",
                   "description": "Président - Trompette - Trombonne - Bac 3 Ingénieur civil",
@@ -70,11 +65,6 @@
             {
               "name": "2024-2025",
               "images": [
-                {
-                  "name": "Photo d'équipe 2024-2025",
-                  "path": "images/team/team2024/lequipe2024.jpg",
-                  "description": "L'équipe complète"
-                },
                 {
                   "name": "Julien David",
                   "path": "images/team/team2024/julien.jpg",
@@ -2028,5 +2018,9 @@
       ]
     }
   ],
-  "images": []
+  "images": [],
+  "team_photos": {
+    "2024-2025": "images/team/team2024/lequipe2024.jpg",
+    "2025-2026": "images/team/team2025/lequipe2025.jpg"
+  }
 }

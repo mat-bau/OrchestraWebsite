@@ -42,7 +42,7 @@ def generate_team_structure():
         years_count = len(team_structure['folders'][0]['folders'])
         instruments_count = len(team_structure['folders'][1]['folders'])
         
-        print(f"✅ Structure d'équipe générée : {years_count} années, {instruments_count} instruments")
+        print(f"Structure d'équipe générée : {years_count} années, {instruments_count} instruments")
         return True
         
     except Exception as e:
@@ -54,34 +54,34 @@ def generate_team_structure():
 def scan_gallery_images():
     """Scanne le dossier images et génère la structure JSON pour la galerie"""
     try:
-        # Importer et exécuter le scanner
         backend_path = Path(__file__).parent / 'backend'
         if str(backend_path) not in sys.path:
             sys.path.insert(0, str(backend_path))
         
         from scan_images import scan_images_directory
         
-        # Scanner le dossier images
         root_dir = Path(__file__).parent.absolute()
         structure = scan_images_directory(str(root_dir / 'images' / 'public'))
         
-        # Sauvegarder dans frontend/
         output_file = root_dir / 'frontend' / 'gallery-structure.json'
         import json
         
-        # Charger la structure existante si elle existe (pour garder l'équipe)
         existing_structure = {}
+        team_photos = {}
         if output_file.exists():
             try:
                 with open(output_file, 'r', encoding='utf-8') as f:
                     existing_structure = json.load(f)
+                    team_photos = existing_structure.get('team_photos', {})
             except:
                 pass
+        
         if 'folders' in existing_structure:
             team_folder = next((f for f in existing_structure['folders'] if f['name'] == 'Nos équipes'), None)
             if team_folder:
-                # Garder le dossier équipe en premier
                 structure['folders'].insert(0, team_folder)
+        if team_photos:
+            structure['team_photos'] = team_photos
         
         with open(output_file, 'w', encoding='utf-8') as f:
             json.dump(structure, f, indent=2, ensure_ascii=False)
@@ -92,13 +92,13 @@ def scan_gallery_images():
                 total += count_images(folder)
             return total
         
-        total_images = count_images(structure)
+        total_images = count_images(structure)+1
         print(f"Galerie scannée : {total_images} images trouvées")
         return True
         
     except Exception as e:
-        print(f"❌ Erreur lors du scan de la galerie : {e}")
-        print("⚠️  La galerie pourrait ne pas s'afficher correctement")
+        print(f"Erreur lors du scan de la galerie : {e}")
+        print("La galerie pourrait ne pas s'afficher correctement")
         return False
 
 def main():

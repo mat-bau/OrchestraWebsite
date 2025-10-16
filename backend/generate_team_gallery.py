@@ -228,20 +228,9 @@ def generate_team_structure():
                 "role": member['role']  # Keep for HTML sorting
             })
         
-        # Add team photo at the beginning if it exists
-        images = []
-        if school_year in team_photos:
-            images.append({
-                "name": f"Photo d'équipe {school_year}",
-                "path": team_photos[school_year],
-                "description": "L'équipe complète"
-            })
-        
-        images.extend(member_images)
-        
         years_folders.append({
             "name": school_year,
-            "images": images,
+            "images": member_images,
             "folders": []
         })
     
@@ -282,8 +271,12 @@ def merge_with_existing_gallery(team_structure):
     """Fusionne la structure de l'équipe avec la galerie existante"""
     root_dir = Path(__file__).parent.parent.absolute()
     gallery_file = root_dir / 'frontend' / 'gallery-structure.json'
+    profiles_file = root_dir / 'team-profiles.json'
     
-    # Load existing gallery
+    with open(profiles_file, 'r', encoding='utf-8') as f:
+        profiles_data = json.load(f)
+    team_photos_dict = profiles_data.get('team_photos', {})
+    
     existing_gallery = {"folders": [], "images": []}
     if gallery_file.exists():
         try:
@@ -298,11 +291,19 @@ def merge_with_existing_gallery(team_structure):
     
     return {
         "folders": new_folders,
-        "images": existing_gallery.get('images', [])
+        "images": existing_gallery.get('images', []),
+        "team_photos": team_photos_dict
     }
 
-
 if __name__ == '__main__':
-    structure = generate_team_structure()
-    if structure:
-        print(json.dumps(structure, indent=2, ensure_ascii=False))
+    team_structure = generate_team_structure()
+    
+    if team_structure:
+        final_gallery = merge_with_existing_gallery(team_structure)
+        root_dir = Path(__file__).parent.parent.absolute()
+        output_file = root_dir / 'frontend' / 'gallery-structure.json'
+        
+        with open(output_file, 'w', encoding='utf-8') as f:
+            json.dump(final_gallery, f, indent=2, ensure_ascii=False)
+        
+        print(f"Gallery structure saved to {output_file}")
