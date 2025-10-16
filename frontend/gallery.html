@@ -341,17 +341,29 @@
         let currentImages = [];
         let currentImageIndex = 0;
 
+
+        function loadFromURL() {
+            const urlParams = new URLSearchParams(window.location.search);
+            const path = urlParams.get('path');
+            
+            if (path) {
+                currentPath = path.split('/').filter(p => p);
+            }
+        }
+
         async function loadGallery() {
             try {
                 const response = await fetch('gallery-structure.json');
                 galleryData = await response.json();
                 
                 document.getElementById('loading').style.display = 'none';
+                
+                loadFromURL(); 
                 renderGallery();
             } catch (error) {
                 console.error('Erreur chargement galerie:', error);
                 document.getElementById('loading').innerHTML = 
-                    '<p> Erreur de chargement. Veuillez exécuter le script Python pour générer la structure.</p>';
+                    '<p>Erreur de chargement.</p>';
             }
         }
 
@@ -421,20 +433,43 @@
             
             let sortedImages = [...images];
             const isInstrumentistes = currentPath.includes('Nos instrumentistes');
+            const isParAnnee = currentPath.includes('Par année');
             
-            if (isInstrumentistes) {
+            // Ordre de priorité des rôles
+            const ROLE_PRIORITY = {
+                "président": 0,
+                "vice-président": 1,
+                "trésorier": 2,
+                "trésorière": 2,
+                "secrétaire": 3
+            };
+            
+            if (isParAnnee && currentPath.includes('Nos équipes')) {
+                // Tri par rôle pour la section "Par année"
+                sortedImages.sort((a, b) => {
+                    const roleA = (a.role || "").toLowerCase();
+                    const roleB = (b.role || "").toLowerCase();
+                    
+                    const priorityA = ROLE_PRIORITY[roleA] !== undefined ? ROLE_PRIORITY[roleA] : 999;
+                    const priorityB = ROLE_PRIORITY[roleB] !== undefined ? ROLE_PRIORITY[roleB] : 999;
+                    
+                    if (priorityA !== priorityB) {
+                        return priorityA - priorityB;
+                    }
+                    
+                    return a.name.localeCompare(b.name);
+                });
+            } else if (isInstrumentistes) {
                 sortedImages.sort((a, b) => {
                     const yearA = extractFirstYear(a.description);
                     const yearB = extractFirstYear(b.description);
-                    if (yearA === yearB) { // il termine plus tard que ceux qui ont commencé en meme temps
+                    if (yearA === yearB) {
                         return -(extractLastYear(a.description) - extractLastYear(b.description));
                     }
                     return yearB - yearA;
                 });
             }
-            
             currentImages = sortedImages;
-            
             if (sortedImages.length === 0) {
                 if (document.getElementById('folders-container').innerHTML === '') {
                     container.innerHTML = `

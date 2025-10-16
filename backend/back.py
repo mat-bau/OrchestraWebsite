@@ -8,21 +8,16 @@ import json
 from scheduler import OptimizedRepetitionScheduler
 import traceback
 
-# Charger les variables d'environnement
 load_dotenv()
-
-# Déterminer les chemins absolus
 BACKEND_DIR = Path(__file__).parent.absolute()
 ROOT_DIR = Path(os.getcwd()).absolute()
 DATA_DIR = ROOT_DIR / "data-planifier"
 
-# Créer l'app Flask avec les bons chemins
 app = Flask(__name__, 
            static_folder=str(ROOT_DIR / 'frontend'), 
            static_url_path='')
 
 BASE_URL = os.getenv('BASE_URL', 'http://localhost:5050')
-# Configuration Flask
 DEBUG_MODE = os.getenv('DEBUG', 'False').lower() == 'true'
 if DEBUG_MODE:
     CORS(app, resources={r"/*": {"origins": "*"}})
@@ -33,7 +28,6 @@ else:
 
 PORT = int(os.getenv('PORT', 5050))
 
-# Créer les dossiers nécessaires
 UPLOAD_FOLDER = DATA_DIR / "uploads"
 EXPORTS_FOLDER = DATA_DIR / "exports"
 GENERATED_FILE_PATH = None
@@ -41,7 +35,6 @@ GENERATED_FILE_PATH = None
 os.makedirs(UPLOAD_FOLDER, exist_ok=True)
 os.makedirs(EXPORTS_FOLDER, exist_ok=True)
 
-# Route pour servir le frontend
 @app.route('/')
 def serve_frontend():
     """Sert le fichier index.html du frontend"""
@@ -127,6 +120,18 @@ def download():
     except Exception as e:
         return jsonify({"error": str(e)}), 500
 
+@app.route('/team-profiles.json')
+def serve_team_profiles():
+    """Sert le fichier team-profiles.json depuis la racine"""
+    try:
+        team_profiles_path = ROOT_DIR / 'team-profiles.json'
+        if team_profiles_path.exists():
+            return send_file(str(team_profiles_path))
+        else:
+            return jsonify({"error": "Fichier team-profiles.json introuvable"}), 404
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
+
 @app.route('/api/health')
 def health_check():
     """Point de contrôle santé pour debug"""
@@ -139,7 +144,8 @@ def health_check():
         'exports_folder': str(EXPORTS_FOLDER),
         'debug': DEBUG_MODE,
         'frontend_exists': (ROOT_DIR / 'frontend' / 'index.html').exists(),
-        'images_folder_exists': (ROOT_DIR / 'images').exists()
+        'images_folder_exists': (ROOT_DIR / 'images').exists(),
+        'team_profiles_exists': (ROOT_DIR / 'team-profiles.json').exists()  # AJOUT
     })
 
 if __name__ == '__main__':

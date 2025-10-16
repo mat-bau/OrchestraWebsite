@@ -1,0 +1,173 @@
+{
+  "team_photos":{
+    "2024-2025": "images/team/team2024/lequipe2024.jpg",
+    "2025-2026": "images/team/team2025/lequipe2025.jpg"
+  },
+  "members": [
+    {
+      "name": "Julien David",
+      "instruments": ["Basse"],
+      "roles": {"2023-2024" :"", "2024-2025" :"Président"},
+      "etudes": {"2023-2024": "Bac 3 Ingénieur civil", "2024-2025": "Master 1 Ingénieur civil"},
+      "annee_debut": 2023,
+      "annee_fin": 2025,
+      "images": [
+        "images/team/team2024/julien.jpg"
+      ]
+    },
+    {
+      "name": "Antoine Sulon",
+      "instruments": ["Basse"],
+      "roles": {"2023-2024" :"", "2024-2025" :"Vice-président"},
+      "etudes": {"2023-2024": "Bac 3 Bioingénieur", "2024-2025": "Master 1 Bioingénieur", "2025-2026": "Master 2 Bioingénieur"},
+      "annee_debut": 2023,
+      "annee_fin": 2026,
+      "images": [
+        "images/team/team2024/antoine.jpg"
+      ]
+    },
+    {
+      "name": "Mateo Bauvir",
+      "instruments": ["Batterie"],
+      "roles": "",
+      "etudes": {"2024-2025": "Bac 3 Ingénieur civil", "2025-2026": "Master 1 Ingénieur civil"},
+      "annee_debut": 2024,
+      "annee_fin": 2026,
+      "images": [
+        "images/team/team2024/mateo.jpg"
+      ]
+    },
+    {
+      "name": "Noé Trifiro",
+      "instruments": ["Batterie"],
+      "roles": "",
+      "etudes": {"2022-2023": "Bac 3 Journalisme","2023-2024": "Master 1 Journalisme","2024-2025": "Master 2 Journalisme"},
+      "annee_debut": 2022,
+      "annee_fin": 2025,
+      "images": [
+        "images/team/team2024/noe.jpg"
+      ]
+    },
+    {
+      "name": "Louis Beautrix",
+      "instruments": ["Batterie"],
+      "roles": "",
+      "etudes": {"2021-2022": "Bac 3 Géographie", "2022-2023": "Master 1 Géographie", "2023-2024": "Master 2 en Géographie", "2024-2025": "Doctorant en Géographie"},
+      "annee_debut": 2021,
+      "annee_fin": 2025,
+      "images": [
+        "images/team/team2024/louis.jpg"
+      ]
+    },
+    {
+      "name": "Maxime Noël",
+      "instruments": ["Guitare", "Chant"],
+      "roles": "",
+      "etudes": {"2023-2024": "Master 1 Ingénieur civil", "2024-2025": "Master 2 Ingénieur civil"},
+      "annee_debut": 2023,
+      "annee_fin": 2025,
+      "images": [
+        "images/team/team2024/maxime.jpg"
+      ]
+    },
+    {
+      "name": "Manon Piquepée",
+      "instruments": ["Chant"],
+      "roles": {"2024-2025" :"", "2025-2026" :"Trésorière"},
+      "etudes": {"2024-2025": "Bac 3 Ingénieur civil", "2025-2026": "Master 1 Ingénieur civil"},
+      "annee_debut": 2024,
+      "annee_fin": 2026,
+      "images": [
+        "images/team/team2024/manon.jpg"
+      ]
+    },
+    {
+      "name": "Camille Maillard",
+      "instruments": ["Trompette"],
+      "roles": {"2024-2025" :"", "2025-2026" :"Vice-président"},
+      "etudes": {"2024-2025": "Bac 2 Ingénieur civil", "2025-2026": "Bac 3 Ingénieur civil"},
+      "annee_debut": 2024,
+      "annee_fin": 2026,
+      "images": [
+        "images/team/team2024/camille.jpg"
+      ]
+    },
+    {
+      "name": "Victor Antonnuti",
+      "instruments": ["Trompette", "Trombonne"],
+      "roles": {"2024-2025" :"", "2025-2026" :"Président"},
+      "etudes": {"2024-2025": "Bac 2 Ingénieur civil", "2025-2026": "Bac 3 Ingénieur civil"},
+      "annee_debut": 2024,
+      "annee_fin": 2026,
+      "images": [
+        "images/team/team2024/victor.jpg"
+      ]
+    },
+    {
+      "name": "Thibaut Doyen",
+      "instruments": ["Trompette"],
+      "roles": "",
+      "etudes": {"2024-2025": "Master 1 Sciences politiques", "2025-2026": "Master 2 Sciences politiques"},
+      "annee_debut": 2024,
+      "annee_fin": 2026,
+      "images": [
+        "images/team/team2024/thibaut.jpg"
+      ]
+    },
+    {
+      "name": "Adèle Thiry",
+      "instruments": ["Flûte"],
+      "roles": "",
+      "etudes": {"2024-2025": "Master 2 Ingénieur civil"},
+      "annee_debut": 2024,
+      "annee_fin": 2025,
+      "images": [
+        "images/team/team2024/adele.jpg"
+      ]
+    },
+    {
+      "name": "Geoffroy De Muyter",
+      "instruments": ["Violon", "Basse"],
+      "roles": "",
+      "etudes": {"2024-2025": "Master 2 Ingénieur civil", "2025-2026": "Doctorant en Ingénieur civil"},
+      "annee_debut": 2024,
+      "annee_fin": 2026,
+      "images": [
+        "images/team/team2024/geoffroy.jpg"
+      ]
+    },
+    {
+      "name": "Alice Sergent",
+      "instruments": ["Piano"],
+      "roles": "",
+      "etudes": {"2023-2024": "Bac 2 Bioingénieur", "2024-2025": "Bac 3 Bioingénieur"},
+      "annee_debut": 2023,
+      "annee_fin": 2025,
+      "images": [
+        "images/team/team2024/alice.jpg"
+      ]
+    },
+    {
+      "name": "Adrien Antonutti",
+      "instruments": ["Guitare"],
+      "roles": {"2024-2025" :"Trésorier"},
+      "etudes": {"2023-2024": "Bac 3 Ingénieur civil", "2024-2025": "Master 1 Ingénieur civil"},
+      "annee_debut": 2023,
+      "annee_fin": 2025,
+      "images": [
+        "images/team/team2024/adrien.jpg"
+      ]
+    },
+    {
+      "name": "Félicie Van Der Cam",
+      "instruments": ["Piano", "Chant"],
+      "roles": "",
+      "etudes": {"2024-2025": "BAC 2 IMEP", "2025-2026": "BAC 3 IMEP"},
+      "annee_debut": 2024,
+      "annee_fin": 2026,
+      "images": [
+        "images/team/team2024/felicie.jpg"
+      ]
+    }
+  ]
+}
