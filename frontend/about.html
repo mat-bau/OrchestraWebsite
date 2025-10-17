@@ -195,8 +195,8 @@
 													border-bottom: 2px solid #e74c3c;
 													padding-bottom: 3px;">
 											Équipe actuelle
-										</a>
-										<a href="gallery.html" 
+											</a>
+											<a href="gallery.html?path=Nos%20%C3%A9quipes" 
 											style="color: #999; 
 													text-decoration: none; 
 													font-size: 14px;
@@ -387,11 +387,17 @@
 
 		function updateTitle() {
 			const title = document.getElementById('team-title');
+			const currentTeamLink = document.getElementById('current-team-link');
+			const galleryPath = `Nos équipes/Par années/${currentSchoolYear}`;
 			title.innerHTML = `
-				<a href="gallery.html?path=Nos équipes" style="color: inherit; text-decoration: none;">
+				<a href="gallery.html?path=${encodeURIComponent(galleryPath)}" style="color: inherit; text-decoration: none;">
 					L'équipe ${currentSchoolYear}
 				</a>
 			`;
+			
+			if (currentTeamLink) {
+				currentTeamLink.href = `gallery.html?path=${encodeURIComponent(galleryPath)}`;
+			}
 		}
 
 		function displayTeamPhoto() {
