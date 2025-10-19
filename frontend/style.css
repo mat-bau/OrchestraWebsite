@@ -2002,9 +2002,7 @@ body {
   .content .post .entry-title {
     margin-top: 0;
     margin-bottom: 10px;
-    font-size: 24px;
-    font-size: 1.5em;
-    font-size: normal;
+    font-size: 3.5em;
     font-weight: 700; }
     /* line 123, sass/layout/_content.scss */
     .content .post .entry-title a {
@@ -2513,9 +2511,8 @@ body {
 /* line 6, sass/pages/_post.scss */
 .content .entry-title {
   margin-top: 0;
-  margin-bottom: 30px;
+  margin-bottom: 10px;
   font-size: 36px;
-  font-size: 2.25em;
   color: white; }
 /* line 13, sass/pages/_post.scss */
 .content .featured-image {
@@ -2527,7 +2524,7 @@ body {
     max-width: 100%; }
 /* line 22, sass/pages/_post.scss */
 .content .leading {
-  margin-bottom: 50px;
+  margin-bottom: 10px;
   color: white;
   font-size: 18px;
   font-size: 1.125em; }
