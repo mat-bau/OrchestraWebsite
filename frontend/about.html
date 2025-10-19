@@ -13,73 +13,163 @@
 	<link rel="stylesheet" href="style.css">
 	
 	<style>
-		
-		.breadcrumb-team {
-			font-size: 14px;
-			color: #666;
-			margin-bottom: 15px;
-		}
-		
-		.breadcrumb-team .separator {
-			margin: 0 5px;
-			color: #999;
-		}
-		
-		.breadcrumb-team .active {
-			color: #e74c3c;
-			font-weight: 600;
-		}
-		
-		.team-member {
-			display: none;
-			animation: fadeIn 0.4s ease;
-		}
-		
-		.team-member.visible {
-			display: block;
-		}
-		
-		@keyframes fadeIn {
-			from {
-				opacity: 0;
-				transform: translateY(8px);
-			}
-			to {
-				opacity: 1;
-				transform: translateY(0);
-			}
-		}
-		
-		.empty-state {
+		.intro-text {
 			text-align: center;
-			padding: 40px 20px;
-			color: #999;
-			display: none;
+			margin-bottom: 50px;
+			color: #ccc;
+			font-size: 17px;
+			line-height: 1.7;
+			max-width: 900px;
+			margin-left: auto;
+			margin-right: auto;
 		}
-		
-		.empty-state.visible {
-			display: block;
+
+		.image-slider-container {
+			width: 100vw;
+			margin-left: calc(-50vw + 50%);
+			overflow-x: auto;
+			overflow-y: hidden;
+			margin-top: 50px;
+			margin-bottom: 50px;
+			background: linear-gradient(90deg, #1a1a1a 0%, transparent 10%, transparent 90%, #1a1a1a 100%);
+			scrollbar-width: none;
+			-ms-overflow-style: none; 
+			padding-right: 0 !important;
+			box-sizing: border-box;
+			border-bottom: 1px solid #333;
+			padding-bottom: 30px;
+			margin-bottom: 30px;
 		}
-		
-		.empty-state i {
-			font-size: 48px;
-			margin-bottom: 10px;
-			opacity: 0.5;
+		.image-slider-container::-webkit-scrollbar { display: none; }
+
+		.image-slider { display: flex; width: fit-content; }
+		.slider-item { flex: 0 0 auto; width: 500px; height: 350px; margin: 0 5px; }
+		.slider-item img { width: 100%; height: 100%; object-fit: cover; box-shadow: 0 4px 12px rgba(0,0,0,0.3); }
+
+		.fullwidth-block.inner-content .container {
+			max-width: 1700px;
+			width: calc(100% - 60px);
+			padding-left: 30px;
+			padding-right: 30px;
+			margin: 0 auto;
+			margin-top: -50px;
 		}
-		
-		@media (max-width: 768px) {
-			.filter-buttons {
-				gap: 5px;
-			}
-			
-			.filter-btn {
-				padding: 6px 12px;
-				font-size: 12px;
-			}
+
+		.page-layout {
+			display: grid;
+			grid-template-columns: 1fr 420px;
+			gap: 40px;
+			align-items: start;
 		}
-				.team-navigation {
+
+		.content-column {
+			width: 100%;
+		}
+
+		.team-column {
+			width: 100%;
+			position: sticky;
+			top: 20px;
+		}
+
+		.section-block {
+			margin-bottom: 60px;
+			padding-bottom: 40px;
+			border-bottom: 1px solid #333;
+		}
+
+		.section-block:last-child {
+			border-bottom: none;
+		}
+
+		.section-block h2 {
+			color: #ffffff !important;
+			font-size: 32px;
+			font-weight: 700;
 			margin-bottom: 20px;
-			border-bottom: 1px solid #2a2a2a;
+		}
+
+		.section-block p {
+			font-size: 15px;
+			line-height: 1.7;
+			margin-bottom: 15px;
+			color: #ccc;
+		}
+
+		.section-block .leading {
+			font-size: 16px;
+			font-weight: 600;
+			color: #e74c3c !important;
+		}
+
+		.section-content {
+			display: grid;
+			grid-template-columns: 1fr 1fr;
+			gap: 40px;
+			align-items: center;
+		}
+
+		.section-content.reverse {
+			direction: rtl;
+		}
+
+		.section-content.reverse > * {
+			direction: ltr;
+		}
+
+		.section-text {
+			width: 100%;
+		}
+
+		.section-media {
+			width: 100%;
+		}
+
+		.section-media img {
+			width: 100%;
+			height: auto;
+			border-radius: 4px;
+			box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+		}
+
+		.video-wrapper {
+			position: relative;
+			width: 100%;
+			height: 400px;
+			border-radius: 8px;
+			overflow: hidden;
+			box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+		}
+
+		.video-wrapper iframe {
+			position: absolute;
+			top: 0;
+			left: 0;
+			width: 100%;
+			height: 100%;
+			border: none;
+		}
+
+		.team-column h2 {
+			color: #ffffff !important;
+			font-size: 32px;
+			font-weight: 700;
+			margin-bottom: 20px;
+		}
+
+		.main-title {
+			text-align: center;
+			color: #ffffff;
+			font-size: 72px;
+			font-weight: 900;
+			margin-bottom: 30px;
+			margin-top: 50px;
+			letter-spacing: 2px;
+		}
+
+		.team-navigation {
+			margin-bottom: 20px;
+			border-bottom: 1px solid #333;
 			padding-bottom: 10px;
 		}
 
@@ -107,7 +197,128 @@
 		.team-nav-link i {
 			font-size: 11px;
 			margin-left: 4px;
-			opacity: 0.7;
+		}
+
+		.discography-list {
+			list-style: none;
+			padding: 0;
+			margin: 0;
+		}
+
+		.discography-list li {
+			display: flex;
+			gap: 12px;
+			margin-bottom: 20px;
+			align-items: flex-start;
+		}
+
+		.discography-list .cover {
+			flex: 0 0 90px;
+			width: 90px;
+			height: 90px;
+			margin: 0;
+		}
+
+		.discography-list .cover img {
+			width: 100%;
+			height: 100%;
+			object-fit: cover;
+			border-radius: 4px;
+		}
+
+		.discography-list .detail {
+			flex: 1;
+			padding: 0;
+			margin: 0;
+		}
+
+		.discography-list .detail h3 {
+			margin: 0 0 5px 0;
+			font-size: 16px;
+			line-height: 1.2;
+		}
+
+		.discography-list .detail .year,
+		.discography-list .detail .track {
+			font-size: 13px;
+			margin: 3px 0;
+			display: block;
+			line-height: 1.4;
+		}
+
+		.team-member {
+			display: none;
+			animation: fadeIn 0.4s ease;
+		}
+		
+		.team-member.visible {
+			display: flex;
+		}
+		
+		@keyframes fadeIn {
+			from {
+				opacity: 0;
+				transform: translateY(8px);
+			}
+			to {
+				opacity: 1;
+				transform: translateY(0);
+			}
+		}
+
+		.empty-state {
+			text-align: center;
+			padding: 40px 20px;
+			color: #999;
+			display: none;
+		}
+		
+		.empty-state.visible {
+			display: block;
+		}
+		
+		.empty-state i {
+			font-size: 48px;
+			margin-bottom: 10px;
+			opacity: 0.5;
+		}
+
+		@media (max-width: 1199px) {
+			.page-layout {
+				grid-template-columns: 1fr;
+				gap: 60px;
+			}
+
+			.team-column {
+				position: static;
+			}
+
+			.section-content {
+				grid-template-columns: 1fr;
+			}
+
+			.section-content.reverse {
+				direction: ltr;
+			}
+		}
+
+		@media (max-width: 768px) {
+			.main-title {
+				font-size: 48px;
+			}
+			
+			.slider-item {
+				width: 350px;
+				height: 250px;
+			}
+
+			.section-block h2 {
+				font-size: 28px;
+			}
+
+			.video-wrapper {
+				height: 250px;
+			}
 		}
 	</style>
 </head>
@@ -138,86 +349,130 @@
 		<main class="main-content">
 			<div class="fullwidth-block inner-content">
 				<div class="container">
-					<div class="row">
-						<div class="col-md-8"> 
-							<div class="content"> 
-								<h2 class="entry-title">Offres musicales personnalisées</h2> 
-								<p class="leading">L'OrchestraKot joue pour vous!</p> 
-								<p>Nous accueillons à bras ouverts les demandes d'animation musicale lors de vos événements, aussi divers soient-ils. 
-								Que ce soit pour des kots à projets, pour des particuliers, des remises de diplômes ou encore d'autres activités, nous sommes ouverts à tout!</p> 
-								<img id="current-team-photo" src="../images/public/Général/lequipe2024.jpg" width="100%" height="100%"> 
-							</div>
+					<h1 class="main-title">Orchestrakot</h1>
+					<p class="intro-text">
+						Nous sommes un groupe de musiciens un peu spécial, constitué cette année de 10 internes qui vivent dans le kot et 6 externes. À la base, un pôle de l'Orchestre Symphonique des Etudiants de Louvain (OSEL) le projet a évolué autour
+						de l'animation musicale. Désormais, l'essentiel de notre travail est de revoir les musiques contemporaines et d'incorporer des instruments classiques afin
+						de vous offrir une expérience unique. 
+					</p>
 
-							<div class="content">
-								<h2 class="entry-title">Le Concert</h2>
-								<p class="leading">L'événement principal de l'OrchestraKot.</p>
-								<p>Chaque premier quadrimestre, nous faisons une représentation à la Ferme du Biéreau, avec chaque année un thème différent.
-								Notre concert c'est quoi ? C'est un concert de 2 heures tenu dans la grange de la Ferme du Biéreau où nous jouons de la musique autour d'un thème
-								pour vous ambiancez vous qui venez à cet événement !</p>
-								<p>Il se déroule généralement à la mi novembre.
-								Pour être tenu au courant de quand et où cela se passe, allez sur notre page Facebook. Cette année, il se déroule le 14 novembre à 20h.
-								Reservez vos places : 
-									<div class="social-links">
-										<a href="https://www.facebook.com/events/1266644341134932?locale=fr_FR"><i class="fa fa-facebook-square"></i></a>
+					<div class="image-slider-container">
+						<div class="image-slider">
+							<div class="slider-item">
+								<img src="../images/about/PhotoViolons.jpg" alt="Violons">
+							</div>
+							<div class="slider-item">
+								<img src="../images/about/PhotoSax.jpg" alt="Saxophone">
+							</div>
+							<div class="slider-item">
+								<img src="../images/about/PhotoGuitares.jpg" alt="Guitares">
+							</div>
+							<div class="slider-item">
+								<img src="../images/about/PhotoPiano.jpg" alt="Piano">
+							</div>
+							<div class="slider-item">
+								<img src="../images/about/PhotoViolons.jpg" alt="Violons">
+							</div>
+							<div class="slider-item">
+								<img src="../images/about/PhotoSax.jpg" alt="Saxophone">
+							</div>
+							<div class="slider-item">
+								<img src="../images/about/PhotoGuitares.jpg" alt="Guitares">
+							</div>
+							<div class="slider-item">
+								<img src="../images/about/PhotoPiano.jpg" alt="Piano">
+							</div>
+						</div>
+					</div>
+
+					<div class="page-layout">
+						<div class="content-column">
+							<div class="section-block">
+								<div class="section-content">
+									<div class="section-text">
+										<h2>Offres musicales personnalisées</h2>
+										<p>
+											Nous accueillons à bras ouverts les demandes d'animation musicale lors de vos événements, aussi divers soient-ils. 
+											Que ce soit pour des kots à projets, pour des particuliers, des remises de diplômes ou encore d'autres activités, nous sommes ouverts à tout!
+											Alors n'hésitez pas à nous contacter via notre adresse e-mail ou notre page Facebook / Instagram pour toute demande d'information ou de réservation.
+										</p>
 									</div>
-								</p>
-								<p>Voici le trailer du concert pour vous donner un avant goût</p>
-								<iframe width="700" height="400" src="https://www.youtube.com/embed/1JbgfiQ49IM" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
-							</div>
-
-							<div class="content">
-								<h2 class="entry-title">Initiation aux instruments</h2>
-								<p class="leading">Jouer sur plus d'une dizaine d'instruments en une soirée? C'est par ici que ça se passe!</p>
-								<p>L'Orchestrakot permet à tout le monde de découvrir un ou plusieurs nouveaux instruments lors de nos soirées d'initiation. De la batterie à la clarinette en passant par la harpe, nous avons une belle panoplie d'instruments à vous faire (re)découvrir. Chaque membre de l'équipe aura le plaisir de vous apprendre à jouer quelques notes sur son instrument.</p>
-								<p>Avant tout, l'initiation aux instruments est un moment de plaisir et de découverte, le tout dans une ambiance décontractée. Que vous n'ayez jamais touché un instrument ou que vous soyez un musicien aguerri, tous sont les bienvenus!</p>
-								<p>Pour être tenu au courant de quand et où cela se passe, allez sur notre page Facebook !</p>
-								<img src="../images/about/PhotoViolons.jpg" width="100%" height="100%">
-								<img src="../images/about/PhotoSax.jpg" width="100%" height="100%">
-								<img src="../images/about/PhotoGuitares.jpg" width="100%" height="100%">
-								<img src="../images/about/PhotoPiano.jpg" width="100%" height="100%">
-							</div>
-						</div>	
-						<div class="col-md-4">
-							<aside class="sidebar">
-								<div class="widget">
-									<h3 class="widget-title widget-title-dynamic" id="team-title">
-										<a href="gallery.html" style="color: inherit; text-decoration: none;">
-											L'équipe
-										</a>
-									</h3>
-									<div style="margin-bottom: 20px; border-bottom: 1px solid #333; padding-bottom: 10px;">
-										<a href="#" id="current-team-link" 
-											style="color: #e74c3c; 
-													text-decoration: none; 
-													font-size: 14px;
-													font-weight: 600;
-													margin-right: 15px;
-													border-bottom: 2px solid #e74c3c;
-													padding-bottom: 3px;">
-											Équipe actuelle
-											</a>
-											<a href="gallery.html?path=Nos%20%C3%A9quipes" 
-											style="color: #999; 
-													text-decoration: none; 
-													font-size: 14px;
-													font-weight: 500;
-													transition: color 0.3s ease;">
-											Toutes les équipes
-											<i class="fa fa-arrow-right" style="font-size: 12px; margin-left: 4px;"></i>
-										</a>
-									</div>
-
-									<!-- Liste des membres -->
-									<ul class="discography-list" id="team-list">
-										<!-- c'est géré dynamiquement ! il faut juste remplir le team-profiles.json situé dans la racine -->
-									</ul>
-									
-									<div class="empty-state" id="empty-state">
-										<i class="fa fa-search"></i>
-										<p>Aucun membre trouvé pour cette sélection</p>
+									<div class="section-media">
+										<img id="current-team-photo" src="../images/public/Général/lequipe2024.jpg" alt="L'équipe OrchestraKot">
 									</div>
 								</div>
-							</aside>
+							</div>
+
+							<div class="section-block">
+								<div class="section-content reverse">
+									<div class="section-text">
+										<h2>Le Concert</h2>
+										<p class="leading">L'événement principal de l'OrchestraKot.</p>
+										<p>
+											Chaque premier quadrimestre, nous faisons une représentation à la Ferme du Biéreau, avec chaque année un thème différent.
+											Notre concert c'est quoi ? C'est un concert de 2 heures tenu dans la grange de la Ferme du Biéreau où nous jouons de la musique autour d'un thème
+											pour vous ambiancez vous qui venez à cet événement !
+										</p>
+										<p>
+											Il se déroule généralement à la mi novembre.
+											Pour être tenu au courant de quand et où cela se passe, allez sur notre page Facebook. Cette année, il se déroule le 13 novembre à 20h.
+										</p>
+										<p>Voici le trailer du concert pour vous donner un avant goût</p>
+									</div>
+									<div class="section-media">
+										<div class="video-wrapper">
+											<iframe src="https://www.youtube.com/embed/1JbgfiQ49IM" 
+												frameborder="0" 
+												allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" 
+												allowfullscreen>
+											</iframe>
+										</div>
+									</div>
+								</div>
+							</div>
+
+							<div class="section-block">
+								<div class="section-content">
+									<div class="section-text">
+										<h2>Initiation aux instruments</h2>
+										<p class="leading">Jouer sur plus d'une dizaine d'instruments en une soirée? C'est par ici que ça se passe!</p>
+										<p>
+											L'Orchestrakot permet à tout le monde de découvrir un ou plusieurs nouveaux instruments lors de nos soirées d'initiation. 
+											De la batterie à la clarinette en passant par la harpe, nous avons une belle panoplie d'instruments à vous faire (re)découvrir. 
+											Chaque membre de l'équipe aura le plaisir de vous apprendre à jouer quelques notes sur son instrument.
+										</p>
+										<p>
+											Avant tout, l'initiation aux instruments est un moment de plaisir et de découverte, le tout dans une ambiance décontractée. 
+											Que vous n'ayez jamais touché un instrument ou que vous soyez un musicien aguerri, tous sont les bienvenus!
+										</p>
+										<p>Pour être tenu au courant de quand et où cela se passe, allez sur notre page Facebook !</p>
+									</div>
+									<div class="section-media">
+										<img src="../images/about/gite-mozaik.jpg" alt="Initiation aux instruments">
+									</div>
+								</div>
+							</div>
+						</div>
+
+						<div class="team-column">
+							<h2 id="team-title">L'équipe</h2>
+							
+							<div class="team-navigation">
+								<a href="#" id="current-team-link" class="team-nav-link active">
+									Équipe actuelle
+								</a>
+								<a href="gallery.html?path=Nos%20équipes" class="team-nav-link">
+									Toutes les équipes
+									<i class="fa fa-arrow-right"></i>
+								</a>
+							</div>
+
+							<ul class="discography-list" id="team-list"></ul>
+							
+							<div class="empty-state" id="empty-state">
+								<i class="fa fa-search"></i>
+								<p>Aucun membre trouvé</p>
+							</div>
 						</div>
 					</div>
 				</div>
@@ -252,25 +507,18 @@
 			const now = new Date();
 			const year = now.getFullYear();
 			const month = now.getMonth() + 1;
-			if (month >= 1 && month <= 8) {
-				return `${year - 1}-${year}`;
-			} else {
-				return `${year}-${year + 1}`;
-			}
+			return (month >= 1 && month <= 8) ? `${year - 1}-${year}` : `${year}-${year + 1}`;
 		}
 
 		async function loadTeamProfiles() {
 			try {
 				const response = await fetch('/team-profiles.json');
-				if (!response.ok) {
-					throw new Error(`HTTP error! status: ${response.status}`);
-				}
+				if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
 				teamProfiles = await response.json();
 				renderCurrentTeam();
 			} catch (error) {
 				console.error('Erreur chargement profils:', error);
-				document.getElementById('team-list').innerHTML = 
-					'<li style="color: #999; padding: 20px;">Impossible de charger l\'équipe</li>';
+				document.getElementById('team-list').innerHTML = '<li style="color: #999; padding: 20px;">Impossible de charger l\'équipe</li>';
 			}
 		}
 
@@ -282,47 +530,29 @@
 		function getCurrentYearImage(member) {
 			const [startYear] = currentSchoolYear.split('-').map(Number);
 			const yearIndex = startYear - member.annee_debut;
-			
-			if (yearIndex >= 0 && yearIndex < member.images.length) {
-				return member.images[yearIndex];
-			}
-			return member.images[member.images.length - 1];
+			return (yearIndex >= 0 && yearIndex < member.images.length) ? member.images[yearIndex] : member.images[member.images.length - 1];
 		}
 
 		function getCurrentYearRole(member) {
 			if (typeof member.roles === 'object' && member.roles !== null && !Array.isArray(member.roles)) {
 				return member.roles[currentSchoolYear] || "";
 			}
-			
-			if (typeof member.roles === 'string') {
-				return member.roles;
-			}
-			
-			return "";
+			return typeof member.roles === 'string' ? member.roles : "";
 		}
 
 		function getCurrentYearStudies(member) {
 			if (typeof member.etudes === 'object' && member.etudes !== null && !Array.isArray(member.etudes)) {
 				return member.etudes[currentSchoolYear] || "";
 			}
-			
-			if (typeof member.etudes === 'string') {
-				return member.etudes;
-			}
-			
-			return "";
+			return typeof member.etudes === 'string' ? member.etudes : "";
 		}
 
 		function normalizeRole(role) {
-			return role.toLowerCase()
-				.normalize("NFD")
-				.replace(/[\u0300-\u036f]/g, "");
+			return role.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "");
 		}
 
 		function renderCurrentTeam() {
 			const teamList = document.getElementById('team-list');
-			let html = '';
-			
 			const currentMembers = teamProfiles.members.filter(isMemberInCurrentYear);
 			
 			if (currentMembers.length === 0) {
@@ -333,54 +563,43 @@
 			const ROLE_PRIORITY = {
 				"president": 0,
 				"vice-president": 1,
-				"tresorier": 2,    
-				"tresoriere": 2,   
-				"secretaire": 3    
+				"tresorier": 2,
+				"tresoriere": 2,
+				"secretaire": 3
 			};
 			
-			// Tri par rôle puis par nom
 			currentMembers.sort((a, b) => {
 				const roleA = normalizeRole(getCurrentYearRole(a));
 				const roleB = normalizeRole(getCurrentYearRole(b));
-				
-				const priorityA = ROLE_PRIORITY[roleA] !== undefined ? ROLE_PRIORITY[roleA] : 999;
-				const priorityB = ROLE_PRIORITY[roleB] !== undefined ? ROLE_PRIORITY[roleB] : 999;
-				
-				if (priorityA !== priorityB) {
-					return priorityA - priorityB;
-				}
-				
-				return a.name.localeCompare(b.name);
+				const priorityA = ROLE_PRIORITY[roleA] ?? 999;
+				const priorityB = ROLE_PRIORITY[roleB] ?? 999;
+				return priorityA !== priorityB ? priorityA - priorityB : a.name.localeCompare(b.name);
 			});
 			
-			currentMembers.forEach(member => {
+			const html = currentMembers.map(member => {
 				const imagePath = getCurrentYearImage(member);
 				const instruments = member.instruments.join(', ');
-				const dataInstruments = member.instruments.map(i => i.toLowerCase()).join(',');
 				const currentRole = getCurrentYearRole(member);
 				const currentStudies = getCurrentYearStudies(member);
 				
-				html += `
-					<li class="team-member visible" 
-						data-year="${currentSchoolYear}" 
-						data-instrument="${dataInstruments}"
-						data-role="${currentRole ? normalizeRole(currentRole) : ''}">
+				return `
+					<li class="team-member visible">
 						<figure class="cover">
-							<a href="gallery.html?path=Nos équipes/Par instrument/${member.instruments[0]}">
+							<a href="gallery.html?path=${encodeURIComponent('Nos équipes/Par instrument/' + member.instruments[0])}">
 								<img src="../${imagePath}" alt="${member.name}">
 							</a>
 						</figure>
 						<div class="detail">
 							<h3>
-								<a href="gallery.html?path=Nos équipes/Par instrument/${member.instruments[0]}">${member.name}</a>
+								<a href="gallery.html?path=${encodeURIComponent('Nos équipes/Par instrument/' + member.instruments[0])}">${member.name}</a>
 							</h3>
 							<span class="year">${instruments}</span>
-							${currentRole ? `<span class="track">${currentRole}</span><br>` : ''}
+							${currentRole ? `<span class="track">${currentRole}</span>` : ''}
 							${currentStudies ? `<span class="track">${currentStudies}</span>` : ''}
 						</div>
 					</li>
 				`;
-			});
+			}).join('');
 			
 			teamList.innerHTML = html;
 		}
@@ -389,64 +608,27 @@
 			const title = document.getElementById('team-title');
 			const currentTeamLink = document.getElementById('current-team-link');
 			const galleryPath = `Nos équipes/Par années/${currentSchoolYear}`;
-			title.innerHTML = `
-				<a href="gallery.html?path=${encodeURIComponent(galleryPath)}" style="color: inherit; text-decoration: none;">
-					L'équipe ${currentSchoolYear}
-				</a>
-			`;
 			
-			if (currentTeamLink) {
-				currentTeamLink.href = `gallery.html?path=${encodeURIComponent(galleryPath)}`;
-			}
+			title.innerHTML = `<a href="gallery.html?path=${encodeURIComponent(galleryPath)}" style="color: inherit; text-decoration: none;">L'équipe ${currentSchoolYear}</a>`;
+			if (currentTeamLink) currentTeamLink.href = `gallery.html?path=${encodeURIComponent(galleryPath)}`;
 		}
 
-		function displayTeamPhoto() {
-			if (teamProfiles.team_photos && teamProfiles.team_photos[currentSchoolYear]) {
-				const teamPhotoContainer = document.getElementById('team-photo-container');
-				if (teamPhotoContainer) {
-					const photoPath = teamProfiles.team_photos[currentSchoolYear];
-					teamPhotoContainer.innerHTML = `
-						<div style="margin-bottom: 20px; border-radius: 8px; overflow: hidden; box-shadow: 0 2px 8px rgba(0,0,0,0.1);">
-							<img src="../${photoPath}" 
-								alt="L'équipe ${currentSchoolYear}" 
-								style="width: 100%; height: auto; display: block;">
-							<p style="text-align: center; padding: 10px; background: #2a2a2a; color: #999; font-size: 13px; margin: 0;">
-								L'équipe complète ${currentSchoolYear}
-							</p>
-						</div>
-					`;
-				}
-			}
-		}
 		async function loadCurrentTeamPhoto() {
 			try {
 				const response = await fetch('../team-profiles.json');
 				const data = await response.json();
 				
-				if (data.team_photos) {
-					const now = new Date();
-					const month = now.getMonth() + 1;
-					const year = now.getFullYear();
-					const schoolYear = month >= 9 
-						? `${year}-${year + 1}` 
-						: `${year - 1}-${year}`;
-					
-					const photoPath = data.team_photos[schoolYear];
-					
-					if (photoPath) {
-						document.getElementById('current-team-photo').src = '../' + photoPath;
-					}
+				if (data.team_photos && data.team_photos[currentSchoolYear]) {
+					document.getElementById('current-team-photo').src = '../' + data.team_photos[currentSchoolYear];
 				}
 			} catch (error) {
 				console.error('Erreur chargement photo équipe:', error);
 			}
 		}
-		document.addEventListener('DOMContentLoaded', loadCurrentTeamPhoto);
 
 		document.addEventListener('DOMContentLoaded', function() {
-			loadTeamProfiles().then(() => {
-				displayTeamPhoto();
-			});
+			loadTeamProfiles();
+			loadCurrentTeamPhoto();
 			updateTitle();
 		});
 	</script>

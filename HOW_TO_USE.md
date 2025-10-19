@@ -202,6 +202,14 @@ Les pages HTML se trouvent dans `frontend/` :
 - [ ] Vérifier que tout s'affiche correctement sur le site
 
 ---
+## Ajout au site internet final 
+L'orchestra loue un serveur au Louvain-li-nux et depuis quelque temps possède un repo sur leur GitLab ce qui permet de mettre à jour le site automatiquement
+en pushant sur le repo de l'Orchestra de leur GitLab ! 
+```bash
+git push gitlab main --force
+```
+
+---
 
 ## Contact technique
 
