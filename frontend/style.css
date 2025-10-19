@@ -2412,7 +2412,9 @@ body {
 
 /* line 172, sass/pages/_homepage.scss */
 .event-carousel {
-  margin-bottom: 70px; }
+  margin-bottom: 70px; 
+  margin-right: 100px;
+}
 
 /* line 173, sass/pages/_homepage.scss */
 .event-nav {
@@ -2435,7 +2437,7 @@ body {
 /* line 191, sass/pages/_homepage.scss */
 .event {
   position: relative;
-  padding-left: 100px; }
+  padding-left: 80px; }
   /* line 195, sass/pages/_homepage.scss */
   .event .entry-date {
     position: absolute;
@@ -2463,6 +2465,7 @@ body {
   /* line 220, sass/pages/_homepage.scss */
   .event .entry-title {
     margin-top: 0;
+    padding-right: 20px;
     font-size: 16px;
     font-size: 1em;
     font-size: normal;
