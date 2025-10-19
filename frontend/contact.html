@@ -20,12 +20,12 @@
 		}
 
 		.contact-container {
-			max-width: 1500px;
+			max-width: 1700px;
 			margin: 0 auto;
 			padding: 0 40px;
 			display: grid;
 			grid-template-columns: 1fr 1fr;
-			gap: 40px;
+			gap: 60px;
 			align-items: stretch;
 		}
 
@@ -45,11 +45,30 @@
 		.contact-info-section {
 			background: rgba(255, 255, 255, 0.05);
 			border-radius: 16px;
-			padding: 40px;
+			padding: 50px;
 			backdrop-filter: blur(10px);
 			display: flex;
 			flex-direction: column;
 			justify-content: space-between;
+			min-height: 600px;
+		}
+
+		@media (max-width: 1024px) {
+			.contact-container {
+				grid-template-columns: 1fr;
+				gap: 40px;
+				max-width: 700px;
+			}
+
+			.contact-image {
+				height: auto;
+				aspect-ratio: 16/9;
+				max-height: 500px;
+			}
+
+			.contact-info-section {
+				min-height: auto;
+			}
 		}
 
 		.info-message-box {
@@ -79,7 +98,7 @@
 			display: flex;
 			align-items: center;
 			gap: 12px;
-			margin-bottom: 20px;
+			margin-bottom: 10px;
 		}
 
 		.info-header .icon {
@@ -110,20 +129,22 @@
 		.info-title {
 			color: #ffffff;
 			font-size: 16px;
-			font-weight: 400;
+			font-weight: 600;
 			margin: 0;
 			line-height: 1.5;
 		}
 
 		.info-content {
-			margin-left: 52px;
+			margin-left: 0px;
 		}
 
 		.info-text {
-			color: #aaa;
+			color: #ffffff;
 			font-size: 16px;
+			font-weight: 100;
 			line-height: 0.8;
 			margin-bottom: 1px;
+			margin-top: 10px;
 		}
 
 		.info-highlight {
@@ -169,51 +190,112 @@
 			font-weight: 600;
 			text-transform: uppercase;
 			letter-spacing: 1px;
-			margin-bottom: 12px;
+			margin-bottom: 4px;
 		}
 
 		.address-text {
-			color: #aaa;
+			color: #ffffff;
 			font-size: 15px;
-			line-height: 1.7;
+			font-weight: 100;
+			line-height: 1.2;
 			margin: 0;
+		}
+
+		@media (max-width: 1200px) {
+			.contact-container {
+				max-width: 1100px;
+				gap: 50px;
+			}
+			
+			.contact-info-section {
+				padding: 40px;
+			}
 		}
 
 		@media (max-width: 1024px) {
 			.contact-container {
 				grid-template-columns: 1fr;
 				gap: 40px;
+				max-width: 700px;
+			}
+
+			.contact-image-section {
+				position: relative;
+				top: 0;
 			}
 
 			.contact-image {
-				height: 400px;
-			}
-
-			.contact-title {
-				font-size: 56px;
+				aspect-ratio: 16/9;
+				max-height: 500px;
 			}
 		}
 
 		@media (max-width: 768px) {
 			.contact-page {
-				padding: 50px 0;
-			}
-
-			.contact-title {
-				font-size: 42px;
-				margin-bottom: 50px;
+				padding: 60px 0;
 			}
 
 			.contact-container {
 				padding: 0 20px;
+				gap: 30px;
 			}
 
 			.contact-info-section {
-				padding: 30px;
+				padding: 30px 25px;
+			}
+
+			.info-message-box {
+				padding: 18px 18px 18px 55px;
+			}
+
+			.info-header .icon {
+				width: 20px;
+				height: 20px;
+			}
+
+			.info-title {
+				font-size: 15px;
+			}
+
+			.info-text,
+			.contact-link {
+				font-size: 14px;
 			}
 
 			.contact-image {
-				height: 300px;
+				aspect-ratio: 4/3;
+				max-height: 350px;
+			}
+		}
+
+		@media (max-width: 480px) {
+			.contact-page {
+				padding: 40px 0;
+			}
+
+			.contact-container {
+				padding: 0 15px;
+			}
+
+			.contact-info-section {
+				padding: 25px 20px;
+			}
+
+			.info-message-box {
+				padding: 15px 15px 15px 50px;
+				margin-bottom: 25px;
+			}
+
+			.info-message-text {
+				font-size: 14px;
+			}
+
+			.info-block {
+				margin-bottom: 25px;
+			}
+
+			.address-block {
+				padding: 20px;
 			}
 		}
 	</style>
@@ -264,14 +346,15 @@
 								<h3 class="info-title">Réseaux</h3>
 							</div>
 							<div class="info-content">
-								<p class="info-text">Notre adresse mail :</p>
+								<p class="info-text">Notre adresse mail :
 								<a href="mailto:orchestrakot.ucl@gmail.com" class="contact-link">orchestrakot.ucl@gmail.com</a>
-
-								<p class="info-text" style="margin-top: 20px;">Page Facebook :</p>
+								</p>
+								<p class="info-text">Page Facebook :
 								<a href="https://www.facebook.com/orchestrakot" class="contact-link" target="_blank">facebook.com/orchestrakot</a>
-
-								<p class="info-text" style="margin-top: 20px;">Page Instagram :</p>
+								</p>
+								<p class="info-text">Page Instagram :
 								<a href="https://www.instagram.com/orchestrakot/?hl=fr" class="contact-link" target="_blank">@orchestrakot</a>
+								</p>
 							</div>
 						</div>
 
@@ -284,6 +367,7 @@
 								<div class="address-title">Louvain-la-Neuve</div>
 								<p class="address-text">
 									1 Rampe des Ardennais<br>
+									2ème étage<br>
 									1348 Louvain-la-Neuve<br>
 									Belgique
 								</p>
