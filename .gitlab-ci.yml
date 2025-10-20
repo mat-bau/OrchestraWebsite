@@ -1,0 +1,10 @@
+stages:
+  - deploy
+
+deploy-job:
+  stage: deploy
+  environment: production
+  script:
+    - |
+      echo "Deploying application..."
+      curl -s -H "X-Auth-Token: $DEPLOY_TOKEN" --fail-with-body "https://ci.orchestra.kapucl.be/deploy"
