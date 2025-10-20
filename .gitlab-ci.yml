@@ -7,4 +7,4 @@ deploy-job:
   environment: production
   script:
     - echo "Deploying application..."
-    - echo "Application successfully deployed."
+    - curl -s -H "X-Auth-Token: $DEPLOY_TOKEN" -f  "https://ci.orchestra.kapucl.be/deploy"
