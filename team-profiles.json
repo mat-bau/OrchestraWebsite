@@ -168,6 +168,29 @@
       "images": [
         "images/team/team2024/felicie.jpg"
       ]
-    }
+    },
+    {
+      "name": "Margot Poncin",
+      "instruments": ["Violon"],
+      "roles": "",
+      "etudes": {"2025-2026": "BAC 3 Bioingénieur"},
+      "annee_debut": 2025,
+      "annee_fin": 2026,
+      "images": [
+        "images/team/team2025/margot.jpg"
+      ]
+    },
+    {
+      "name": "Méline Warzée",
+      "instruments": ["Flûte", "Piccolo"],
+      "roles": "",
+      "etudes": {"2022-2023": "Bac 3 Sciences de gestions","2023-2024": "Master 1 Sciences de gestion"},
+      "annee_debut": 2022,
+      "annee_fin": 2024,
+      "images": [
+        "images/team/team2023/meline.jpg"
+      ]
+    },
+    
   ]
 }

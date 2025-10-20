@@ -48,6 +48,12 @@
                   "role": ""
                 },
                 {
+                  "name": "Margot Poncin",
+                  "path": "images/team/team2025/margot.jpg",
+                  "description": "Violon - BAC 3 Bioingénieur",
+                  "role": ""
+                },
+                {
                   "name": "Mateo Bauvir",
                   "path": "images/team/team2024/mateo.jpg",
                   "description": "Batterie - Master 1 Ingénieur civil",
@@ -387,6 +393,11 @@
                   "name": "Geoffroy De Muyter",
                   "path": "images/team/team2024/geoffroy.jpg",
                   "description": "2024-2026"
+                },
+                {
+                  "name": "Margot Poncin",
+                  "path": "images/team/team2025/margot.jpg",
+                  "description": "2025-2026"
                 }
               ],
               "folders": []
