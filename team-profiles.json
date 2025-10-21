@@ -162,22 +162,11 @@
       "name": "Félicie Van Der Cam",
       "instruments": ["Piano", "Chant"],
       "roles": "",
-      "etudes": {"2024-2025": "BAC 2 IMEP", "2025-2026": "BAC 3 IMEP"},
+      "etudes": {"2024-2025": "Bac 2 IMEP", "2025-2026": "Bac 3 IMEP"},
       "annee_debut": 2024,
       "annee_fin": 2026,
       "images": [
         "images/team/team2024/felicie.jpg"
-      ]
-    },
-    {
-      "name": "Margot Poncin",
-      "instruments": ["Violon"],
-      "roles": "",
-      "etudes": {"2025-2026": "BAC 3 Bioingénieur"},
-      "annee_debut": 2025,
-      "annee_fin": 2026,
-      "images": [
-        "images/team/team2025/margot.jpg"
       ]
     },
     {

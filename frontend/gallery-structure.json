@@ -12,9 +12,9 @@
               "name": "2025-2026",
               "images": [
                 {
-                  "name": "Victor Antonnuti",
+                  "name": "Victor Antonutti",
                   "path": "images/team/team2024/victor.jpg",
-                  "description": "Président - Trompette - Trombonne - Bac 3 Ingénieur civil",
+                  "description": "Président - Trompette - Trombone - Bac 3 Ingénieur civil",
                   "role": "Président"
                 },
                 {
@@ -24,7 +24,7 @@
                   "role": "Vice-président"
                 },
                 {
-                  "name": "Manon Piquepée",
+                  "name": "Manon Piquepé",
                   "path": "images/team/team2024/manon.jpg",
                   "description": "Trésorière - Chant - Master 1 Ingénieur civil",
                   "role": "Trésorière"
@@ -38,19 +38,13 @@
                 {
                   "name": "Félicie Van Der Cam",
                   "path": "images/team/team2024/felicie.jpg",
-                  "description": "Piano - Chant - BAC 3 IMEP",
+                  "description": "Piano - Chant - Bac 3 IMEP",
                   "role": ""
                 },
                 {
                   "name": "Geoffroy De Muyter",
                   "path": "images/team/team2024/geoffroy.jpg",
                   "description": "Violon - Basse - Doctorant en Ingénieur civil",
-                  "role": ""
-                },
-                {
-                  "name": "Margot Poncin",
-                  "path": "images/team/team2025/margot.jpg",
-                  "description": "Violon - BAC 3 Bioingénieur",
                   "role": ""
                 },
                 {
@@ -110,7 +104,7 @@
                 {
                   "name": "Félicie Van Der Cam",
                   "path": "images/team/team2024/felicie.jpg",
-                  "description": "Piano - Chant - BAC 2 IMEP",
+                  "description": "Piano - Chant - Bac 2 IMEP",
                   "role": ""
                 },
                 {
@@ -126,7 +120,7 @@
                   "role": ""
                 },
                 {
-                  "name": "Manon Piquepée",
+                  "name": "Manon Piquepé",
                   "path": "images/team/team2024/manon.jpg",
                   "description": "Chant - Bac 3 Ingénieur civil",
                   "role": ""
@@ -156,9 +150,9 @@
                   "role": ""
                 },
                 {
-                  "name": "Victor Antonnuti",
+                  "name": "Victor Antonutti",
                   "path": "images/team/team2024/victor.jpg",
-                  "description": "Trompette - Trombonne - Bac 2 Ingénieur civil",
+                  "description": "Trompette - Trombone - Bac 2 Ingénieur civil",
                   "role": ""
                 }
               ],
@@ -204,6 +198,12 @@
                   "role": ""
                 },
                 {
+                  "name": "Méline Warzée",
+                  "path": "images/team/team2023/meline.jpg",
+                  "description": "Flûte - Piccolo - Master 1 Sciences de gestion",
+                  "role": ""
+                },
+                {
                   "name": "Noé Trifiro",
                   "path": "images/team/team2024/noe.jpg",
                   "description": "Batterie - Master 1 Journalisme",
@@ -219,6 +219,12 @@
                   "name": "Louis Beautrix",
                   "path": "images/team/team2024/louis.jpg",
                   "description": "Batterie - Master 1 Géographie",
+                  "role": ""
+                },
+                {
+                  "name": "Méline Warzée",
+                  "path": "images/team/team2023/meline.jpg",
+                  "description": "Flûte - Piccolo - Bac 3 Sciences de gestions",
                   "role": ""
                 },
                 {
@@ -299,7 +305,7 @@
                   "description": "2023-2025"
                 },
                 {
-                  "name": "Manon Piquepée",
+                  "name": "Manon Piquepé",
                   "path": "images/team/team2024/manon.jpg",
                   "description": "2024-2026"
                 },
@@ -318,6 +324,11 @@
                   "name": "Adèle Thiry",
                   "path": "images/team/team2024/adele.jpg",
                   "description": "2024-2025"
+                },
+                {
+                  "name": "Méline Warzée",
+                  "path": "images/team/team2023/meline.jpg",
+                  "description": "2022-2024"
                 }
               ],
               "folders": []
@@ -355,10 +366,21 @@
               "folders": []
             },
             {
-              "name": "Trombonne",
+              "name": "Piccolo",
               "images": [
                 {
-                  "name": "Victor Antonnuti",
+                  "name": "Méline Warzée",
+                  "path": "images/team/team2023/meline.jpg",
+                  "description": "2022-2024"
+                }
+              ],
+              "folders": []
+            },
+            {
+              "name": "Trombone",
+              "images": [
+                {
+                  "name": "Victor Antonutti",
                   "path": "images/team/team2024/victor.jpg",
                   "description": "2024-2026"
                 }
@@ -374,7 +396,7 @@
                   "description": "2024-2026"
                 },
                 {
-                  "name": "Victor Antonnuti",
+                  "name": "Victor Antonutti",
                   "path": "images/team/team2024/victor.jpg",
                   "description": "2024-2026"
                 },
@@ -393,11 +415,6 @@
                   "name": "Geoffroy De Muyter",
                   "path": "images/team/team2024/geoffroy.jpg",
                   "description": "2024-2026"
-                },
-                {
-                  "name": "Margot Poncin",
-                  "path": "images/team/team2025/margot.jpg",
-                  "description": "2025-2026"
                 }
               ],
               "folders": []
