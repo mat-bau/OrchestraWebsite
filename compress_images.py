@@ -25,7 +25,7 @@ def compress_images(directory, quality=70):
 if __name__ == "__main__":
     # --- CONFIGURATION ---
     target_folder = "images/to_compress" 
-    target_quality = 83            # pourcentage de la qualité de base
+    target_quality = 29          # pourcentage de la qualité de base
     # ---------------------
     
     compress_images(target_folder, target_quality)
