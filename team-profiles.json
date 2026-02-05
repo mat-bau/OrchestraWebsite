@@ -23,7 +23,7 @@
       "annee_debut": 2023,
       "annee_fin": 2026,
       "images": [
-        "images/team/team2024/antoine.jpg"
+        "images/team/team2024/antoine.jpg", "images/team/team2025/antoine.jpg"
       ]
     },
     {
@@ -74,7 +74,7 @@
       "name": "Manon Piquepé",
       "instruments": ["Chant"],
       "roles": {"2024-2025" :"", "2025-2026" :"Trésorière"},
-      "etudes": {"2024-2025": "Bac 3 Ingénieur civil", "2025-2026": "Master 1 Ingénieur civil"},
+      "etudes": {"2024-2025": "Bac 3 Ingénieure civil", "2025-2026": "Master 1 Ingénieure civil"},
       "annee_debut": 2024,
       "annee_fin": 2026,
       "images": [
@@ -118,7 +118,7 @@
       "name": "Adèle Thiry",
       "instruments": ["Flûte"],
       "roles": "",
-      "etudes": {"2024-2025": "Master 2 Ingénieur civil"},
+      "etudes": {"2024-2025": "Master 2 Ingénieure civil"},
       "annee_debut": 2024,
       "annee_fin": 2025,
       "images": [
@@ -140,7 +140,7 @@
       "name": "Alice Sergent",
       "instruments": ["Piano"],
       "roles": "",
-      "etudes": {"2023-2024": "Bac 2 Bioingénieur", "2024-2025": "Bac 3 Bioingénieur"},
+      "etudes": {"2023-2024": "Bac 2 Bioingénieure", "2024-2025": "Bac 3 Bioingénieure"},
       "annee_debut": 2023,
       "annee_fin": 2025,
       "images": [
@@ -179,6 +179,28 @@
       "images": [
         "images/team/team2023/meline.jpg"
       ]
-    } 
+    },
+    {
+      "name": "David Geurts",
+      "instruments": ["Piano", "Chant"],
+      "roles": "",
+      "etudes": {"2025-2026": "Bac 3 Chimie"},
+      "annee_debut": 2025,
+      "annee_fin": 2026,
+      "images": [
+        "images/team/team2025/david.jpg"
+      ]
+    },
+    {
+      "name": "Margot Poncin",
+      "instruments": ["Violon"],
+      "roles": "",
+      "etudes": {"2025-2026": "Bac 3 Bioingénieure"},
+      "annee_debut": 2025,
+      "annee_fin": 2026,
+      "images": [
+        "images/team/team2025/margot.jpg"
+      ]
+    }
   ]
 }
