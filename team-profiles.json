@@ -201,6 +201,17 @@
       "images": [
         "images/team/team2025/margot.jpg"
       ]
+    },
+        {
+      "name": "Marthe Thiry",
+      "instruments": ["Saxophone"],
+      "roles": "",
+      "etudes": {"2025-2026": "Bac 3 Ingénieure civil"},
+      "annee_debut": 2025,
+      "annee_fin": 2026,
+      "images": [
+        "images/team/team2025/marthe.jpg"
+      ]
     }
   ]
 }
