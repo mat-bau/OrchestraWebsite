@@ -7,4 +7,4 @@ deploy-job:
   script:
     - |
       echo "Deploying application..."
-      - curl -v -H "X-Auth-Token: $DEPLOY_TOKEN" --fail-with-body "https://ci.orchestra.kapucl.be/deploy"
+      curl -v -H "X-Auth-Token: $DEPLOY_TOKEN" --fail-with-body "https://ci.orchestra.kapucl.be/deploy"
