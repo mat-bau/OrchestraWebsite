@@ -3,8 +3,10 @@ stages:
 
 deploy-job:
   stage: deploy
+  image: alpine:latest
   environment: production
   script:
     - |
+      apk add --no-cache curl
       echo "Deploying application..."
-      curl -v -H "X-Auth-Token: $DEPLOY_TOKEN" --fail-with-body "https://ci.orchestra.kapucl.be/deploy"
+      curl -v -H "X-Auth-Token: $DEPLOY_TOKEN" --fail-with-body "https://orchestra-ci.kapucl.be/deploy"
