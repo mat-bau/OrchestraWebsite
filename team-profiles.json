@@ -212,6 +212,61 @@
       "images": [
         "images/team/team2025/marthe.jpg"
       ]
+    },
+    {
+      "name": "Manon Billier",
+      "instruments": ["Flûte"],
+      "roles": "",
+      "etudes": {"2025-2026": "Master 1 Anthropologie"},
+      "annee_debut": 2025,
+      "annee_fin": 2026,
+      "images": [
+        "images/team/team2025/manonb.jpeg"
+      ]
+    },
+    {
+      "name": "Benjamin Tricknot",
+      "instruments": ["Batterie"],
+      "roles": "",
+      "etudes": {"2025-2026": "Bac 2 Réalisation"},
+      "annee_debut": 2025,
+      "annee_fin": 2026,
+      "images": [
+        "images/team/team2025/benjamin.jpeg"
+      ]
+    },
+    {
+      "name": "Julianne Antoine-Poirel",
+      "instruments": ["Alto"],
+      "roles": "",
+      "etudes": {"2025-2026": "Bac 3 Ingénieure civil"},
+      "annee_debut": 2025,
+      "annee_fin": 2026,
+      "images": [
+        "images/team/team2025/julianne.jpeg"
+      ]
+    },
+    {
+      "name": "Daniel Leal Loparic",
+      "instruments": ["Chant", "Guitare"],
+      "roles": "",
+      "etudes": {"2025-2026": "Bac 2 Communication"},
+      "annee_debut": 2025,
+      "annee_fin": 2026,
+      "images": [
+        "images/team/team2025/daniel.jpg"
+      ]
+    },
+    {
+      "name": "Marco Carbonara",
+      "instruments": ["Guitare"],
+      "roles": "",
+      "etudes": {"2025-2026": "Master 1 Ingénieur de gestion"},
+      "annee_debut": 2025,
+      "annee_fin": 2026,
+      "images": [
+        "images/team/team2025/marco.jpg"
+      ]
     }
   ]
 }
