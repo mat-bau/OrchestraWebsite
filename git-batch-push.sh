@@ -1,6 +1,6 @@
 #!/bin/bash
 
-MAX_SIZE=1500 # 1 Mo
+MAX_SIZE=800 # 1 Mo
 CURRENT_BATCH_SIZE=0
 FILES_COUNT=0
 
@@ -13,7 +13,7 @@ echo -e "${BLUE}== Verification des fichiers en cours... ==${NC}"
 
 # On récupère TOUT : modifiés, nouveaux, et même ceux déjà en 'staged' (index)
 # On filtre pour ne garder que les chemins de fichiers valides
-files=$(git status --porcelain | sed 's/^...//')
+files=$(git status --porcelain | sed 's/^.. //')
 
 if [ -z "$files" ]; then
     echo "❌ Aucun fichier modifié ou nouveau détecté. Git est déjà à jour !"
