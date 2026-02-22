@@ -36,6 +36,18 @@
                   "role": ""
                 },
                 {
+                  "name": "Benjamin Tricknot",
+                  "path": "images/team/team2025/benjamin.jpeg",
+                  "description": "Batterie - Bac 2 Réalisation",
+                  "role": ""
+                },
+                {
+                  "name": "Daniel Leal Loparic",
+                  "path": "images/team/team2025/daniel.jpg",
+                  "description": "Chant - Guitare - Bac 2 Communication",
+                  "role": ""
+                },
+                {
                   "name": "David Geurts",
                   "path": "images/team/team2025/david.jpg",
                   "description": "Piano - Chant - Bac 3 Chimie",
@@ -43,7 +55,7 @@
                 },
                 {
                   "name": "Félicie Van Der Cam",
-                  "path": "images/team/team2024/felicie.jpg",
+                  "path": "images/team/team2025/felicie.jpg",
                   "description": "Piano - Chant - Bac 3 IMEP",
                   "role": ""
                 },
@@ -51,6 +63,24 @@
                   "name": "Geoffroy De Muyter",
                   "path": "images/team/team2024/geoffroy.jpg",
                   "description": "Violon - Basse - Doctorant en Ingénieur civil",
+                  "role": ""
+                },
+                {
+                  "name": "Julianne Antoine-Poirel",
+                  "path": "images/team/team2025/julianne.jpeg",
+                  "description": "Alto - Bac 3 Ingénieure civil",
+                  "role": ""
+                },
+                {
+                  "name": "Manon Billier",
+                  "path": "images/team/team2025/manonb.jpeg",
+                  "description": "Flûte - Master 1 Anthropologie",
+                  "role": ""
+                },
+                {
+                  "name": "Marco Carbonara",
+                  "path": "images/team/team2025/marco.jpg",
+                  "description": "Guitare - Master 1 Ingénieur de gestion",
                   "role": ""
                 },
                 {
@@ -273,6 +303,17 @@
           "name": "Par instrument",
           "folders": [
             {
+              "name": "Alto",
+              "images": [
+                {
+                  "name": "Julianne Antoine-Poirel",
+                  "path": "images/team/team2025/julianne.jpeg",
+                  "description": "2025-2026"
+                }
+              ],
+              "folders": []
+            },
+            {
               "name": "Basse",
               "images": [
                 {
@@ -310,6 +351,11 @@
                   "name": "Louis Beautrix",
                   "path": "images/team/team2024/louis.jpg",
                   "description": "2021-2025"
+                },
+                {
+                  "name": "Benjamin Tricknot",
+                  "path": "images/team/team2025/benjamin.jpeg",
+                  "description": "2025-2026"
                 }
               ],
               "folders": []
@@ -329,12 +375,17 @@
                 },
                 {
                   "name": "Félicie Van Der Cam",
-                  "path": "images/team/team2024/felicie.jpg",
+                  "path": "images/team/team2025/felicie.jpg",
                   "description": "2024-2026"
                 },
                 {
                   "name": "David Geurts",
                   "path": "images/team/team2025/david.jpg",
+                  "description": "2025-2026"
+                },
+                {
+                  "name": "Daniel Leal Loparic",
+                  "path": "images/team/team2025/daniel.jpg",
                   "description": "2025-2026"
                 }
               ],
@@ -352,6 +403,11 @@
                   "name": "Méline Warzée",
                   "path": "images/team/team2023/meline.jpg",
                   "description": "2022-2024"
+                },
+                {
+                  "name": "Manon Billier",
+                  "path": "images/team/team2025/manonb.jpeg",
+                  "description": "2025-2026"
                 }
               ],
               "folders": []
@@ -368,6 +424,16 @@
                   "name": "Adrien Antonutti",
                   "path": "images/team/team2024/adrien.jpg",
                   "description": "2023-2025"
+                },
+                {
+                  "name": "Daniel Leal Loparic",
+                  "path": "images/team/team2025/daniel.jpg",
+                  "description": "2025-2026"
+                },
+                {
+                  "name": "Marco Carbonara",
+                  "path": "images/team/team2025/marco.jpg",
+                  "description": "2025-2026"
                 }
               ],
               "folders": []
@@ -382,7 +448,7 @@
                 },
                 {
                   "name": "Félicie Van Der Cam",
-                  "path": "images/team/team2024/felicie.jpg",
+                  "path": "images/team/team2025/felicie.jpg",
                   "description": "2024-2026"
                 },
                 {
