@@ -5,6 +5,19 @@
 Comment gérer le contenu du site, surtout l'ajout des nouveaux et la mise à jour de la galerie. J'ai essayé de rendre l'ajout du site le plus automatique, surtout pour les photos donc à part changer par-ci par-là du texte,, ça ira.
 
 ---
+## TO-DO début d'année
+
+- [ ] Créer le dossier `images/team/team{année}/`
+- [ ] Prendre la photo d'équipe et la nommer `lequipe{année}.jpg`
+- [ ] Prendre les photos individuelles des nouveaux membres (généralement du concert à la FDB donc vous avez le temps)
+- [ ] Ajouter la photo d'équipe dans `team{année}`
+- [ ] Ajouter/mettre à jour les membres dans `members` du fichier `team-profiles.json`
+- [ ] Mettre à jour les rôles et études pour la nouvelle année (et l'année)
+- [ ] Relancer `python3 start.py`
+- [ ] Vérifier que tout s'affiche correctement sur le site
+- [ ] Mettre à jour les événements de la page `Home`
+- [ ] Mettre à jour le paragraphe sur le concert dans `About` 
+- [ ] ? 
 
 ## Ajouter un nouveau membre à l'équipe
 
@@ -13,6 +26,7 @@ Comment gérer le contenu du site, surtout l'ajout des nouveaux et la mise à jo
 **Emplacement des photos :**
 - Photos individuelles : `images/team/team{année}/{nom}.jpg`
 - Photo d'équipe : `images/team/team{année}/lequipe{année}.jpg`
+- je vous laisse découvrir les autres dossiers et leurs utilité
 
 **Exemple pour 2024-2025 :**
 ```
@@ -96,10 +110,10 @@ Ce fichier se trouve à la **racine du projet** et contient toutes les informati
 - **`annee_fin`** : Année de fin +1 (ex: 2026 si le membre quitte après 2025-2026)
 - **`images`** : Liste des photos, **une par année** dans l'ordre chronologique
 
-#### ⚠️ Points importants
+#### Points importants
 
-- **Les rôles sont triés automatiquement** : Président → Vice-président → Trésorier(ère) → Secrétaire → autres membres
-- **Virgules** : N'oubliez pas les virgules entre les membres, mais pas après le dernier ! (synthaxe de json sorry c'est comme ca)
+- **Les rôles sont triés automatiquement** : Président → Vice-président → Trésorier(ère) → autres membres (il faudra peut-être vous occuper de changer Vice-président par Co-président, je pense que juste changer le nom suffit pcq changer la priorité n'a pas bcp de sens il y aura d'office qlq en dessous de l'autre)
+- **Virgules** : N'oubliez pas les virgules entre les membres, mais pas après le dernier !
 
 ---
 
@@ -113,7 +127,12 @@ ou sur windows / linux
 ```bash
 python start.py
 ```
-Et rendez vous sur le lien donné normalement : http://localhost:5050
+Et rendez vous sur le lien donné normalement genre 
+```bash
+Running on http://127.0.0.1:5050
+# ou
+http://localhost:5050
+```
 
 Le script va automatiquement :
 
@@ -135,6 +154,7 @@ Le script va automatiquement :
 Le script scanne automatiquement tous les dossiers et génère la structure de navigation.
 
 ## Liens dynamiques vers la galerie
+Normalement tout est fait automatiquement il n'y a pas besoin de toucher au code, juste le fichier `team-profiles.json` mais si jamais ...
 
 Le site utilise des URLs avec paramètres pour naviguer directement vers un dossier spécifique :
 ```
@@ -167,7 +187,7 @@ Les pages HTML se trouvent dans `frontend/` :
 
 ---
 
-## 🐛 Résolution de problèmes
+## Résolution de problèmes
 
 ### La galerie ne s'affiche pas
 
@@ -187,25 +207,15 @@ Les pages HTML se trouvent dans `frontend/` :
 1. Vérifiez la syntaxe JSON (virgules, guillemets)
 2. Vérifiez que `annee_debut` et `annee_fin` couvrent l'année actuelle
 3. Vérifiez que le chemin de l'image est correct
-
----
-
-## 📋 Checklist de début d'année
-
-- [ ] Créer le dossier `images/team/team{année}/`
-- [ ] Prendre la photo d'équipe et la nommer `lequipe{année}.jpg`
-- [ ] Prendre les photos individuelles des nouveaux membres
-- [ ] Ajouter la photo d'équipe dans `team_photos`
-- [ ] Ajouter/mettre à jour les membres dans `members`
-- [ ] Mettre à jour les rôles et études pour la nouvelle année
-- [ ] Relancer `python3 start.py`
-- [ ] Vérifier que tout s'affiche correctement sur le site
+4. Vérifier le format de l'image (jpeg au lieu de jpg par exemple)
 
 ---
 ## Ajout au site internet final 
 L'orchestra loue un serveur au Louvain-li-nux et depuis quelque temps possède un repo sur leur GitLab ce qui permet de mettre à jour le site automatiquement
 en pushant sur le repo de l'Orchestra de leur GitLab ! 
 ```bash
+git push gitlab main 
+# ou
 git push gitlab main --force
 ```
 
@@ -213,6 +223,6 @@ git push gitlab main --force
 
 ## Contact technique
 
-Si vous rencontrez des problèmes techniques que vous ne pouvez pas résoudre, contactez l'ancien responsable du site ou consultez ce guide.
+Si vous rencontrez des problèmes techniques que vous ne pouvez pas résoudre, contactez l'ancien responsable du site ou consultez ce guide ou pour toutes questions relative au déploiement du site sur internet contactez le Linux (ils sont très réactifs sur Discord)
 
-**Bon courage !**
+**Bon courage pour cette belle année!**
