@@ -1,0 +1,519 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0,maximum-scale=1">
+    <meta name="description" content="Official website of the Louvain-la-Neuve based Orchestrakot.">
+    <link rel="shortcut icon" type="image/x-icon" href="../images/support_graphique/Logo_Orchestrakot_SQUARE.png?v=2"/>
+    <title>Contact - OrchestraKot</title>
+    
+    <link href="http://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,600,700,900" rel="stylesheet" type="text/css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <link rel="stylesheet" href="style.css">
+    
+    <script src="https://www.google.com/recaptcha/api.js" async defer></script>
+
+    <style>
+        .contact-page {
+            min-height: 100vh;
+            background: #141414;
+            padding: 80px 0;
+            color: #ffffff;
+        }
+
+        .contact-container {
+            max-width: 1700px;
+            margin: 0 auto;
+            padding: 0 40px;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 60px;
+            align-items: stretch;
+        }
+
+        /* --- STYLE DU FORMULAIRE (Inspiration Reinostudio) --- */
+        .contact-form-section {
+            padding: 20px 0;
+        }
+
+        .contact-form-title {
+            font-size: 3.5rem;
+            font-weight: 900;
+            line-height: 1.1;
+            margin-bottom: 40px;
+            letter-spacing: -1px;
+        }
+
+        .form-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+        
+        .form-group {
+            margin-bottom: 30px;
+            position: relative;
+        }
+
+        .form-group.full-width {
+            grid-column: 1 / -1;
+        }
+
+        .form-label {
+            display: block;
+            font-size: 14px;
+            font-weight: 600;
+            margin-bottom: 8px;
+            color: #a0a0a0;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        /* Champs épurés */
+        .form-control {
+            width: 100%;
+            background: transparent;
+            border: none;
+            border-bottom: 1px solid #444;
+            color: #fff;
+            font-size: 18px;
+            padding: 10px 0;
+            font-family: 'Source Sans Pro', sans-serif;
+            transition: border-color 0.3s ease;
+            box-sizing: border-box;
+        }
+
+        .form-control:focus {
+            outline: none;
+            border-bottom: 2px solid #e74c3c;
+        }
+
+        .form-control::placeholder {
+            color: #555;
+        }
+
+        textarea.form-control {
+            resize: vertical;
+            min-height: 100px;
+        }
+
+        /* Style des sélecteurs */
+        select.form-control {
+            appearance: none;
+            -webkit-appearance: none;
+            -moz-appearance: none;
+            cursor: pointer;
+            background-image: url('data:image/svg+xml;utf8,<svg fill="white" height="24" viewBox="0 0 24 24" width="24" xmlns="http://www.w3.org/2000/svg"><path d="M7 10l5 5 5-5z"/><path d="M0 0h24v24H0z" fill="none"/></svg>');
+            background-repeat: no-repeat;
+            background-position-x: 100%;
+            background-position-y: center;
+        }
+        
+        select.form-control option {
+            background-color: #1a1a1a;
+            color: #fff;
+        }
+
+        /* Checkbox RGPD */
+        .checkbox-group {
+            display: flex;
+            align-items: flex-start;
+            gap: 15px;
+            margin-bottom: 30px;
+            font-size: 14px;
+            color: #ccc;
+            line-height: 1.5;
+        }
+
+        .checkbox-group input[type="checkbox"] {
+            margin-top: 3px;
+            accent-color: #e74c3c;
+            width: 18px;
+            height: 18px;
+            cursor: pointer;
+        }
+
+        /* Bouton Submit */
+        .submit-btn {
+            background: #e74c3c;
+            color: #fff;
+            border: none;
+            padding: 18px 40px;
+            font-size: 18px;
+            font-weight: 700;
+            border-radius: 50px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .submit-btn:hover {
+            background: #ff6b5a;
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(231, 76, 60, 0.2);
+        }
+
+        /* --- IMAGE SUR LA DROITE --- */
+        .contact-image-section {
+            position: relative;
+            height: 100%;
+        }
+
+        .contact-image-sticky {
+            position: relative;
+            top: 200px;
+            border-radius: 20px;
+            box-shadow: 0 2px 12px rgba(0, 0, 0, 0.4);
+        }
+
+        .contact-image {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        /* --- RESPONSIVE --- */
+        @media (max-width: 1200px) {
+            .contact-form-title { font-size: 2.8rem; }
+            .contact-container { max-width: 1100px; gap: 50px; }
+        }
+
+        @media (max-width: 1024px) {
+            .contact-container {
+                grid-template-columns: 1fr;
+                gap: 40px;
+                max-width: 700px;
+            }
+            .contact-image-sticky {
+                position: relative;
+                top: 0;
+                height: 500px;
+                margin-bottom: 40px;
+                order: -1;
+            }
+            .form-row { grid-template-columns: 1fr; gap: 0; }
+        }
+                /* File upload */
+        .file-upload-wrapper {
+            width: 100%;
+            position: relative;
+        }
+        .file-upload-input {
+            display: none;
+        }
+        .file-upload-label {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 10px 0;
+            border-bottom: 1px solid var(--border);
+            cursor: pointer;
+            transition: border-color 0.3s;
+            font-size: 14px;
+            color: var(--muted);
+            font-weight: 300;
+        }
+        .file-upload-label:hover {
+            border-bottom-color: var(--red);
+            color: var(--text);
+        }
+        .file-upload-label i {
+            color: var(--red);
+            font-size: 13px;
+        }
+        .file-name-display {
+            font-size: 12px;
+            color: var(--red);
+            margin-top: 6px;
+        }
+
+        /* Message de succès (caché par défaut) */
+        #success-msg {
+            display: none;
+            background: rgba(46, 204, 113, 0.1);
+            color: #dcdcdc;
+            padding: 20px;
+            border-radius: 8px;
+            margin-top: 20px;
+            font-weight: 600;
+            border: 1px solid #2ecc71;
+        }
+    </style>
+</head>
+
+<body>
+    <div id="site-content">
+        <header class="site-header">
+            <div class="container">
+                <a href="index.html" id="branding">
+                    <img src="images/support_graphique/Logo_Orchestrakot_SQUARE.png" alt="Site Title" class="head_logo">
+                </a>
+                <nav class="main-navigation">
+                    <button type="button" class="toggle-menu"><i class="fa fa-bars"></i></button>
+                    <ul class="menu">
+                        <li class="menu-item"><a href="index.html">Home</a></li>
+                        <li class="menu-item"><a href="about.html">About</a></li>
+                        <li class="menu-item"><a href="gallery.html">Galerie</a></li>
+                        <li class="menu-item"><a href="videos.html">Vidéos</a></li>
+                        <li class="menu-item current-menu-item"><a href="contact.html">Contact</a></li>
+                    </ul>
+                </nav>
+                <div class="mobile-menu"></div>
+            </div>
+        </header>
+
+        <main class="main-content">
+            <div class="contact-page">
+                <div class="contact-container">
+                    
+                    <div class="contact-form-section">
+                        <h1 class="contact-form-title">Réservez<br>l'Orchestra!</h1>
+                        <p style="color: #a0a0a0; margin-bottom: 40px; font-size: 18px;">Remplissez les informations ci-dessous pour nous détailler votre projet musical. Nous reviendrons vers vous très vite !</p>
+
+                        <script src="https://www.google.com/recaptcha/api.js?render=6LeXgXYsAAAAAJTRs795XeiJ-TfNQCWA39JeNTU1"></script>
+
+                        <form id="orchestra-form" 
+                            action="https://docs.google.com/forms/d/e/1FAIpQLSf6diNkrWz91YLzFFvG3i-Xe2AnxaJ2xL58gLTx0ErwFoxHJw/formResponse" 
+                            method="POST" 
+                            target="hidden_iframe">
+                            
+                            <div class="form-row">
+                                <div class="form-group">
+                                    <label class="form-label">Prénom</label>
+                                    <input type="text" class="form-control" name="entry.1176159027" placeholder="Votre prénom" required>
+                                </div>
+                                <div class="form-group">
+                                    <label class="form-label">Nom</label>
+                                    <input type="text" class="form-control" name="entry.1311933599" placeholder="Votre nom" required>
+                                </div>
+                            </div>
+
+                            <div class="form-group full-width">
+                                <label class="form-label">Adresse mail</label>
+                                <input type="text" class="form-control" name="entry.1934863859" placeholder="adresse@email.com" required>
+                            </div>
+                            <div class="form-row">
+                                <div class="form-group">
+                                    <label class="form-label">Organisation</label>
+                                    <select class="form-control" name="entry.1866808777" required>
+                                        <option value="" disabled selected>Sélectionnez...</option>
+                                        <option value="KAP">KAP</option>
+                                        <option value="Cercle">Cercle</option>
+                                        <option value="Régional">Régional</option>
+                                        <option value="Faculté">Faculté</option>
+                                        <option value="Particulier">Particulier</option>
+                                        <option value="Entreprise">Entreprise</option>
+                                        <option value="Autre">Autres</option>
+                                    </select>
+                                </div>
+                                <div class="form-group">
+                                    <label class="form-label">Nom de l'organisation</label>
+                                    <input type="text" class="form-control" name="entry.184906818" placeholder="Nom de l'organisation" required>
+                                </div>
+                            </div>
+                            <div class="form-row">
+                                <div class="form-group">
+                                    <label class="form-label">Type d'événement</label>
+                                    <select class="form-control" name="entry.1596073934" required>
+                                        <option value="" disabled selected>Sélectionnez...</option>
+                                        <option value="Evénement de KAP">Événement de KAP</option>
+                                        <option value="Remise de diplômes">Remise de diplômes</option>
+                                        <option value="Anniversaire">Anniversaire</option>
+                                        <option value="Mariage">Mariage</option>
+                                        <option value="Festival">Festival</option>
+                                        <option value="Evenement UCL">Evénement UCL</option>
+                                        <option value="Autres">Autres</option>
+                                    </select>
+                                </div>
+                                <div class="form-group">
+                                    <label class="form-label">Date de l'événement</label>
+                                    <input type="text" class="form-control" name="entry.401983915" placeholder="ex: 12/05/2026" required>
+                                </div>
+                            </div>
+
+                            <div class="form-row">
+                                <div class="form-group">
+                                    <label class="form-label">Heure et durée</label>
+                                    <input type="text" class="form-control" name="entry.1465832249" placeholder="ex: De 20h à 22h" required>
+                                </div>
+                                <div class="form-group">
+                                    <label class="form-label">Intérieur / extérieur</label>
+                                    <select class="form-control" name="entry.1008705841" required>
+                                        <option value="" disabled selected>Sélectionnez...</option>
+                                        <option value="Intérieur">Intérieur</option>
+                                        <option value="Extérieur">Extérieur</option>
+                                        <option value="Pas encore décidé">Pas encore décidé</option>
+                                    </select>
+                                </div>
+                            </div>
+
+                            <div class="form-group full-width">
+                                <label class="form-label">Lieu</label>
+                                <input type="text" class="form-control" name="entry.1016620514" placeholder="Adresse complète" required>
+                            </div>
+
+                            <div class="form-group full-width">
+                                <label class="form-label">Description courte de l'événement</label>
+                                <input type="text" class="form-control" name="entry.4818781" placeholder="Expliquez-nous brièvement le concept..." required>
+                            </div>
+
+                            <div class="form-row">
+                                <div class="form-group">
+                                    <label class="form-label">Ambiance de l'événement</label>
+                                    <input type="text" class="form-control" name="entry.1576548671" placeholder="Show, Bal, Fond sonore..." required>
+                                </div>
+                                <div class="form-group">
+                                    <label class="form-label">Style(s) souhaité(s)</label>
+                                    <select class="form-control" name="entry.2058297611">
+                                        <option value="" disabled selected>Sélectionnez...</option>
+                                        <option value="Musique de fond">Musique de fond</option>
+                                        <option value="Musique de soirée">Musique de soirée</option>
+                                        <option value="Soirée dansante">Soirée dansante</option>
+                                    </select>
+                                </div>
+                            </div>
+
+                            <div class="form-row">
+                                <div class="form-group">
+                                    <label class="form-label">Formation souhaitée</label>
+                                    <select class="form-control" name="entry.2077459126">
+                                        <option value="" disabled selected>Sélectionnez...</option>
+                                        <option value="Duo">Duo</option>
+                                        <option value="Solo">Solo</option>
+                                        <option value="Trio">Trio</option>
+                                        <option value="Petit Ensemble">Petit Ensemble</option>
+                                        <option value="Ensemble des musiciens">L'Orchestra complet !</option>
+                                    </select>
+                                </div>
+                                <div class="form-group">
+                                    <label class="form-label">Sonorisation</label>
+                                    <input type="text" class="form-control" name="entry.1814960858" placeholder="Disponible sur place, pas de sono sur place...">
+                                </div>
+                            </div>
+
+                            <div class="form-group full-width">
+                                <label class="form-label">Espace disponible pour les musiciens</label>
+                                <input type="text" class="form-control" name="entry.2122423340" placeholder="Dimensions approximatives, scène, coin de salle, etc.">
+                            </div>
+
+                            <div class="form-group full-width">
+                                <label class="form-label">Conditions particulières</label>
+                                <input type="text" class="form-control" name="entry.1015460861" placeholder="Volume sonore max, voisinage, timing strict, dress code...">
+                            </div>
+
+                            <div class="form-group full-width">
+                                <label class="form-label">Autres commentaires</label>
+                                <input type="text" class="form-control" name="entry.887954735" placeholder="Une demande spéciale ?">
+                            </div>
+                            
+                            <div class="form-group full-width">
+                                <label class="form-label">Pièce jointe (optionnel)</label>
+                                <input type="text" class="form-control" name="entry.928907993" placeholder="Collez ici un lien (Drive, WeTransfer...) vers votre affiche, plan ou déroulé">
+                            </div>
+
+                            <div class="checkbox-group">
+                                <input type="checkbox" id="rgpd" required>
+                                <label for="rgpd">J’accepte que mes données soient utilisées pour traiter ma demande d'Offres Musicales Personnalisées.</label>
+                            </div>
+
+                            <div class="form-group full-width">
+                                <script src="https://www.google.com/recaptcha/api.js?render=6LeXgXYsAAAAAJTRs795XeiJ-TfNQCWA39JeNTU1"></script>
+                            </div>
+
+                            <button type="submit" class="submit-btn">
+                                Envoyer la demande <i class="fa-solid fa-paper-plane"></i>
+                            </button>
+                            
+                            <div id="success-msg">
+                                <i class="fa-solid fa-circle-check"></i> Merci ! Votre demande a été envoyée avec succès. Nous vous répondrons rapidement.
+                            </div>
+                        </form>
+                    </div>
+
+                    <div class="contact-image-section">
+                        <div class="contact-image-sticky">
+                            <img src="../images/contact/Contactphoto.jpg" alt="OrchestraKot en concert" class="contact-image">
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </main>
+
+        <footer class="site-footer">
+            <div class="container">
+                <img src="images/support_graphique/Logo_Orchestrakot_Rectangle.png" alt="Site Name" class="foot_logo">
+                <address>
+                    <p>1 Rampes des Ardennais, Louvain-la-Neuve, Belgique <br>
+                    <a href="tel:+32494718552">(+32) 494 71 85 52</a> <br>
+                    <a href="mailto:orchestrakot.ucl@gmail.com">orchestrakot.ucl@gmail.com</a></p>
+                </address>
+                <div class="social-links">
+                    <a href="https://www.facebook.com/orchestrakot/"><i class="fa-brands fa-facebook"></i></a>
+                    <a href="https://www.instagram.com/orchestrakot/?hl=en"><i class="fa-brands fa-instagram"></i></a>
+                </div>
+            </div>
+        </footer>
+    </div>
+
+    <script>var submitted=false;</script>
+    <script src="../js/jquery-1.11.1.min.js"></script>
+    <script src="../js/plugins.js"></script>
+    <script src="../js/app.js"></script>
+</body>
+<script>
+$(document).ready(function() {
+    $('#orchestra-form').submit(function(e) {
+        e.preventDefault();
+        const $form = $(this);
+        const $submitBtn = $form.find('.submit-btn');
+        
+        // On désactive le bouton pour éviter les doubles clics
+        $submitBtn.prop('disabled', true).text('Envoi en cours...');
+
+        grecaptcha.ready(function() {
+            // Remplace CODE1 par ta clé de site
+            grecaptcha.execute('6LeXgXYsAAAAAJTRs795XeiJ-TfNQCWA39JeNTU1', {action: 'submit'}).then(function(token) {
+                
+                // On prépare les données pour Google Sheets
+                const rawData = $form.serializeArray();
+                const formData = {};
+                rawData.forEach(item => {
+                    formData[item.name] = item.value;
+                });
+
+                // On envoie le tout à ton BACKEND Flask
+                fetch('/api/contact', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        token: token,
+                        formData: formData
+                    })
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.status === 'success') {
+                        $form.fadeOut(300, function() {
+                            $('#success-msg').fadeIn();
+                        });
+                    } else {
+                        alert("Erreur : " + data.error);
+                        $submitBtn.prop('disabled', false).text('Réessayer');
+                    }
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    alert("Une erreur technique est survenue.");
+                    $submitBtn.prop('disabled', false).text('Réessayer');
+                });
+            });
+        });
+    });
+});
+</script>
+</html>
