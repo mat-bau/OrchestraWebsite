@@ -29,12 +29,23 @@
         * { box-sizing: border-box; margin: 0; padding: 0; }
         body { background: var(--bg); color: var(--text); font-family: var(--font-body); }
 
+		.main-content {
+			padding: 0;
+			max-width: 100%;
+		}
+
+		.contact-page {
+			min-height: 100vh;
+			display: grid;
+			grid-template-columns: 1fr 420px;
+			align-items: start;
+			overflow: hidden;
+			width: 100vw;
+			position: relative;
+			left: 50%;
+			transform: translateX(-50%);
+		}
         /* ── PAGE LAYOUT ── */
-        .contact-page {
-            min-height: 100vh;
-            display: grid;
-            grid-template-columns: 1fr 420px;
-        }
 
         /* ── LEFT: FORM COLUMN ── */
         .form-col {
@@ -329,12 +340,13 @@
         .form-group.has-error .field-error { display: block; }
 
         /* ── RIGHT: PHOTO COLUMN ── */
-        .photo-col {
-            position: sticky;
-            top: 0;
-            height: 100vh;
-            overflow: hidden;
-        }
+		.photo-col {
+			position: sticky;
+			top: 0;
+			height: 200vh;
+			overflow: hidden;
+			margin-right: 0;
+		}
         .photo-col img {
             width: 100%; height: 100%;
             object-fit: cover;
@@ -691,7 +703,6 @@
 
                 <!-- Message succès (affiché après soumission) -->
                 <div class="success-overlay" id="successOverlay">
-                    <div class="success-icon">🎵</div>
                     <h3>Demande envoyée !</h3>
                     <p>Merci pour votre message. Nous avons bien reçu votre demande et vous recontacterons prochainement avec une offre personnalisée.</p>
                 </div>
@@ -727,7 +738,6 @@
 <script src="../js/jquery-1.11.1.min.js"></script>
 <script src="../js/plugins.js"></script>
 <script src="../js/app.js"></script>
-
 <script>
 (function() {
     const form = document.getElementById('contactForm');
@@ -735,78 +745,52 @@
     const successOverlay = document.getElementById('successOverlay');
     const recaptchaError = document.getElementById('recaptchaError');
 
-    // ── Validation d'un champ ──
     function validateField(input) {
         const group = input.closest('.form-group');
-        if (!group) return true;
-        if (!input.hasAttribute('required')) return true;
-
-        let valid = true;
-        if (input.type === 'email') {
-            valid = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(input.value.trim());
-        } else {
-            valid = input.value.trim() !== '';
-        }
+        if (!group || !input.hasAttribute('required')) return true;
+        let valid = input.type === 'email'
+            ? /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(input.value.trim())
+            : input.value.trim() !== '';
         group.classList.toggle('has-error', !valid);
         return valid;
     }
 
-    // ── Validation RGPD ──
-    function validateRgpd() {
-        const cb = document.getElementById('rgpd');
-        return cb && cb.checked;
-    }
-
-    // ── Live validation au blur ──
+    // Live validation au blur
     form.querySelectorAll('input, select, textarea').forEach(input => {
         input.addEventListener('blur', () => validateField(input));
         input.addEventListener('input', () => {
-            const group = input.closest('.form-group');
-            if (group && group.classList.contains('has-error')) validateField(input);
+            if (input.closest('.form-group')?.classList.contains('has-error'))
+                validateField(input);
         });
     });
 
-    // ── Soumission ──
     form.addEventListener('submit', function(e) {
-        e.preventDefault();
-
-        // 1. Valider tous les champs requis
+        // 1. Valider les champs
         let allValid = true;
-        form.querySelectorAll('input[required], select[required], textarea[required]').forEach(input => {
-            if (!validateField(input)) allValid = false;
-        });
+        form.querySelectorAll('input[required], select[required], textarea[required]')
+            .forEach(input => { if (!validateField(input)) allValid = false; });
 
         // 2. Valider RGPD
-        if (!validateRgpd()) {
+        const rgpd = document.getElementById('rgpd');
+        if (!rgpd.checked) {
             allValid = false;
-            const rgpdLabel = document.querySelector('.rgpd-group label');
-            if (rgpdLabel) rgpdLabel.style.color = 'var(--red)';
+            document.querySelector('.rgpd-group label').style.color = 'var(--red)';
         }
 
         // 3. Valider reCAPTCHA
         let captchaOk = false;
-        try {
-            captchaOk = grecaptcha.getResponse().length > 0;
-        } catch(err) {
-            captchaOk = false;
-        }
+        try { captchaOk = grecaptcha.getResponse().length > 0; } catch(err) {}
         recaptchaError.style.display = captchaOk ? 'none' : 'block';
 
         if (!allValid || !captchaOk) {
-            // Scroll vers la première erreur
-            const firstError = form.querySelector('.has-error, .recaptcha-error[style*="block"]');
+            e.preventDefault(); 
+            const firstError = form.querySelector('.has-error');
             if (firstError) firstError.scrollIntoView({ behavior: 'smooth', block: 'center' });
             return;
         }
-
-        // 4. Soumettre via l'iframe caché
         submitBtn.textContent = 'Envoi en cours…';
         submitBtn.disabled = true;
 
-        // Soumettre le formulaire vers l'iframe (target="hidden-iframe")
-        form.submit();
-
-        // Après un court délai, afficher le message de succès
         setTimeout(() => {
             form.style.display = 'none';
             successOverlay.classList.add('visible');
@@ -814,10 +798,8 @@
         }, 1200);
     });
 
-    // Restore RGPD label color on change
     document.getElementById('rgpd').addEventListener('change', function() {
-        const label = document.querySelector('.rgpd-group label');
-        if (label) label.style.color = '';
+        document.querySelector('.rgpd-group label').style.color = '';
     });
 })();
 </script>
