@@ -1,0 +1,825 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1">
+    <meta name="description" content="Official website of the Louvain-la-Neuve based Orchestrakot.">
+    <link rel="shortcut icon" type="image/x-icon" href="../images/support_graphique/Logo_Orchestrakot_SQUARE.png?v=2"/>
+    <title>Contact - OrchestraKot</title>
+
+	<link href="http://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,600,700,900" rel="stylesheet" type="text/css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <!-- reCAPTCHA v2 -->
+    <script src="https://www.google.com/recaptcha/api.js" async defer></script>
+    <link rel="stylesheet" href="style.css">
+
+    <style>
+        :root {
+            --red: #e74c3c;
+            --red-hover: #ff6b5a;
+            --bg: #0f0f0f;
+            --border: rgba(255,255,255,0.10);
+            --text: #ffffff;
+            --muted: rgba(255,255,255,0.45);
+			--font-display: 'Source Sans Pro', sans-serif;
+            --font-body: 'Source Sans Pro', sans-serif;
+        }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body { background: var(--bg); color: var(--text); font-family: var(--font-body); }
+
+        /* ── PAGE LAYOUT ── */
+        .contact-page {
+            min-height: 100vh;
+            display: grid;
+            grid-template-columns: 1fr 420px;
+        }
+
+        /* ── LEFT: FORM COLUMN ── */
+        .form-col {
+            padding: 80px 64px 80px 64px;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .form-eyebrow {
+            font-size: 11px;
+            letter-spacing: 0.18em;
+            text-transform: uppercase;
+            color: var(--red);
+            font-weight: 500;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .form-eyebrow::before {
+            content: '';
+            display: inline-block;
+            width: 28px; height: 1px;
+            background: var(--red);
+        }
+
+        .form-heading {
+            font-family: var(--font-display);
+            font-size: clamp(38px, 4.5vw, 68px);
+            font-weight: 800;
+            line-height: 1.0;
+            letter-spacing: -0.03em;
+            margin-bottom: 10px;
+        }
+        .form-heading em { font-style: normal; color: var(--red); }
+
+        .form-subtext {
+            font-size: 15px;
+            color: var(--muted);
+            font-weight: 300;
+            line-height: 1.6;
+            margin-bottom: 16px;
+            max-width: 520px;
+        }
+
+        /* ── REMUNERATION INFO BOX ── */
+        .remuneration-box {
+            background: rgba(231, 76, 60, 0.07);
+            border-left: 2px solid var(--red);
+            border-radius: 0 4px 4px 0;
+            padding: 14px 18px;
+            margin-bottom: 40px;
+            max-width: 520px;
+        }
+        .remuneration-box p {
+            font-size: 13px;
+            color: rgba(255,255,255,0.7);
+            font-weight: 300;
+            line-height: 1.6;
+            margin: 0;
+        }
+        .remuneration-box strong {
+            color: var(--red);
+            font-weight: 500;
+        }
+
+        /* ── FORM ── */
+        .contact-form { display: flex; flex-direction: column; gap: 0; }
+
+        .form-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 0 32px;
+        }
+
+        .form-group {
+            position: relative;
+            padding-bottom: 36px;
+        }
+
+        /* Label with tooltip */
+        .field-label {
+            display: flex;
+            align-items: center;
+            gap: 7px;
+            font-size: 10px;
+            letter-spacing: 0.15em;
+            text-transform: uppercase;
+            color: var(--muted);
+            font-weight: 500;
+            margin-bottom: 10px;
+            transition: color 0.3s;
+        }
+        .form-group:focus-within .field-label { color: var(--red); }
+
+        /* ── TOOLTIP ── */
+        .tooltip-wrap {
+            position: relative;
+            display: inline-flex;
+            align-items: center;
+        }
+        .tooltip-icon {
+            width: 15px; height: 15px;
+            border-radius: 50%;
+            background: rgba(255,255,255,0.12);
+            color: rgba(255,255,255,0.5);
+            font-size: 9px;
+            font-weight: 700;
+            font-family: var(--font-body);
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            cursor: default;
+            transition: background 0.2s;
+            letter-spacing: 0;
+            text-transform: none;
+            flex-shrink: 0;
+        }
+        .tooltip-wrap:hover .tooltip-icon {
+            background: var(--red);
+            color: #fff;
+        }
+        .tooltip-box {
+            display: none;
+            position: absolute;
+            bottom: calc(100% + 8px);
+            left: 50%;
+            transform: translateX(-50%);
+            background: #222;
+            border: 1px solid rgba(255,255,255,0.1);
+            border-radius: 6px;
+            padding: 10px 14px;
+            min-width: 220px;
+            max-width: 280px;
+            font-size: 12px;
+            color: rgba(255,255,255,0.8);
+            font-weight: 300;
+            line-height: 1.55;
+            text-transform: none;
+            letter-spacing: 0;
+            z-index: 100;
+            box-shadow: 0 8px 24px rgba(0,0,0,0.5);
+            pointer-events: none;
+        }
+        .tooltip-box::after {
+            content: '';
+            position: absolute;
+            top: 100%; left: 50%;
+            transform: translateX(-50%);
+            border: 5px solid transparent;
+            border-top-color: #222;
+        }
+        .tooltip-wrap:hover .tooltip-box { display: block; }
+
+        /* Inputs */
+        .form-group input,
+        .form-group select,
+        .form-group textarea {
+            width: 100%;
+            background: transparent;
+            border: none;
+            border-bottom: 1px solid var(--border);
+            color: var(--text);
+            font-family: var(--font-body);
+            font-size: 15px;
+            font-weight: 300;
+            padding: 10px 0;
+            outline: none;
+            transition: border-color 0.3s;
+            -webkit-appearance: none;
+            appearance: none;
+        }
+        .form-group select {
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='7' viewBox='0 0 12 7'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%23ffffff' stroke-opacity='0.4' stroke-width='1.5' fill='none' stroke-linecap='round'/%3E%3C/svg%3E");
+            background-repeat: no-repeat;
+            background-position: right 4px center;
+            cursor: pointer;
+        }
+        .form-group select option { background: #1a1a1a; color: var(--text); }
+        .form-group textarea { resize: none; min-height: 90px; line-height: 1.6; }
+        .form-group input:focus,
+        .form-group select:focus,
+        .form-group textarea:focus { border-bottom-color: var(--red); }
+        .form-group input::placeholder,
+        .form-group textarea::placeholder { color: var(--muted); font-weight: 300; }
+
+        .req { color: var(--red); margin-left: 2px; }
+
+        /* Section divider */
+        .form-section-label {
+            font-family: var(--font-display);
+            font-size: 11px;
+            letter-spacing: 0.20em;
+            text-transform: uppercase;
+            color: var(--muted);
+            font-weight: 600;
+            padding: 12px 0 24px;
+            border-top: 1px solid var(--border);
+            margin-top: 4px;
+            grid-column: 1 / -1;
+        }
+
+        /* RGPD */
+        .rgpd-group {
+            padding: 24px 0 28px;
+            border-top: 1px solid var(--border);
+            display: flex;
+            gap: 14px;
+            align-items: flex-start;
+        }
+        .rgpd-group input[type="checkbox"] {
+            width: 16px; height: 16px; min-width: 16px;
+            border: 1px solid var(--border);
+            accent-color: var(--red);
+            cursor: pointer;
+            margin-top: 2px;
+        }
+        .rgpd-group label {
+            font-size: 13px;
+            color: var(--muted);
+            font-weight: 300;
+            line-height: 1.6;
+            cursor: pointer;
+        }
+
+        /* reCAPTCHA */
+        .recaptcha-wrap {
+            margin-bottom: 28px;
+        }
+        .recaptcha-error {
+            font-size: 11px;
+            color: var(--red);
+            margin-top: 6px;
+            display: none;
+        }
+
+        /* Submit */
+        .submit-row {
+            display: flex;
+            align-items: center;
+            gap: 24px;
+            flex-wrap: wrap;
+        }
+        .btn-submit {
+            font-family: var(--font-display);
+            font-size: 14px;
+            font-weight: 700;
+            letter-spacing: 0.12em;
+            text-transform: uppercase;
+            color: #fff;
+            background: var(--red);
+            border: none;
+            padding: 18px 40px;
+            cursor: pointer;
+            border-radius: 2px;
+            transition: background 0.3s, transform 0.2s;
+        }
+        .btn-submit:hover { background: var(--red-hover); transform: translateY(-1px); }
+        .btn-submit:disabled { opacity: 0.6; pointer-events: none; }
+        .submit-note { font-size: 12px; color: var(--muted); font-weight: 300; line-height: 1.5; }
+
+        /* Success overlay */
+        .success-overlay {
+            display: none;
+            background: rgba(15,15,15,0.97);
+            border: 1px solid rgba(231,76,60,0.3);
+            border-radius: 8px;
+            padding: 40px;
+            text-align: center;
+            margin-top: 24px;
+        }
+        .success-overlay.visible { display: block; }
+        .success-overlay h3 {
+            font-family: var(--font-display);
+            font-size: 28px;
+            font-weight: 800;
+            color: var(--text);
+            margin-bottom: 12px;
+        }
+        .success-overlay p { font-size: 15px; color: var(--muted); font-weight: 300; line-height: 1.6; }
+        .success-icon { font-size: 36px; margin-bottom: 16px; }
+
+        /* Error */
+        .form-group.has-error input,
+        .form-group.has-error select,
+        .form-group.has-error textarea { border-bottom-color: var(--red); }
+        .form-group .field-error {
+            font-size: 11px; color: var(--red);
+            position: absolute; bottom: 16px; left: 0;
+            display: none;
+        }
+        .form-group.has-error .field-error { display: block; }
+
+        /* ── RIGHT: PHOTO COLUMN ── */
+        .photo-col {
+            position: sticky;
+            top: 0;
+            height: 100vh;
+            overflow: hidden;
+        }
+        .photo-col img {
+            width: 100%; height: 100%;
+            object-fit: cover;
+            object-position: center;
+            display: block;
+        }
+        .photo-overlay {
+            position: absolute; inset: 0;
+            background: linear-gradient(to right, rgba(15,15,15,0.3) 0%, transparent 40%),
+                        linear-gradient(to top, rgba(15,15,15,0.5) 0%, transparent 50%);
+        }
+
+        /* ── RESPONSIVE ── */
+        @media (max-width: 900px) {
+            .contact-page { grid-template-columns: 1fr; grid-template-rows: 45vh auto; }
+            .photo-col { position: relative; height: 45vh; grid-row: 1; }
+            .form-col { padding: 48px 28px 64px; grid-row: 2; }
+            .form-row { grid-template-columns: 1fr; gap: 0; }
+            .tooltip-box { left: 0; transform: none; }
+            .tooltip-box::after { left: 12px; transform: none; }
+        }
+        @media (max-width: 480px) {
+            .form-col { padding: 40px 20px 60px; }
+            .form-heading { font-size: 36px; }
+        }
+
+        /* Hidden iframe for Google Forms submission */
+        #hidden-iframe { display: none; }
+    </style>
+</head>
+
+<body>
+<div id="site-content">
+    <header class="site-header">
+        <div class="container">
+            <a href="index.html" id="branding">
+                <img src="images/support_graphique/Logo_Orchestrakot_SQUARE.png" alt="OrchestraKot" class="head_logo">
+            </a>
+            <nav class="main-navigation">
+                <button type="button" class="toggle-menu"><i class="fa fa-bars"></i></button>
+                <ul class="menu">
+                    <li class="menu-item"><a href="index.html">Home</a></li>
+                    <li class="menu-item"><a href="about.html">About</a></li>
+                    <li class="menu-item"><a href="gallery.html">Galerie</a></li>
+                    <li class="menu-item"><a href="videos.html">Vidéos</a></li>
+                    <li class="menu-item current-menu-item"><a href="contact.html">Contact</a></li>
+                </ul>
+            </nav>
+            <div class="mobile-menu"></div>
+        </div>
+    </header>
+
+    <main class="main-content">
+        <div class="contact-page">
+
+            <!-- ══════════════════════════════
+                 FORM COLUMN
+            ══════════════════════════════ -->
+            <div class="form-col">
+                <p class="form-eyebrow">Demande d'offre musicale</p>
+                <h1 class="form-heading">Parlons de<br>votre <em>événement.</em></h1>
+                <p class="form-subtext">
+                    Remplissez ce formulaire et nous vous préparerons une offre personnalisée.<br>
+                    Les champs marqués <span style="color:var(--red)">*</span> sont obligatoires.
+                </p>
+
+                <!-- Rémunération info -->
+                <div class="remuneration-box">
+                    <p>
+                        <strong>À propos de la rémunération —</strong>
+                        Pour les <strong>KAPs, régionales et cercles étudiants</strong>, nos prestations sont <strong>gratuites</strong>.
+                        Pour tout autre type d'événement (entreprise, mariage, particulier…), nous vous ferons parvenir
+                        un <strong>devis personnalisé</strong> en fonction de votre demande — le tarif varie selon la formation, la durée, le lieu et le type d'événement.
+                    </p>
+                </div>
+
+                <!--
+                ╔══════════════════════════════════════════════════════════════╗
+                ║  Ce formulaire soumet les données directement à Google Forms ║
+                ║  via un iframe caché. Les réponses apparaissent dans ton     ║
+                ║  Google Sheet automatiquement.                               ║
+                ║                                                              ║
+                ║  Pour changer de sheet l'année prochaine :                   ║
+                ║  -> Crée un nouveau Google Form                              ║
+                ║  -> Récupère les nouveaux entry IDs (voir README_CONTACT.txt)║
+                ║  -> Remplace les entry.XXXXXXXXX dans ce fichier             ║
+                ╚══════════════════════════════════════════════════════════════╝
+                -->
+
+                <!-- Hidden iframe = cible de la soumission Google Forms (évite la redirection) -->
+                <iframe name="hidden-iframe" id="hidden-iframe"></iframe>
+
+                <form
+                    class="contact-form"
+                    id="contactForm"
+                    action="https://docs.google.com/forms/d/e/1FAIpQLSf6diNkrWz91YLzFFvG3i-Xe2AnxaJ2xL58gLTx0ErwFoxHJw/formResponse"
+                    method="POST"
+                    target="hidden-iframe"
+                    novalidate
+                >
+
+                    <!-- ── SECTION 1 : IDENTITÉ ── -->
+                    <div class="form-row">
+                        <div class="form-section-label">01 — Identité</div>
+                    </div>
+
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label class="field-label">Prénom <span class="req">*</span></label>
+                            <input type="text" name="entry.1176159027" placeholder="Marie" required>
+                            <span class="field-error">Champ requis</span>
+                        </div>
+                        <div class="form-group">
+                            <label class="field-label">Nom <span class="req">*</span></label>
+                            <input type="text" name="entry.1311933599" placeholder="Dupont" required>
+                            <span class="field-error">Champ requis</span>
+                        </div>
+                    </div>
+
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label class="field-label">Adresse mail <span class="req">*</span></label>
+                            <input type="email" name="entry.1934863859" placeholder="marie@exemple.be" required>
+                            <span class="field-error">Email invalide</span>
+                        </div>
+                        <div class="form-group">
+                            <label class="field-label">Organisation <span class="req">*</span></label>
+                            <select name="entry.1866808777" required>
+                                <option value="" disabled selected>Sélectionner…</option>
+                                <option value="KAP">KAP</option>
+                                <option value="Cercle">Cercle</option>
+                                <option value="Régionale">Régionale</option>
+                                <option value="Particulier">Particulier</option>
+                                <option value="Entreprise">Entreprise</option>
+                                <option value="Faculté">Faculté</option>
+                                <option value="Autre">Autre</option>
+                            </select>
+                            <span class="field-error">Champ requis</span>
+                        </div>
+                    </div>
+
+                    <div class="form-row">
+                        <div class="form-group" style="grid-column: 1 / -1;">
+                            <label class="field-label">Nom de l'organisation <span class="req">*</span></label>
+                            <input type="text" name="entry.184906818" placeholder="Ex : Kap Délices, MDS, ..." required>
+                            <span class="field-error">Champ requis</span>
+                        </div>
+                    </div>
+
+                    <!-- ── SECTION 2 : ÉVÉNEMENT ── -->
+                    <div class="form-row">
+                        <div class="form-section-label">02 — Événement</div>
+                    </div>
+
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label class="field-label">Type d'événement <span class="req">*</span></label>
+                            <select name="entry.1596073934" required>
+                                <option value="" disabled selected>Sélectionner…</option>
+                                <option value="Événement de KAP">Événement de KAP</option>
+                                <option value="Remise de diplômes">Remise de diplômes</option>
+                                <option value="Anniversaire">Anniversaire</option>
+                                <option value="Mariage">Mariage</option>
+                                <option value="Festival">Festival</option>
+                                <option value="Événement UCL">Événement UCL</option>
+                                <option value="Autres">Autres</option>
+                            </select>
+                            <span class="field-error">Champ requis</span>
+                        </div>
+                        <div class="form-group">
+                            <label class="field-label">Date de l'événement <span class="req">*</span></label>
+                            <input type="text" name="entry.401983915" placeholder="JJ/MM/AAAA" required>
+                            <span class="field-error">Champ requis</span>
+                        </div>
+                    </div>
+
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label class="field-label">
+                                Heure et durée <span class="req">*</span>
+                                <span class="tooltip-wrap">
+                                    <span class="tooltip-icon">i</span>
+                                    <span class="tooltip-box">Indiquez l'heure de début souhaitée et la durée totale de la prestation musicale. Ex : "19h00 — prestation de 2h"</span>
+                                </span>
+                            </label>
+                            <input type="text" name="entry.1465832249" placeholder="Ex : 19h00 — 2h de prestation" required>
+                            <span class="field-error">Champ requis</span>
+                        </div>
+                        <div class="form-group">
+                            <label class="field-label">Intérieur / extérieur</label>
+                            <select name="entry.1008705841">
+                                <option value="" disabled selected>Sélectionner…</option>
+                                <option value="Intérieur">Intérieur</option>
+                                <option value="Extérieur">Extérieur</option>
+                                <option value="Pas encore décidé">Pas encore décidé</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="form-row">
+                        <div class="form-group" style="grid-column: 1 / -1;">
+                            <label class="field-label">Lieu <span class="req">*</span></label>
+                            <input type="text" name="entry.1016620514" placeholder="Adresse complète + Ville" required>
+                            <span class="field-error">Champ requis</span>
+                        </div>
+                    </div>
+
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label class="field-label">
+                                Ambiance de l'événement <span class="req">*</span>
+                                <span class="tooltip-wrap">
+                                    <span class="tooltip-icon">i</span>
+                                    <span class="tooltip-box">Décrivez l'ambiance générale souhaitée. Ex : show dynamique, cérémonie élégante, bal étudiant, cocktail détendu…</span>
+                                </span>
+                            </label>
+                            <input type="text" name="entry.1576548671" placeholder="Ex : Show, Remise de diplôme, Bal…" required>
+                            <span class="field-error">Champ requis</span>
+                        </div>
+                        <div class="form-group">
+                            <label class="field-label">Style(s) souhaité(s)
+                                <span class="tooltip-wrap">
+                                    <span class="tooltip-icon">i</span>
+                                    <span class="tooltip-box">Musique de fond = ambiance discrète en arrière-plan. Concert d'ambiance = présence musicale plus marquée. Concert scénique = spectacle à part entière sur scène.</span>
+                                </span>
+                            </label>
+                            <select name="entry.2058297611">
+                                <option value="" disabled selected>Sélectionner…</option>
+                                <option value="Musique de fond">Musique de fond</option>
+                                <option value="Concert d'ambiance">Concert d'ambiance</option>
+                                <option value="Concert scénique">Concert scénique</option>
+                                <option value="Pas de préférence">Pas de préférence</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="form-row">
+                        <div class="form-group" style="grid-column: 1 / -1;">
+                            <label class="field-label">Description courte de l'événement <span class="req">*</span></label>
+                            <textarea name="entry.4818781" placeholder="Décrivez brièvement votre événement, le public attendu, le nombre de personnes…" required></textarea>
+                            <span class="field-error">Champ requis</span>
+                        </div>
+                    </div>
+
+                    <!-- ── SECTION 3 : LOGISTIQUE ── -->
+                    <div class="form-row">
+                        <div class="form-section-label">03 — Logistique</div>
+                    </div>
+
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label class="field-label">
+                                Formation souhaitée
+                                <span class="tooltip-wrap">
+                                    <span class="tooltip-icon">i</span>
+                                    <span class="tooltip-box">La formation = le nombre et type d'instruments. "Minimum" = guitare, basse, batterie, chant. "Complète" = tous nos musiciens (cuivres, claviers, etc.). Vous pouvez laisser ce choix à notre appréciation en fonction de votre événement !</span>
+                                </span>
+                            </label>
+                            <select name="entry.2077459126">
+                                <option value="" disabled selected>Sélectionner…</option>
+                                <option value="Formation minimum (guitare, basse, batterie, chant)">Formation minimum (guitare, basse, batterie, chant)</option>
+                                <option value="Formation intermédiaire">Formation intermédiaire</option>
+                                <option value="Formation complète">Formation complète (tous les musiciens)</option>
+                                <option value="Laissez à votre appréciation">Laissez à votre appréciation ✓</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label class="field-label">
+                                Sonorisation
+                                <span class="tooltip-wrap">
+                                    <span class="tooltip-icon">i</span>
+                                    <span class="tooltip-box">Nous pouvons nous sonoriser nous-mêmes dans une certaine limite (petites et moyennes salles). Pour les grandes salles ou événements en plein air, une sonorisation professionnelle sur place est préférable.</span>
+                                </span>
+                            </label>
+                            <select name="entry.1814960858">
+                                <option value="" disabled selected>Sélectionner…</option>
+                                <option value="Sonorisation disponible sur place">Sonorisation disponible sur place</option>
+                                <option value="Pas de sonorisation sur place">Pas de sonorisation sur place</option>
+                                <option value="Pas encore décidé">Pas encore décidé</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="form-row">
+                        <div class="form-group" style="grid-column: 1 / -1;">
+                            <label class="field-label">
+                                Espace disponible pour les musiciens
+                                <span class="tooltip-wrap">
+                                    <span class="tooltip-icon">i</span>
+                                    <span class="tooltip-box">Indiquez les dimensions approximatives de l'espace disponible (ex : 4m × 3m), le type d'emplacement (scène, coin de salle, extérieur, podium…) et si des contraintes d'accès existent.</span>
+                                </span>
+                            </label>
+                            <input type="text" name="entry.2122423340" placeholder="Ex : Scène 5×3m, coin de salle, podium extérieur…">
+                        </div>
+                    </div>
+
+                    <div class="form-row">
+                        <div class="form-group" style="grid-column: 1 / -1;">
+                            <label class="field-label">
+                                Conditions particulières
+                                <span class="tooltip-wrap">
+                                    <span class="tooltip-icon">i</span>
+                                    <span class="tooltip-box">Mentionnez tout ce qui pourrait influencer notre prestation : volume sonore maximum autorisé, voisinage sensible, timing strict, dress code imposé, contraintes techniques…</span>
+                                </span>
+                            </label>
+                            <input type="text" name="entry.1015460861" placeholder="Ex : volume limité, timing strict, dress code, voisinage…">
+                        </div>
+                    </div>
+
+                    <div class="form-row">
+                        <div class="form-group" style="grid-column: 1 / -1;">
+                            <label class="field-label">Autres commentaires</label>
+                            <textarea name="entry.887954735" placeholder="Toute information complémentaire utile…" style="min-height:110px;"></textarea>
+                        </div>
+                    </div>
+
+                    <div class="form-row">
+                        <div class="form-group" style="grid-column: 1 / -1;">
+                            <label class="field-label">
+                                Pièces jointes
+                                <span class="tooltip-wrap">
+                                    <span class="tooltip-icon">i</span>
+                                    <span class="tooltip-box">Vous pouvez déposer un lien (Google Drive, WeTransfer…) vers votre programme, plan de salle ou affiche. Les fichiers joints directement ne sont pas pris en charge ici.</span>
+                                </span>
+                            </label>
+                            <input type="text" name="entry.928907993" placeholder="Lien vers un fichier (Drive, WeTransfer, Dropbox…)">
+                        </div>
+                    </div>
+
+                    <!-- RGPD -->
+                    <div class="rgpd-group">
+                        <input type="checkbox" id="rgpd" name="rgpd" required>
+                        <label for="rgpd">
+                            J'accepte que mes données soient utilisées pour traiter ma demande d'Offres Musicales Personnalisées. <span class="req">*</span>
+                        </label>
+                    </div>
+
+                    <!-- reCAPTCHA v2 -->
+                    <div class="recaptcha-wrap">
+                        <div class="g-recaptcha" data-sitekey="6LfxIoksAAAAAI_e6FmXhe7ukE8R_m6ITJm0jhIO" data-theme="dark"></div>
+                        <p class="recaptcha-error" id="recaptchaError">Veuillez cocher la case anti-spam.</p>
+                    </div>
+
+                    <div class="submit-row">
+                        <button type="submit" class="btn-submit" id="submitBtn">
+                            Envoyer la demande
+                        </button>
+                        <p class="submit-note">
+                            Nous vous répondons généralement<br>sous 48h ouvrables.
+                        </p>
+                    </div>
+
+                </form>
+
+                <!-- Message succès (affiché après soumission) -->
+                <div class="success-overlay" id="successOverlay">
+                    <div class="success-icon">🎵</div>
+                    <h3>Demande envoyée !</h3>
+                    <p>Merci pour votre message. Nous avons bien reçu votre demande et vous recontacterons prochainement avec une offre personnalisée.</p>
+                </div>
+
+            </div>
+
+            <!-- ══════════════════════════════
+                 PHOTO COLUMN (sticky)
+            ══════════════════════════════ -->
+            <div class="photo-col">
+                <img src="../images/contact/Contactphoto.jpg" alt="OrchestraKot en concert">
+                <div class="photo-overlay"></div>
+            </div>
+
+        </div>
+    </main>
+
+	
+    <footer class="site-footer">
+            <img src="images/support_graphique/Logo_Orchestrakot_Rectangle.png" alt="OrchestraKot" class="foot_logo">
+            <address>
+                <p>1 Rampes des Ardennais, Louvain-la-Neuve, Belgique<br>
+                <a href="tel:+32494718552">(+32) 494 71 85 52</a><br>
+                <a href="mailto:orchestrakot.ucl@gmail.com">orchestrakot.ucl@gmail.com</a></p>
+            </address>
+            <div class="social-links">
+                <a href="https://www.facebook.com/orchestrakot/"><i class="fa-brands fa-facebook"></i></a>
+                <a href="https://www.instagram.com/orchestrakot/?hl=en"><i class="fa-brands fa-instagram"></i></a>
+            </div>
+    </footer>
+</div>
+
+<script src="../js/jquery-1.11.1.min.js"></script>
+<script src="../js/plugins.js"></script>
+<script src="../js/app.js"></script>
+
+<script>
+(function() {
+    const form = document.getElementById('contactForm');
+    const submitBtn = document.getElementById('submitBtn');
+    const successOverlay = document.getElementById('successOverlay');
+    const recaptchaError = document.getElementById('recaptchaError');
+
+    // ── Validation d'un champ ──
+    function validateField(input) {
+        const group = input.closest('.form-group');
+        if (!group) return true;
+        if (!input.hasAttribute('required')) return true;
+
+        let valid = true;
+        if (input.type === 'email') {
+            valid = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(input.value.trim());
+        } else {
+            valid = input.value.trim() !== '';
+        }
+        group.classList.toggle('has-error', !valid);
+        return valid;
+    }
+
+    // ── Validation RGPD ──
+    function validateRgpd() {
+        const cb = document.getElementById('rgpd');
+        return cb && cb.checked;
+    }
+
+    // ── Live validation au blur ──
+    form.querySelectorAll('input, select, textarea').forEach(input => {
+        input.addEventListener('blur', () => validateField(input));
+        input.addEventListener('input', () => {
+            const group = input.closest('.form-group');
+            if (group && group.classList.contains('has-error')) validateField(input);
+        });
+    });
+
+    // ── Soumission ──
+    form.addEventListener('submit', function(e) {
+        e.preventDefault();
+
+        // 1. Valider tous les champs requis
+        let allValid = true;
+        form.querySelectorAll('input[required], select[required], textarea[required]').forEach(input => {
+            if (!validateField(input)) allValid = false;
+        });
+
+        // 2. Valider RGPD
+        if (!validateRgpd()) {
+            allValid = false;
+            const rgpdLabel = document.querySelector('.rgpd-group label');
+            if (rgpdLabel) rgpdLabel.style.color = 'var(--red)';
+        }
+
+        // 3. Valider reCAPTCHA
+        let captchaOk = false;
+        try {
+            captchaOk = grecaptcha.getResponse().length > 0;
+        } catch(err) {
+            captchaOk = false;
+        }
+        recaptchaError.style.display = captchaOk ? 'none' : 'block';
+
+        if (!allValid || !captchaOk) {
+            // Scroll vers la première erreur
+            const firstError = form.querySelector('.has-error, .recaptcha-error[style*="block"]');
+            if (firstError) firstError.scrollIntoView({ behavior: 'smooth', block: 'center' });
+            return;
+        }
+
+        // 4. Soumettre via l'iframe caché
+        submitBtn.textContent = 'Envoi en cours…';
+        submitBtn.disabled = true;
+
+        // Soumettre le formulaire vers l'iframe (target="hidden-iframe")
+        form.submit();
+
+        // Après un court délai, afficher le message de succès
+        setTimeout(() => {
+            form.style.display = 'none';
+            successOverlay.classList.add('visible');
+            successOverlay.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        }, 1200);
+    });
+
+    // Restore RGPD label color on change
+    document.getElementById('rgpd').addEventListener('change', function() {
+        const label = document.querySelector('.rgpd-group label');
+        if (label) label.style.color = '';
+    });
+})();
+</script>
+</body>
+</html>
