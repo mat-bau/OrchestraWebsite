@@ -1,0 +1,972 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1">
+  <meta name="description" content="Médias - OrchestraKot Louvain-la-Neuve">
+  <link rel="shortcut icon" type="image/x-icon" href="../images/support_graphique/Logo_Orchestrakot_SQUARE.png?v=2"/>
+  <title>Médias — OrchestraKot</title>
+
+  <link href="http://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,600,700,900" rel="stylesheet" type="text/css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+  <link rel="stylesheet" href="style.css">
+
+  <style>
+    /* ─── RESET / BASE ─────────────────────────────────────── */
+    *, *::before, *::after { box-sizing: border-box; }
+
+    .medias-page {
+      background: #141414;
+      padding-bottom: 80px;
+    }
+
+    /* ─── HERO ──────────────────────────────────────────────── */
+    .medias-hero {
+      position: relative;
+      width: 100%;
+      background: #0d0d0d;
+      overflow: hidden;
+      cursor: pointer;
+    }
+
+    .medias-hero__thumb {
+      width: 100%;
+      aspect-ratio: 16/7;
+      object-fit: cover;
+      display: block;
+      filter: brightness(.45);
+      transition: filter .4s ease;
+    }
+
+    .medias-hero:hover .medias-hero__thumb {
+      filter: brightness(.55);
+    }
+
+    .medias-hero__overlay {
+      position: absolute;
+      inset: 0;
+      display: flex;
+      flex-direction: column;
+      justify-content: flex-end;
+      padding: 48px 60px;
+      background: linear-gradient(to top, rgba(0,0,0,.85) 0%, transparent 60%);
+    }
+
+    .medias-hero__tag {
+      display: inline-block;
+      background: #E63946;
+      color: #fff;
+      font-size: 0.72em;
+      font-weight: 700;
+      letter-spacing: .15em;
+      text-transform: uppercase;
+      padding: 4px 10px;
+      margin-bottom: 14px;
+      width: fit-content;
+    }
+
+    .medias-hero__title {
+      color: #fff;
+      font-size: clamp(2em, 5vw, 3.8em);
+      font-weight: 900;
+      line-height: 1.05;
+      margin: 0 0 10px;
+      max-width: 700px;
+    }
+
+    .medias-hero__sub {
+      color: rgba(255,255,255,.55);
+      font-size: 1em;
+      font-weight: 400;
+      margin: 0 0 24px;
+    }
+
+    .medias-hero__play {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      background: #E63946;
+      color: #fff;
+      border: none;
+      font-family: "Source Sans Pro", sans-serif;
+      font-size: 0.88em;
+      font-weight: 700;
+      letter-spacing: .08em;
+      text-transform: uppercase;
+      padding: 13px 24px;
+      cursor: pointer;
+      transition: background .2s;
+      width: fit-content;
+    }
+
+    .medias-hero__play:hover { background: #c42d39; }
+
+    .medias-hero__play svg { flex-shrink: 0; }
+
+    /* ─── CONTAINER ─────────────────────────────────────────── */
+    .medias-container {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 0 30px;
+    }
+
+    /* ─── SECTION LABEL ─────────────────────────────────────── */
+    .medias-section {
+      margin-top: 70px;
+    }
+
+    .medias-section__header {
+      display: flex;
+      align-items: baseline;
+      gap: 18px;
+      border-bottom: 1px solid rgba(255,255,255,.1);
+      padding-bottom: 16px;
+      margin-bottom: 36px;
+    }
+
+    .medias-section__title {
+      color: #fff;
+      font-size: 1.5em;
+      font-weight: 900;
+      letter-spacing: .04em;
+      text-transform: uppercase;
+      margin: 0;
+    }
+
+    .medias-section__count {
+      color: #E63946;
+      font-size: 0.85em;
+      font-weight: 600;
+      letter-spacing: .06em;
+    }
+
+    /* ─── TRAILERS GRID ─────────────────────────────────────── */
+    .trailers-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 2px;
+    }
+
+    /* Featured (first card spans 2 cols) */
+    .trailer-card--featured {
+      grid-column: span 2;
+    }
+
+    .trailer-card {
+      position: relative;
+      overflow: hidden;
+      cursor: pointer;
+      background: #0d0d0d;
+      display: block;
+    }
+
+    .trailer-card__thumb-wrap {
+      position: relative;
+      width: 100%;
+      aspect-ratio: 16/9;
+      overflow: hidden;
+    }
+
+    .trailer-card--featured .trailer-card__thumb-wrap {
+      aspect-ratio: 16/9;
+    }
+
+    .trailer-card__thumb {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+      filter: brightness(.6);
+      transition: filter .35s ease, transform .45s ease;
+    }
+
+    .trailer-card:hover .trailer-card__thumb {
+      filter: brightness(.75);
+      transform: scale(1.04);
+    }
+
+    .trailer-card__info {
+      position: absolute;
+      inset: 0;
+      display: flex;
+      flex-direction: column;
+      justify-content: flex-end;
+      padding: 20px 22px;
+      background: linear-gradient(to top, rgba(0,0,0,.88) 0%, transparent 65%);
+    }
+
+    .trailer-card--featured .trailer-card__info {
+      padding: 28px 32px;
+    }
+
+    .trailer-card__year {
+      font-size: 0.68em;
+      font-weight: 700;
+      letter-spacing: .18em;
+      text-transform: uppercase;
+      color: #E63946;
+      margin-bottom: 6px;
+    }
+
+    .trailer-card__title {
+      color: #fff;
+      font-weight: 800;
+      font-size: 1em;
+      line-height: 1.2;
+      margin: 0 0 10px;
+    }
+
+    .trailer-card--featured .trailer-card__title {
+      font-size: 1.35em;
+    }
+
+    .trailer-card__theme {
+      color: rgba(255,255,255,.45);
+      font-size: 0.78em;
+      font-weight: 400;
+      margin: 0;
+    }
+
+    /* Play icon hover */
+    .trailer-card__play-icon {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%) scale(.85);
+      opacity: 0;
+      transition: opacity .25s, transform .25s;
+      pointer-events: none;
+    }
+
+    .trailer-card:hover .trailer-card__play-icon {
+      opacity: 1;
+      transform: translate(-50%, -50%) scale(1);
+    }
+
+    .trailer-card__play-icon svg circle {
+      fill: rgba(230, 57, 70, .88);
+    }
+
+    /* ─── COVERS GRID ───────────────────────────────────────── */
+    .covers-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+      gap: 20px;
+    }
+
+    .cover-card {
+      background: #1a1a1a;
+      border: 1px solid rgba(255,255,255,.07);
+      cursor: pointer;
+      transition: transform .22s ease, box-shadow .22s ease;
+      overflow: hidden;
+    }
+
+    .cover-card:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 10px 30px rgba(0,0,0,.5);
+    }
+
+    .cover-card__thumb-wrap {
+      position: relative;
+      aspect-ratio: 16/9;
+      overflow: hidden;
+    }
+
+    .cover-card__thumb {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      filter: brightness(.7);
+      transition: filter .3s, transform .4s;
+    }
+
+    .cover-card:hover .cover-card__thumb {
+      filter: brightness(.85);
+      transform: scale(1.04);
+    }
+
+    .cover-card__play-icon {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%) scale(.8);
+      opacity: 0;
+      transition: opacity .25s, transform .25s;
+    }
+
+    .cover-card:hover .cover-card__play-icon {
+      opacity: 1;
+      transform: translate(-50%, -50%) scale(1);
+    }
+
+    .cover-card__body {
+      padding: 16px 18px 18px;
+    }
+
+    .cover-card__label {
+      font-size: 0.68em;
+      font-weight: 700;
+      letter-spacing: .15em;
+      text-transform: uppercase;
+      color: #E63946;
+      margin-bottom: 6px;
+    }
+
+    .cover-card__title {
+      color: #fff;
+      font-size: 1em;
+      font-weight: 700;
+      margin: 0 0 4px;
+      line-height: 1.3;
+    }
+
+    .cover-card__meta {
+      color: rgba(255,255,255,.35);
+      font-size: 0.8em;
+    }
+
+    /* ─── YOUTUBE CTA ───────────────────────────────────────── */
+    .yt-cta {
+      margin-top: 56px;
+      border-top: 1px solid rgba(255,255,255,.08);
+      padding-top: 40px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 20px;
+      flex-wrap: wrap;
+    }
+
+    .yt-cta__text {
+      color: rgba(255,255,255,.4);
+      font-size: 0.9em;
+    }
+
+    .yt-cta__text strong {
+      display: block;
+      color: #fff;
+      font-size: 1.1em;
+      font-weight: 700;
+      margin-bottom: 4px;
+    }
+
+    .yt-cta__btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      background: #ff0000;
+      color: #fff;
+      text-decoration: none;
+      font-weight: 700;
+      font-size: 0.9em;
+      letter-spacing: .05em;
+      padding: 13px 22px;
+      transition: background .2s;
+      white-space: nowrap;
+    }
+
+    .yt-cta__btn:hover { background: #cc0000; }
+
+    /* ─── VIDEO MODAL ───────────────────────────────────────── */
+    .vid-modal-backdrop {
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,.9);
+      z-index: 9999;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity .25s ease;
+    }
+
+    .vid-modal-backdrop.is-open {
+      opacity: 1;
+      pointer-events: all;
+    }
+
+    .vid-modal {
+      width: 100%;
+      max-width: 900px;
+      position: relative;
+      transform: scale(.96);
+      transition: transform .28s ease;
+    }
+
+    .vid-modal-backdrop.is-open .vid-modal {
+      transform: scale(1);
+    }
+
+    .vid-modal__close {
+      position: absolute;
+      top: -38px;
+      right: 0;
+      background: none;
+      border: none;
+      color: rgba(255,255,255,.6);
+      font-size: 26px;
+      cursor: pointer;
+      line-height: 1;
+      padding: 4px 8px;
+      transition: color .2s;
+      font-family: sans-serif;
+    }
+
+    .vid-modal__close:hover { color: #fff; }
+
+    .vid-modal__player {
+      position: relative;
+      aspect-ratio: 16/9;
+      background: #000;
+    }
+
+    .vid-modal__player iframe {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      border: none;
+    }
+
+    .vid-modal__caption {
+      padding: 14px 0 0;
+      color: rgba(255,255,255,.5);
+      font-size: 0.85em;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .vid-modal__caption strong { color: #fff; }
+
+    /* ─── RESPONSIVE ────────────────────────────────────────── */
+    @media (max-width: 900px) {
+      .trailers-grid {
+        grid-template-columns: 1fr 1fr;
+      }
+      .trailer-card--featured {
+        grid-column: span 2;
+      }
+      .medias-hero__overlay { padding: 30px; }
+    }
+
+    @media (max-width: 600px) {
+      .trailers-grid {
+        grid-template-columns: 1fr;
+      }
+      .trailer-card--featured {
+        grid-column: span 1;
+      }
+      .medias-container { padding: 0 16px; }
+      .medias-hero__overlay { padding: 20px; }
+      .yt-cta { flex-direction: column; align-items: flex-start; }
+    }
+  </style>
+</head>
+
+<body class="header-collapse">
+<div id="site-content">
+
+  <!-- ── HEADER ───────────────────────────────────────────────── -->
+  <header class="site-header">
+    <div class="container">
+      <a href="index.html" id="branding">
+        <img src="../images/support_graphique/Logo_Orchestrakot_SQUARE.png" alt="OrchestraKot" class="head_logo">
+      </a>
+      <nav class="main-navigation">
+        <button type="button" class="toggle-menu"><i class="fa fa-bars"></i></button>
+        <ul class="menu">
+          <li class="menu-item"><a href="index.html">Home</a></li>
+          <li class="menu-item"><a href="about.html">About</a></li>
+          <li class="menu-item"><a href="gallery.html">Galerie</a></li>
+          <li class="menu-item current-menu-item"><a href="medias.html">Médias</a></li>
+          <li class="menu-item"><a href="contact.html">Contact</a></li>
+        </ul>
+      </nav>
+      <div class="mobile-menu"></div>
+    </div>
+  </header>
+
+  <!-- ── HERO : vidéo mise en avant ──────────────────────────── -->
+  <div class="medias-hero"
+       data-videoid="sKB9o7RwP6U"
+       data-title="Trailer Concert 2025"
+       data-meta="Concert annuel · Ferme du Biéreau"
+       role="button" tabindex="0"
+       aria-label="Voir le trailer du concert 2025">
+    <!-- Thumbnail YouTube HD -->
+    <img class="medias-hero__thumb"
+         src="https://img.youtube.com/vi/sKB9o7RwP6U/maxresdefault.jpg"
+         alt="Trailer Concert 2025 — OrchestraKot"
+         onerror="this.src='https://img.youtube.com/vi/sKB9o7RwP6U/hqdefault.jpg'">
+    <div class="medias-hero__overlay">
+      <span class="medias-hero__tag">À la une · 2025</span>
+      <h1 class="medias-hero__title">Trailer<br>Concert 2025</h1>
+      <p class="medias-hero__sub">Ferme du Biéreau · Louvain-la-Neuve</p>
+      <button class="medias-hero__play">
+        <svg width="18" height="18" viewBox="0 0 18 18" fill="none">
+          <polygon points="5,3 15,9 5,15" fill="white"/>
+        </svg>
+        Regarder
+      </button>
+    </div>
+  </div>
+
+  <!-- ── CONTENT ──────────────────────────────────────────────── -->
+  <main class="medias-page">
+    <div class="medias-container">
+
+      <!-- SECTION : Concerts -->
+      <section class="medias-section">
+        <div class="medias-section__header">
+          <h2 class="medias-section__title">Concerts</h2>
+          <span class="medias-section__count">3 trailers</span>
+        </div>
+
+        <div class="trailers-grid">
+
+          <!-- 2025 – featured -->
+          <div class="trailer-card trailer-card--featured"
+               data-videoid="sKB9o7RwP6U"
+               data-title="Trailer Concert 2025"
+               data-meta="Concert annuel · Ferme du Biéreau"
+               role="button" tabindex="0">
+            <div class="trailer-card__thumb-wrap">
+              <img class="trailer-card__thumb"
+                   src="https://img.youtube.com/vi/sKB9o7RwP6U/maxresdefault.jpg"
+                   alt="Trailer Concert 2025"
+                   onerror="this.src='https://img.youtube.com/vi/sKB9o7RwP6U/hqdefault.jpg'">
+              <div class="trailer-card__play-icon">
+                <svg width="56" height="56" viewBox="0 0 56 56">
+                  <circle cx="28" cy="28" r="28"/>
+                  <polygon points="22,17 42,28 22,39" fill="white"/>
+                </svg>
+              </div>
+            </div>
+            <div class="trailer-card__info">
+              <p class="trailer-card__year">Concert 2025</p>
+              <h3 class="trailer-card__title">Trailer — Édition 2025</h3>
+              <p class="trailer-card__theme">Ferme du Biéreau · 13 novembre</p>
+            </div>
+          </div>
+
+          <!-- 2024 -->
+          <div class="trailer-card"
+               data-videoid="1JbgfiQ49IM"
+               data-title="Trailer Concert 2024 — I Got You"
+               data-meta="Concert annuel · Ferme du Biéreau"
+               role="button" tabindex="0">
+            <div class="trailer-card__thumb-wrap">
+              <img class="trailer-card__thumb"
+                   src="https://img.youtube.com/vi/1JbgfiQ49IM/maxresdefault.jpg"
+                   alt="Trailer Concert 2024"
+                   onerror="this.src='https://img.youtube.com/vi/1JbgfiQ49IM/hqdefault.jpg'">
+              <div class="trailer-card__play-icon">
+                <svg width="48" height="48" viewBox="0 0 48 48">
+                  <circle cx="24" cy="24" r="24"/>
+                  <polygon points="19,14 36,24 19,34" fill="white"/>
+                </svg>
+              </div>
+            </div>
+            <div class="trailer-card__info">
+              <p class="trailer-card__year">Concert 2024</p>
+              <h3 class="trailer-card__title">Trailer - Édition 2024</h3>
+              <p class="trailer-card__theme">Ferme du Biéreau · 14 novembre</p>
+            </div>
+          </div>
+
+          <!-- 2023 -->
+          <div class="trailer-card"
+               data-videoid="qy2EXvftPz8"
+               data-title="Trailer Concert 2023"
+               data-meta="Concert annuel · Ferme du Biéreau"
+               role="button" tabindex="0">
+            <div class="trailer-card__thumb-wrap">
+              <img class="trailer-card__thumb"
+                   src="https://img.youtube.com/vi/qy2EXvftPz8/maxresdefault.jpg"
+                   alt="Trailer Concert 2023"
+                   onerror="this.src='https://img.youtube.com/vi/qy2EXvftPz8/hqdefault.jpg'">
+              <div class="trailer-card__play-icon">
+                <svg width="48" height="48" viewBox="0 0 48 48">
+                  <circle cx="24" cy="24" r="24"/>
+                  <polygon points="19,14 36,24 19,34" fill="white"/>
+                </svg>
+              </div>
+            </div>
+            <div class="trailer-card__info">
+              <p class="trailer-card__year">Concert 2023</p>
+              <h3 class="trailer-card__title">Trailer — Édition 2023</h3>
+              <p class="trailer-card__theme">Ferme du Biéreau</p>
+            </div>
+          </div>
+		  <!-- 2021 -->
+          <div class="trailer-card"
+               data-videoid="1ulNyn-NlfM"
+               data-title="Trailer Concert 2021"
+               data-meta="Concert annuel · Ferme du Biéreau"
+               role="button" tabindex="0">
+            <div class="trailer-card__thumb-wrap">
+              <img class="trailer-card__thumb"
+                   src="https://img.youtube.com/vi/1ulNyn-NlfM/maxresdefault.jpg"
+                   alt="Trailer Concert 2021"
+                   onerror="this.src='https://img.youtube.com/vi/1ulNyn-NlfM/hqdefault.jpg'">
+              <div class="trailer-card__play-icon">
+                <svg width="48" height="48" viewBox="0 0 48 48">
+                  <circle cx="24" cy="24" r="24"/>
+                  <polygon points="19,14 36,24 19,34" fill="white"/>
+                </svg>
+              </div>
+            </div>
+            <div class="trailer-card__info">
+              <p class="trailer-card__year">Concert 2021</p>
+              <h3 class="trailer-card__title">Trailer — Édition 2021</h3>
+              <p class="trailer-card__theme">Ferme du Biéreau</p>
+            </div>
+          </div>
+
+		<!-- 2018 -->
+          <div class="trailer-card"
+               data-videoid="ELbfMLFJcLk"
+               data-title="Trailer Concert 2018"
+               data-meta="Concert annuel · Ferme du Biéreau"
+               role="button" tabindex="0">
+            <div class="trailer-card__thumb-wrap">
+              <img class="trailer-card__thumb"
+                   src="https://img.youtube.com/vi/ELbfMLFJcLk/maxresdefault.jpg"
+                   alt="Trailer Concert 2018"
+                   onerror="this.src='https://img.youtube.com/vi/ELbfMLFJcLk/hqdefault.jpg'">
+              <div class="trailer-card__play-icon">
+                <svg width="48" height="48" viewBox="0 0 48 48">
+                  <circle cx="24" cy="24" r="24"/>
+                  <polygon points="19,14 36,24 19,34" fill="white"/>
+                </svg>
+              </div>
+            </div>
+            <div class="trailer-card__info">
+              <p class="trailer-card__year">Concert 2018</p>
+              <h3 class="trailer-card__title">Trailer — Édition 2018</h3>
+              <p class="trailer-card__theme">Ferme du Biéreau</p>
+            </div>
+          </div>
+        </div><!-- .trailers-grid -->
+		<!-- 2017 -->
+          <div class="trailer-card"
+               data-videoid="ETElKDdEKiM"
+               data-title="Trailer Concert 2017"
+               data-meta="Concert annuel · Ferme du Biéreau"
+               role="button" tabindex="0">
+            <div class="trailer-card__thumb-wrap">
+              <img class="trailer-card__thumb"
+                   src="https://img.youtube.com/vi/ETElKDdEKiM/maxresdefault.jpg"
+                   alt="Trailer Concert 2017"
+                   onerror="this.src='https://img.youtube.com/vi/ETElKDdEKiM/hqdefault.jpg'">
+              <div class="trailer-card__play-icon">
+                <svg width="48" height="48" viewBox="0 0 48 48">
+                  <circle cx="24" cy="24" r="24"/>
+                  <polygon points="19,14 36,24 19,34" fill="white"/>
+                </svg>
+              </div>
+            </div>
+            <div class="trailer-card__info">
+              <p class="trailer-card__year">Concert 2017</p>
+              <h3 class="trailer-card__title">Trailer — Édition 2017</h3>
+              <p class="trailer-card__theme">Ferme du Biéreau</p>
+            </div>
+          </div>
+        </div><!-- .trailers-grid -->
+      </section>
+
+      </section>
+
+      <!-- SECTION : Covers & Autres -->
+      <section class="medias-section">
+        <div class="medias-section__header">
+          <h2 class="medias-section__title">Covers & Autres</h2>
+          <span class="medias-section__count">6 vidéos</span>
+        </div>
+
+        <div class="covers-grid">
+
+          <!-- Présentation du projet -->
+          <div class="cover-card"
+               data-videoid="kQVHkU5yPTE"
+               data-title="Présentation du Projet 2025"
+               data-meta="Orchestrakot Kapuclouvain"
+               role="button" tabindex="0">
+            <div class="cover-card__thumb-wrap">
+              <img class="cover-card__thumb"
+                   src="https://img.youtube.com/vi/kQVHkU5yPTE/maxresdefault.jpg"
+                   alt="Présentation du projet 2025"
+                   onerror="this.src='https://img.youtube.com/vi/kQVHkU5yPTE/hqdefault.jpg'">
+              <div class="cover-card__play-icon">
+                <svg width="44" height="44" viewBox="0 0 44 44">
+                  <circle cx="22" cy="22" r="22" fill="rgba(230,57,70,.85)"/>
+                  <polygon points="17,12 34,22 17,32" fill="white"/>
+                </svg>
+              </div>
+            </div>
+            <div class="cover-card__body">
+              <p class="cover-card__label">Présentation</p>
+              <h3 class="cover-card__title">Le Projet Orchestrakot 2025</h3>
+              <p class="cover-card__meta">Qui sommes-nous ?</p>
+            </div>
+          </div>
+
+          <!-- Louvain-la-Neuve -->
+          <div class="cover-card"
+               data-videoid="25JtU1b47oo"
+               data-title="Louvain-la-Neuve - Edouard Priem (Cover)"
+               data-meta="Orchestrakot · Edouard Priem"
+               role="button" tabindex="0">
+            <div class="cover-card__thumb-wrap">
+              <img class="cover-card__thumb"
+                   src="https://img.youtube.com/vi/25JtU1b47oo/maxresdefault.jpg"
+                   alt="Louvain-la-Neuve"
+                   onerror="this.src='https://img.youtube.com/vi/25JtU1b47oo/hqdefault.jpg'">
+              <div class="cover-card__play-icon">
+                <svg width="44" height="44" viewBox="0 0 44 44">
+                  <circle cx="22" cy="22" r="22" fill="rgba(230,57,70,.85)"/>
+                  <polygon points="17,12 34,22 17,32" fill="white"/>
+                </svg>
+              </div>
+            </div>
+            <div class="cover-card__body">
+              <p class="cover-card__label">Cover</p>
+              <h3 class="cover-card__title">Louvain-la-Neuve ft. Edouard Priem</h3>
+              <p class="cover-card__meta">L'hymne de notre ville</p>
+            </div>
+          </div>
+
+          <div class="cover-card"
+               data-videoid="ehSijUwD5uo"
+               data-title="Earth Song - Micheal Jackson (Cover)"
+               data-meta="Orchestrakot 2020"
+               role="button" tabindex="0">
+            <div class="cover-card__thumb-wrap">
+              <img class="cover-card__thumb"
+                   src="https://img.youtube.com/vi/ehSijUwD5uo/maxresdefault.jpg"
+                   alt="Earth Song - Micheal Jackson (Cover)"
+                   onerror="this.src='https://img.youtube.com/vi/ehSijUwD5uo/hqdefault.jpg'">
+              <div class="cover-card__play-icon">
+                <svg width="44" height="44" viewBox="0 0 44 44">
+                  <circle cx="22" cy="22" r="22" fill="rgba(230,57,70,.85)"/>
+                  <polygon points="17,12 34,22 17,32" fill="white"/>
+                </svg>
+              </div>
+            </div>
+            <div class="cover-card__body">
+              <p class="cover-card__label">Cover</p>
+              <h3 class="cover-card__title">Earth Song - Micheal Jackson</h3>
+              <p class="cover-card__meta">Reprise pour passer le temps</p>
+            </div>
+          </div>
+
+		  <div class="cover-card"
+               data-videoid="HTyPyh0W2xU"
+               data-title="Medley de Noël"
+               data-meta="Orchestrakot 2020"
+               role="button" tabindex="0">
+            <div class="cover-card__thumb-wrap">
+              <img class="cover-card__thumb"
+                   src="https://img.youtube.com/vi/HTyPyh0W2xU/maxresdefault.jpg"
+                   alt="Medley de Noël"
+                   onerror="this.src='https://img.youtube.com/vi/HTyPyh0W2xU/hqdefault.jpg'">
+              <div class="cover-card__play-icon">
+                <svg width="44" height="44" viewBox="0 0 44 44">
+                  <circle cx="22" cy="22" r="22" fill="rgba(230,57,70,.85)"/>
+                  <polygon points="17,12 34,22 17,32" fill="white"/>
+                </svg>
+              </div>
+            </div>
+            <div class="cover-card__body">
+              <p class="cover-card__label">Medley</p>
+              <h3 class="cover-card__title">Medley de Noël</h3>
+              <p class="cover-card__meta">L'équipe de 2020 avait beaucoup de temps à perdre</p>
+            </div>
+          </div>
+
+		  <div class="cover-card"
+               data-videoid="zUtMUEfbadk"
+               data-title="La foule - Edith Piaf (Cover)"
+               data-meta="Orchestrakot 2020"
+               role="button" tabindex="0">
+            <div class="cover-card__thumb-wrap">
+              <img class="cover-card__thumb"
+                   src="https://img.youtube.com/vi/zUtMUEfbadk/maxresdefault.jpg"
+                   alt="La foule - Edith Piaf (Cover)"
+                   onerror="this.src='https://img.youtube.com/vi/zUtMUEfbadk/hqdefault.jpg'">
+              <div class="cover-card__play-icon">
+                <svg width="44" height="44" viewBox="0 0 44 44">
+                  <circle cx="22" cy="22" r="22" fill="rgba(230,57,70,.85)"/>
+                  <polygon points="17,12 34,22 17,32" fill="white"/>
+                </svg>
+              </div>
+            </div>
+            <div class="cover-card__body">
+              <p class="cover-card__label">Cover</p>
+              <h3 class="cover-card__title">La foule - Edith Piaf</h3>
+              <p class="cover-card__meta">Magnifique reprise par l'Orchestrakot 2020</p>
+            </div>
+          </div>
+		  
+          <div class="cover-card"
+               data-videoid="vtpnaYCKfEQ"
+               data-title="Medley 24h vélo 2020"
+               data-meta="Orchestrakot 2020"
+               role="button" tabindex="0">
+            <div class="cover-card__thumb-wrap">
+              <img class="cover-card__thumb"
+                   src="https://img.youtube.com/vi/vtpnaYCKfEQ/maxresdefault.jpg"
+                   alt="Medley 2020"
+				   onerror="this.src='https://img.youtube.com/vi/vtpnaYCKfEQ/hqdefault.jpg'">
+              <div class="cover-card__play-icon">
+                <svg width="44" height="44" viewBox="0 0 44 44">
+                  <circle cx="22" cy="22" r="22" fill="rgba(230,57,70,.85)"/>
+                  <polygon points="17,12 34,22 17,32" fill="white"/>
+                </svg>
+              </div>
+            </div>
+            <div class="cover-card__body">
+              <p class="cover-card__label">Medley</p>
+              <h3 class="cover-card__title">24h vélo 2020</h3>
+              <p class="cover-card__meta">Le medley du Covid </p>
+            </div>
+          </div>
+
+
+          <!--
+            Pour ajouter une vidéo, copie ce bloc et       
+            remplace data-videoid par l'ID YouTube         
+
+          <div class="cover-card"
+               data-videoid="YOUTUBE_ID_ICI"
+               data-title="Titre de la vidéo"
+               data-meta="Sous-titre / info"
+               role="button" tabindex="0">
+            <div class="cover-card__thumb-wrap">
+              <img class="cover-card__thumb"
+                   src="https://img.youtube.com/vi/YOUTUBE_ID_ICI/maxresdefault.jpg"
+                   alt="Description">
+              <div class="cover-card__play-icon">
+                <svg width="44" height="44" viewBox="0 0 44 44">
+                  <circle cx="22" cy="22" r="22" fill="rgba(230,57,70,.85)"/>
+                  <polygon points="17,12 34,22 17,32" fill="white"/>
+                </svg>
+              </div>
+            </div>
+            <div class="cover-card__body">
+              <p class="cover-card__label">Label</p>
+              <h3 class="cover-card__title">Titre</h3>
+              <p class="cover-card__meta">Métadonnée</p>
+            </div>
+          </div>
+          -->
+
+        </div><!-- .covers-grid -->
+      </section>
+
+      <!-- CTA YouTube -->
+      <div class="yt-cta">
+        <div class="yt-cta__text">
+          <strong>Toutes nos vidéos</strong>
+          Abonne-toi à notre chaîne pour ne rien manquer.
+        </div>
+        <a href="https://www.youtube.com/channel/UCNfleJHSeg1hwH2XoNd5JuQ"
+           target="_blank" rel="noopener"
+           class="yt-cta__btn">
+          <i class="fa-brands fa-youtube"></i>
+          Notre chaîne YouTube
+        </a>
+      </div>
+
+    </div><!-- .medias-container -->
+  </main>
+
+  <!-- ── FOOTER ───────────────────────────────────────────────── -->
+  <footer class="site-footer">
+    <div class="container">
+      <img src="../images/support_graphique/Logo_Orchestrakot_Rectangle.png" alt="OrchestraKot" class="foot_logo">
+      <address>
+        <p>1 Rampe des Ardennais, Louvain-la-Neuve, Belgique<br>
+        <a href="tel:+32497304104">(+32) 497 30 41 04</a><br>
+        <a href="mailto:orchestrakot.ucl@gmail.com">orchestrakot.ucl@gmail.com</a></p>
+      </address>
+      <div class="social-links">
+        <a href="https://www.facebook.com/orchestrakot/"><i class="fa-brands fa-facebook"></i></a>
+        <a href="https://www.instagram.com/orchestrakot/?hl=en"><i class="fa-brands fa-instagram"></i></a>
+      </div>
+    </div>
+  </footer>
+
+</div><!-- #site-content -->
+
+<!-- ── VIDEO MODAL ─────────────────────────────────────────────── -->
+<div class="vid-modal-backdrop" id="vid-modal" role="dialog" aria-modal="true" aria-label="Lecteur vidéo">
+  <div class="vid-modal">
+    <button class="vid-modal__close" aria-label="Fermer">&#215;</button>
+    <div class="vid-modal__player">
+      <iframe id="vid-iframe" src="" allow="autoplay; encrypted-media" allowfullscreen></iframe>
+    </div>
+    <div class="vid-modal__caption">
+      <strong id="vid-caption-title"></strong>
+      <span id="vid-caption-meta" style="margin-left:8px;"></span>
+    </div>
+  </div>
+</div>
+
+<!-- ── SCRIPTS ─────────────────────────────────────────────────── -->
+<script src="js/jquery-1.11.1.min.js"></script>
+<script src="js/plugins.js"></script>
+<script src="js/app.js"></script>
+
+<script>
+(function () {
+  const modal    = document.getElementById('vid-modal');
+  const iframe   = document.getElementById('vid-iframe');
+  const capTitle = document.getElementById('vid-caption-title');
+  const capMeta  = document.getElementById('vid-caption-meta');
+
+  // All clickable video elements
+  const triggers = document.querySelectorAll(
+    '[data-videoid]'
+  );
+
+  function openVideo(id, title, meta) {
+    iframe.src = `https://www.youtube.com/embed/${id}?autoplay=1&rel=0`;
+    capTitle.textContent = title || '';
+    capMeta.textContent  = meta  || '';
+    modal.classList.add('is-open');
+    document.body.style.overflow = 'hidden';
+    modal.querySelector('.vid-modal__close').focus();
+  }
+
+  function closeVideo() {
+    modal.classList.remove('is-open');
+    iframe.src = '';
+    document.body.style.overflow = '';
+  }
+
+  triggers.forEach(el => {
+    el.addEventListener('click', () =>
+      openVideo(el.dataset.videoid, el.dataset.title, el.dataset.meta)
+    );
+    el.addEventListener('keydown', e => {
+      if (e.key === 'Enter' || e.key === ' ') {
+        e.preventDefault();
+        openVideo(el.dataset.videoid, el.dataset.title, el.dataset.meta);
+      }
+    });
+  });
+
+  modal.querySelector('.vid-modal__close').addEventListener('click', closeVideo);
+  modal.addEventListener('click', e => { if (e.target === modal) closeVideo(); });
+  document.addEventListener('keydown', e => { if (e.key === 'Escape') closeVideo(); });
+})();
+</script>
+
+</body>
+</html>
