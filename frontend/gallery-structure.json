@@ -1817,6 +1817,21 @@
           "name": "lequipe6.jpg",
           "path": "public/Général/lequipe6.jpg",
           "size": 214902
+        },
+        {
+          "name": "lequipe7.jpg",
+          "path": "public/Général/lequipe7.jpg",
+          "size": 913050
+        },
+        {
+          "name": "lequipe8.jpg",
+          "path": "public/Général/lequipe8.jpg",
+          "size": 893746
+        },
+        {
+          "name": "lequipe9.jpg",
+          "path": "public/Général/lequipe9.jpg",
+          "size": 926398
         }
       ]
     }

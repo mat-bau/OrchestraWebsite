@@ -2706,4 +2706,267 @@ body {
   width: auto;
   filter: brightness(0) invert(1);
 }
+
+
+  /* ── EVENTS GRID ─────────────────────────────────────────── */
+  .upcoming-event-section {
+    background-color: #191919;
+    padding: 70px 0 80px;
+  }
+ 
+  .event-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+    gap: 24px;
+    margin-top: 0;
+    margin-bottom: 0;
+  }
+ 
+  .event-card {
+    background: #1f1f1f;
+    border: 1px solid rgba(255,255,255,0.07);
+    border-top: 3px solid #E63946;
+    padding: 28px 24px 22px;
+    cursor: pointer;
+    transition: transform .22s ease, box-shadow .22s ease, border-top-color .22s ease;
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+  }
+ 
+  .event-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 12px 36px rgba(0,0,0,.45);
+    border-top-color: #ff6b76;
+  }
+ 
+  .event-card__date {
+    display: flex;
+    align-items: baseline;
+    gap: 6px;
+    font-family: "Source Sans Pro", sans-serif;
+  }
+ 
+  .event-card__day {
+    font-size: 2.4em;
+    font-weight: 900;
+    color: #E63946;
+    line-height: 1;
+  }
+ 
+  .event-card__month {
+    font-size: 0.78em;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: .12em;
+    color: rgba(255,255,255,.45);
+  }
+ 
+  .event-card__title {
+    font-size: 1.05em;
+    font-weight: 700;
+    color: #ffffff;
+    margin: 0;
+    line-height: 1.3;
+  }
+ 
+  .event-card__excerpt {
+    font-size: 0.875em;
+    color: rgba(255,255,255,.5);
+    line-height: 1.55;
+    margin: 0;
+    flex-grow: 1;
+  }
+ 
+  .event-card__excerpt em {
+    color: #E63946;
+    font-style: normal;
+    font-weight: 600;
+  }
+ 
+  .event-card__cta {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 0.78em;
+    font-weight: 600;
+    letter-spacing: .08em;
+    text-transform: uppercase;
+    color: rgba(255,255,255,.3);
+    transition: color .2s;
+    margin-top: 4px;
+  }
+ 
+  .event-card:hover .event-card__cta {
+    color: #E63946;
+  }
+ 
+  .event-card__cta svg {
+    transition: transform .2s;
+  }
+ 
+  .event-card:hover .event-card__cta svg {
+    transform: translateX(3px);
+  }
+ 
+  /* ── MODAL ───────────────────────────────────────────────── */
+  .ork-modal-backdrop {
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,.75);
+    backdrop-filter: blur(4px);
+    z-index: 9999;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity .25s ease;
+  }
+ 
+  .ork-modal-backdrop.is-open {
+    opacity: 1;
+    pointer-events: all;
+  }
+ 
+  .ork-modal {
+    background: #1f1f1f;
+    border: 1px solid rgba(255,255,255,.1);
+    border-top: 4px solid #E63946;
+    max-width: 580px;
+    width: 100%;
+    padding: 40px 40px 36px;
+    position: relative;
+    transform: translateY(18px);
+    transition: transform .28s ease;
+  }
+ 
+  .ork-modal-backdrop.is-open .ork-modal {
+    transform: translateY(0);
+  }
+ 
+  .ork-modal__close {
+    position: absolute;
+    top: 14px;
+    right: 16px;
+    background: none;
+    border: none;
+    color: rgba(255,255,255,.35);
+    font-size: 22px;
+    cursor: pointer;
+    line-height: 1;
+    padding: 4px 8px;
+    transition: color .2s;
+  }
+ 
+  .ork-modal__close:hover {
+    color: #fff;
+  }
+ 
+  .ork-modal__meta {
+    display: flex;
+    align-items: flex-end;
+    gap: 10px;
+    margin-bottom: 20px;
+  }
+ 
+  .ork-modal__date-badge {
+    background: #E63946;
+    color: #fff;
+    font-weight: 900;
+    font-size: 1.6em;
+    line-height: 1;
+    padding: 10px 14px 8px;
+    text-align: center;
+    min-width: 56px;
+  }
+ 
+  .ork-modal__date-badge span {
+    display: block;
+    font-size: 0.42em;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: .1em;
+    margin-top: 2px;
+  }
+ 
+  .ork-modal__meta-info {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+  }
+ 
+  .ork-modal__title {
+    color: #fff;
+    font-size: 1.4em;
+    font-weight: 700;
+    margin: 0;
+    line-height: 1.2;
+  }
+ 
+  .ork-modal__lieu {
+    font-size: 0.82em;
+    color: rgba(255,255,255,.4);
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    margin-top: 0px;
+    margin-bottom: 0px;
+  }
+ 
+  .ork-modal__divider {
+    height: 1px;
+    background: rgba(255,255,255,.08);
+    margin: 22px 0;
+  }
+ 
+  .ork-modal__desc {
+    font-size: 0.95em;
+    color: rgba(255,255,255,.65);
+    line-height: 1.7;
+    margin: 0 0 28px;
+  }
+ 
+  .ork-modal__link {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    background: #E63946;
+    color: #fff;
+    text-decoration: none;
+    font-weight: 600;
+    font-size: 0.88em;
+    letter-spacing: .06em;
+    text-transform: uppercase;
+    padding: 12px 22px;
+    transition: background .2s;
+  }
+ 
+  .ork-modal__link:hover {
+    background: #c42d39;
+  }
+ 
+  /* ── SECTION HEADER (simplifié, sans flèches) ─────────────── */
+  .section-header--events {
+    border-bottom: 1px solid rgba(255,255,255,.1);
+    margin-bottom: 48px;
+    padding-top: 0;
+  }
+ 
+  .section-header--events .section-title {
+    float: none;
+    margin-top: 0;
+    margin-bottom: 20px;
+  }
+ 
+  @media (max-width: 640px) {
+    .ork-modal {
+      padding: 28px 22px 24px;
+    }
+    .event-grid {
+      grid-template-columns: 1fr;
+    }
+  }
 /*# sourceMappingURL=style.css.map */
