@@ -55,8 +55,8 @@
             text-transform: uppercase;
             color: var(--red);
             font-weight: 500;
-            margin-bottom: 20px;
-            margin-top: 0px;
+            margin-bottom: 15px;
+            margin-top: 15px;
             display: flex;
             align-items: center;
             gap: 10px;
@@ -81,7 +81,7 @@
 
         .form-subtext {
             font-size: 15px;
-            color: var(--muted);
+            color: var(--text); 
             font-weight: 300;
             line-height: 1.6;
             margin-bottom: 16px;
@@ -102,13 +102,13 @@
             align-items: center;
             gap: 14px;
             font-size: 15px;
-            color: var(--muted);
+            color: var(--text);
             text-decoration: none;
             font-weight: 300;
             margin-bottom: 14px;
             transition: color 0.2s;
         }
-        .contact-info-line:hover { color: var(--text); }
+        .contact-info-line:hover { color: var(--muted); }
         .contact-info-line i {
             font-size: 15px;
             color: var(--text);
@@ -243,6 +243,7 @@
             background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='7' viewBox='0 0 12 7'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%23ffffff' stroke-opacity='0.4' stroke-width='1.5' fill='none' stroke-linecap='round'/%3E%3C/svg%3E");
             background-repeat: no-repeat;
             background-position: right 4px center;
+            color: var(--muted);
             cursor: pointer;
         }
         .form-group select option { background: #1a1a1a; color: var(--text); }
@@ -260,7 +261,7 @@
             font-size: 11px;
             letter-spacing: 0.20em;
             text-transform: uppercase;
-            color: var(--muted);
+            color: var(--text);
             font-weight: 600;
             padding: 12px 0 24px;
             border-top: 1px solid var(--border);
@@ -494,7 +495,7 @@
                     </a>
                 </div>
 
-                <p class="form-eyebrow" style="margin-top: 15px;">Réservez via notre formulaire</p>
+                <p class="form-eyebrow">Réservez via notre formulaire</p>
                 <p class="form-subtext">
                     Remplissez ce formulaire et nous vous préparerons une offre personnalisée.<br>
                     Les champs marqués <span style="color:var(--red)">*</span> sont obligatoires.
