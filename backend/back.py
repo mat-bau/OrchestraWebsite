@@ -119,6 +119,31 @@ def download():
             return jsonify({"error": "Fichier introuvable"}), 404
     except Exception as e:
         return jsonify({"error": str(e)}), 500
+    
+@app.route('/about')
+def serve_about():
+    return send_file(str(ROOT_DIR / 'frontend' / 'about.html'))
+
+@app.route('/gallery')
+def serve_gallery():
+    return send_file(str(ROOT_DIR / 'frontend' / 'gallery.html'))
+
+@app.route('/videos')
+def serve_videos():
+    return send_file(str(ROOT_DIR / 'frontend' / 'videos.html'))
+
+@app.route('/contact')
+def serve_contact():
+    return send_file(str(ROOT_DIR / 'frontend' / 'contact.html'))
+
+# Redirige les anciennes URLs .html vers les nouvelles
+@app.route('/<page>.html')
+def redirect_html(page):
+    from flask import redirect
+    valid_pages = ['about', 'gallery', 'videos', 'contact']
+    if page in valid_pages:
+        return redirect(f'/{page}', code=301)
+    return "Page introuvable", 404
 
 @app.route('/team-profiles.json')
 def serve_team_profiles():
