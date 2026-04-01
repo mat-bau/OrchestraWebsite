@@ -1,16 +1,14 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="fr">
 <head>
 	<meta charset="UTF-8">
 	<meta http-equiv="X-UA-Compatible" content="IE=edge">
 	<meta name="viewport" content="width=device-width, initial-scale=1.0,maximum-scale=1">
-	<meta name=”description” content=”Official website of the Louvain-la-Neuve based Orchestrakot.”>
+	<meta name="description" content="Site officiel de l'Orchestrakot, basé à Louvain-la-Neuve.">
 	<link rel="shortcut icon" type="image/x-icon" href="../images/support_graphique/Logo_Orchestrakot_SQUARE.png?v=2"/>
 	<title>OrchestraKot</title>
-	<!-- Loading third party fonts -->
 	<link href="https://fonts.googleapis.com/css2?family=Source+Sans+Pro:wght@300;400;600;700;800;900&display=swap" rel="stylesheet">
 	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
-	<!-- Loading main css file -->
 	<link rel="stylesheet" href="style.css">
 
 	<!--[if lt IE 9]>
@@ -19,6 +17,7 @@
 	<![endif]-->
 
 	<style>
+		/* ── SLIDER BACKGROUNDS ────────────────────────────────── */
 		.lazy-bg {
 			background-size: cover;
 			background-position: center;
@@ -29,459 +28,699 @@
 			align-items: center;
 			justify-content: center;
 		}
-		
+
+		/* ── SUBTITLE COLOR FIX ────────────────────────────────── */
+		/* Override the old #A8324E rose – align with brand red */
+		.slider .slides .slide-subtitle {
+			color: #E63946 !important;
+		}
+
+		/* ── HERO CTA BUTTON — ghost style ─────────────────────── */
+		/* Replace the incoherent gradient with a clean outlined btn */
+		.slider .slides .button.cut-corner,
+		.slider .slides .button.cut-corner:visited {
+			background: transparent !important;
+			border: 2px solid rgba(255, 255, 255, 0.75);
+			color: #ffffff;
+			padding: 13px 34px;
+			font-size: 0.85em;
+			font-weight: 700;
+			letter-spacing: .12em;
+			text-transform: uppercase;
+			text-decoration: none;
+			display: inline-block;
+			position: relative;
+			transition: background .25s ease, border-color .25s ease, color .25s ease;
+			clip-path: none; /* remove the old cut-corner polygon */
+		}
+
+		.slider .slides .button.cut-corner::before {
+			/* accent line that grows on hover */
+			content: '';
+			position: absolute;
+			bottom: -2px;
+			left: 0;
+			width: 0;
+			height: 2px;
+			background: #E63946;
+			transition: width .3s ease;
+		}
+
+		.slider .slides .button.cut-corner:hover {
+			background: rgba(255, 255, 255, 0.12) !important;
+			border-color: #ffffff;
+			color: #ffffff;
+		}
+
+		.slider .slides .button.cut-corner:hover::before {
+			width: 100%;
+		}
+
+		/* ── EVENTS GRID ─────────────────────────────────────── */
+		.upcoming-event-section {
+			background-color: #191919;
+			padding: 70px 0 80px;
+		}
+
+		.event-grid {
+			display: grid;
+			grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+			gap: 24px;
+			margin-top: 0;
+			margin-bottom: 0;
+		}
+
+		.event-card {
+			background: #1f1f1f;
+			border: 1px solid rgba(255,255,255,0.07);
+			border-top: 3px solid #E63946;
+			padding: 28px 24px 22px;
+			cursor: pointer;
+			transition: transform .22s ease, box-shadow .22s ease, border-top-color .22s ease;
+			position: relative;
+			display: flex;
+			flex-direction: column;
+			gap: 12px;
+		}
+
+		.event-card:hover {
+			transform: translateY(-4px);
+			box-shadow: 0 12px 36px rgba(0,0,0,.45);
+			border-top-color: #ff6b76;
+		}
+
+		.event-card__date {
+			display: flex;
+			align-items: baseline;
+			gap: 6px;
+			font-family: "Source Sans Pro", sans-serif;
+		}
+
+		.event-card__day {
+			font-size: 2.4em;
+			font-weight: 900;
+			color: #E63946;
+			line-height: 1;
+		}
+
+		.event-card__month {
+			font-size: 0.78em;
+			font-weight: 600;
+			text-transform: uppercase;
+			letter-spacing: .12em;
+			color: rgba(255,255,255,.45);
+		}
+
+		.event-card__title {
+			font-size: 1.05em;
+			font-weight: 700;
+			color: #ffffff;
+			margin: 0;
+			line-height: 1.3;
+		}
+
+		.event-card__excerpt {
+			font-size: 0.875em;
+			color: rgba(255,255,255,.5);
+			line-height: 1.55;
+			margin: 0;
+			flex-grow: 1;
+		}
+
+		.event-card__cta {
+			display: inline-flex;
+			align-items: center;
+			gap: 6px;
+			font-size: 0.78em;
+			font-weight: 600;
+			letter-spacing: .08em;
+			text-transform: uppercase;
+			color: rgba(255,255,255,.3);
+			transition: color .2s;
+			margin-top: 4px;
+		}
+
+		.event-card:hover .event-card__cta { color: #E63946; }
+
+		.event-card__cta svg { transition: transform .2s; }
+		.event-card:hover .event-card__cta svg { transform: translateX(3px); }
+
+		/* ── SECTION HEADER (sans flèches) ──────────────────────── */
+		.section-header--events {
+			border-bottom: 1px solid rgba(255,255,255,.1);
+			margin-bottom: 48px;
+			padding-top: 0;
+		}
+
+		.section-header--events .section-title {
+			float: none;
+			margin-top: 0;
+			margin-bottom: 20px;
+		}
+
+		/* ── MODAL ───────────────────────────────────────────────── */
+		.ork-modal-backdrop {
+			position: fixed;
+			inset: 0;
+			background: rgba(0,0,0,.75);
+			backdrop-filter: blur(4px);
+			z-index: 9999;
+			display: flex;
+			align-items: center;
+			justify-content: center;
+			padding: 20px;
+			opacity: 0;
+			pointer-events: none;
+			transition: opacity .25s ease;
+		}
+
+		.ork-modal-backdrop.is-open {
+			opacity: 1;
+			pointer-events: all;
+		}
+
+		.ork-modal {
+			background: #1f1f1f;
+			border: 1px solid rgba(255,255,255,.1);
+			border-top: 4px solid #E63946;
+			max-width: 580px;
+			width: 100%;
+			padding: 40px 40px 36px;
+			position: relative;
+			transform: translateY(18px);
+			transition: transform .28s ease;
+		}
+
+		.ork-modal-backdrop.is-open .ork-modal { transform: translateY(0); }
+
+		.ork-modal__close {
+			position: absolute;
+			top: 14px;
+			right: 16px;
+			background: none;
+			border: none;
+			color: rgba(255,255,255,.35);
+			font-size: 22px;
+			cursor: pointer;
+			line-height: 1;
+			padding: 4px 8px;
+			transition: color .2s;
+		}
+
+		.ork-modal__close:hover { color: #fff; }
+
+		.ork-modal__meta {
+			display: flex;
+			align-items: center;
+			gap: 10px;
+			margin-bottom: 20px;
+		}
+
+		.ork-modal__date-badge {
+			background: #E63946;
+			color: #fff;
+			font-weight: 900;
+			font-size: 1.6em;
+			line-height: 1;
+			padding: 10px 14px 8px;
+			text-align: center;
+			min-width: 56px;
+		}
+
+		.ork-modal__date-badge span {
+			display: block;
+			font-size: 0.42em;
+			font-weight: 600;
+			text-transform: uppercase;
+			letter-spacing: .1em;
+			margin-top: 2px;
+		}
+
+		.ork-modal__meta-info {
+			display: flex;
+			flex-direction: column;
+			gap: 4px;
+		}
+
+		.ork-modal__title {
+			color: #fff;
+			font-size: 1.4em;
+			font-weight: 700;
+			margin: 0;
+			line-height: 1.2;
+		}
+
+		.ork-modal__lieu {
+			font-size: 0.82em;
+			color: rgba(255,255,255,.4);
+			display: flex;
+			align-items: center;
+			gap: 5px;
+		}
+
+		.ork-modal__divider {
+			height: 1px;
+			background: rgba(255,255,255,.08);
+			margin: 22px 0;
+		}
+
+		.ork-modal__desc {
+			font-size: 0.95em;
+			color: rgba(255,255,255,.65);
+			line-height: 1.7;
+			margin: 0 0 28px;
+		}
+
+		.ork-modal__link {
+			display: inline-flex;
+			align-items: center;
+			gap: 8px;
+			background: #E63946;
+			color: #fff;
+			text-decoration: none;
+			font-weight: 600;
+			font-size: 0.88em;
+			letter-spacing: .06em;
+			text-transform: uppercase;
+			padding: 12px 22px;
+			transition: background .2s;
+		}
+
+		.ork-modal__link:hover { background: #c42d39; }
+
+		@media (max-width: 640px) {
+			.ork-modal { padding: 28px 22px 24px; }
+			.event-grid { grid-template-columns: 1fr; }
+		}
 	</style>
 </head>
 
 <body class="header-collapse">
 
-	<div id="site-content">
-		<header class="site-header">
-			<div class="container">
-				<a href="index.html" id="branding">
-					<img src="../images/support_graphique/Logo_Orchestrakot_SQUARE.png" alt="Site Title" class="head_logo">
+<div id="site-content">
 
-				</a> <!-- #branding -->
+	<!-- ── HEADER ──────────────────────────────────────────────── -->
+	<header class="site-header">
+		<div class="container">
+			<a href="index.html" id="branding">
+				<img src="../images/support_graphique/Logo_Orchestrakot_SQUARE.png" alt="OrchestraKot" class="head_logo">
+			</a>
 
-				<nav class="main-navigation">
-					<button type="button" class="toggle-menu"><i class="fa fa-bars"></i></button>
-					<ul class="menu">
-						<li class="menu-item current-menu-item"><a href="index.html">Home</a></li>
-						<li class="menu-item"><a href="about.html">About</a></li>
-						<li class="menu-item"><a href="gallery.html">Galerie</a></li>
-            <li class="menu-item"><a href="videos.html">Vidéos</a></li>
-						<li class="menu-item"><a href="contact.html">Contact</a></li>
-					</ul> <!-- .menu -->
-				</nav> <!-- .main-navigation -->
-				<div class="mobile-menu"></div>
-			</div>
-		</header> <!-- .site-header -->
+			<nav class="main-navigation">
+				<button type="button" class="toggle-menu"><i class="fa fa-bars"></i></button>
+				<ul class="menu">
+					<li class="menu-item current-menu-item"><a href="index.html">Accueil</a></li>
+					<li class="menu-item"><a href="about.html">À propos</a></li>
+					<li class="menu-item"><a href="contact.html">Contact</a></li>
+					<li class="menu-item"><a href="gallery.html">Galerie</a></li>
+					<li class="menu-item"><a href="videos.html">Vidéos</a></li>
+				</ul>
+			</nav>
+			<div class="mobile-menu"></div>
+		</div>
+	</header>
 
-		<div class="hero">
-			<div class="slider">
-				<ul class="slides">
-					<!-- <li class="lazy-bg" data-background="images/WebsitePictureSmallPNG.png">
+	<!-- ── HERO SLIDER ─────────────────────────────────────────── -->
+	<div class="hero">
+		<div class="slider">
+			<ul class="slides">
+
+				<li class="lazy-bg" data-background="../images/homebackground/background1.jpg">
 					<div class="container">
-					<h2 class="slide-title">Orchestrakot</h2>
-					<h3 class="slide-subtitle">La musique. Où et quand vous voulez. </h3>
-					<p class="slide-desc">texte <br>réflechir</p>
+						<h2 class="slide-title">Orchestrakot</h2>
+						<h3 class="slide-subtitle">La musique, où et quand vous voulez</h3>
+						<p class="slide-desc"><br></p>
+						<a href="about.html" class="button cut-corner">En savoir plus</a>
+					</div>
+				</li>
 
-					<a href="#" class="button cut-corner">Read More</a>
-				</div>
-			</li>
+				<li class="lazy-bg" data-background="../images/homebackground/background2.jpg">
+					<div class="container">
+						<h2 class="slide-title">Orchestrakot</h2>
+						<h3 class="slide-subtitle">La musique, où et quand vous voulez</h3>
+						<p class="slide-desc"><br></p>
+						<a href="about.html" class="button cut-corner">En savoir plus</a>
+					</div>
+				</li>
 
-			<li class="lazy-bg" data-background="concert/concert20.png">
+				<li class="lazy-bg" data-background="../images/homebackground/background3.jpg">
+					<div class="container">
+						<h2 class="slide-title">Orchestrakot</h2>
+						<h3 class="slide-subtitle">La musique, où et quand vous voulez</h3>
+						<p class="slide-desc"><br></p>
+						<a href="about.html" class="button cut-corner">En savoir plus</a>
+					</div>
+				</li>
+
+				<li class="lazy-bg" data-background="../images/homebackground/background4.jpg">
+					<div class="container">
+						<h2 class="slide-title">Orchestrakot</h2>
+						<h3 class="slide-subtitle">La musique, où et quand vous voulez</h3>
+						<p class="slide-desc"><br></p>
+						<a href="about.html" class="button cut-corner">En savoir plus</a>
+					</div>
+				</li>
+
+				<li class="lazy-bg" data-background="../images/homebackground/background5.jpg">
+					<div class="container">
+						<h2 class="slide-title">Orchestrakot</h2>
+						<h3 class="slide-subtitle">La musique, où et quand vous voulez</h3>
+						<p class="slide-desc"><br></p>
+						<a href="about.html" class="button cut-corner">En savoir plus</a>
+					</div>
+				</li>
+
+				<li class="lazy-bg" data-background="../images/homebackground/background6.jpg">
+					<div class="container">
+						<h2 class="slide-title">Orchestrakot</h2>
+						<h3 class="slide-subtitle">La musique, où et quand vous voulez</h3>
+						<p class="slide-desc"><br></p>
+						<a href="about.html" class="button cut-corner">En savoir plus</a>
+					</div>
+				</li>
+
+				<li class="lazy-bg" data-background="../images/homebackground/background7.jpg">
+					<div class="container">
+						<h2 class="slide-title">Orchestrakot</h2>
+						<h3 class="slide-subtitle">La musique, où et quand vous voulez</h3>
+						<p class="slide-desc"><br></p>
+						<a href="about.html" class="button cut-corner">En savoir plus</a>
+					</div>
+				</li>
+
+				<li class="lazy-bg" data-background="../images/homebackground/background8.jpg">
+					<div class="container">
+						<h2 class="slide-title">Orchestrakot</h2>
+						<h3 class="slide-subtitle">La musique, où et quand vous voulez</h3>
+						<p class="slide-desc"><br></p>
+						<a href="about.html" class="button cut-corner">En savoir plus</a>
+					</div>
+				</li>
+
+				<li class="lazy-bg" data-background="../images/homebackground/background9.jpg">
+					<div class="container">
+						<h2 class="slide-title">Orchestrakot</h2>
+						<h3 class="slide-subtitle">La musique, où et quand vous voulez</h3>
+						<p class="slide-desc"><br></p>
+						<a href="about.html" class="button cut-corner">En savoir plus</a>
+					</div>
+				</li>
+
+			</ul>
+		</div>
+	</div><!-- .hero -->
+
+	<!-- ── MAIN ────────────────────────────────────────────────── -->
+	<main class="main-content">
+
+		<!-- EVENTS SECTION -->
+		<div class="fullwidth-block upcoming-event-section" data-bg-color="#191919">
 			<div class="container">
-			<h2 class="slide-title">Orchestrakot</h2>
-			<h3 class="slide-subtitle">La musique. Où et quand vous voulez. </h3>
+				<header class="section-header section-header--events">
+					<h2 class="section-title">Prochains événements</h2>
+				</header>
 
-			<p class="slide-desc">texte <br>réflechir</p>
+				<div class="event-grid">
 
-			<a href="#" class="button cut-corner">Read More</a>
+					<div class="event-card" data-modal="modal-1" tabindex="0" role="button" aria-haspopup="dialog">
+						<div class="event-card__date">
+							<span class="event-card__day">7</span>
+							<span class="event-card__month">Avril</span>
+						</div>
+						<h3 class="event-card__title">Initiation musicale</h3>
+						<p class="event-card__excerpt">Teste différents instruments gratuitement — batterie, guitare, piano, violon, flûte…</p>
+						<span class="event-card__cta">
+							Détails
+							<svg width="14" height="14" viewBox="0 0 14 14" fill="none">
+								<path d="M2 7h10M8 3l4 4-4 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+							</svg>
+						</span>
+					</div>
 
-		</div>
-	</li> -->
+					<div class="event-card" data-modal="modal-2" tabindex="0" role="button" aria-haspopup="dialog">
+						<div class="event-card__date">
+							<span class="event-card__day">16</span>
+							<span class="event-card__month">Avril</span>
+						</div>
+						<h3 class="event-card__title">Ateliers musicaux</h3>
+						<p class="event-card__excerpt">Une après-midi immersive pour explorer la musique sous toutes ses facettes.</p>
+						<span class="event-card__cta">
+							Détails
+							<svg width="14" height="14" viewBox="0 0 14 14" fill="none">
+								<path d="M2 7h10M8 3l4 4-4 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+							</svg>
+						</span>
+					</div>
 
-	<li class="lazy-bg" data-background="../images/homebackground/background1.jpg" position="center">
-		<div class="container">
-			<h2 class="slide-title">Orchestrakot</h2>
-			<h3 class="slide-subtitle">La musique, où et quand vous voulez</h3>
+					<div class="event-card" data-modal="modal-3" tabindex="0" role="button" aria-haspopup="dialog">
+						<div class="event-card__date">
+							<span class="event-card__day">17</span>
+							<span class="event-card__month">Avril</span>
+						</div>
+						<h3 class="event-card__title">Virée Symphonique</h3>
+						<p class="event-card__excerpt">Concert du Belgian National Orchestra au Bozar, à Bruxelles.</p>
+						<span class="event-card__cta">
+							Détails
+							<svg width="14" height="14" viewBox="0 0 14 14" fill="none">
+								<path d="M2 7h10M8 3l4 4-4 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+							</svg>
+						</span>
+					</div>
 
-			<p class="slide-desc"><br></p>
+					<div class="event-card" data-modal="modal-4" tabindex="0" role="button" aria-haspopup="dialog">
+						<div class="event-card__date">
+							<span class="event-card__day">7</span>
+							<span class="event-card__month">Mai</span>
+						</div>
+						<h3 class="event-card__title">Louvainpéro</h3>
+						<p class="event-card__excerpt">L'Orchestra joue à 20h à l'apéritif urbain de Louvain-La-Neuve.</p>
+						<span class="event-card__cta">
+							Détails
+							<svg width="14" height="14" viewBox="0 0 14 14" fill="none">
+								<path d="M2 7h10M8 3l4 4-4 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+							</svg>
+						</span>
+					</div>
 
-			<a href="about.html" class="button cut-corner">En savoir plus</a>
-
-		</div>
-	</li>
-	<li class="lazy-bg" data-background="../images/homebackground/background2.jpg">
-		<div class="container">
-			<h2 class="slide-title">Orchestrakot</h2>
-			<h3 class="slide-subtitle">La musique, où et quand vous voulez</h3>
-
-			<p class="slide-desc"><br></p>
-
-			<a href="about.html" class="button cut-corner">En savoir plus</a>
-
-		</div>
-	</li>
-	<li class="lazy-bg" data-background="../images/homebackground/background3.jpg">
-		<div class="container">
-			<h2 class="slide-title">Orchestrakot</h2>
-			<h3 class="slide-subtitle">La musique, où et quand vous voulez</h3>
-
-			<p class="slide-desc"><br></p>
-
-			<a href="about.html" class="button cut-corner">En savoir plus</a>
-
-		</div>
-	</li>
-	<li class="lazy-bg" data-background="../images/homebackground/background4.jpg">
-		<div class="container">
-			<h2 class="slide-title">Orchestrakot</h2>
-			<h3 class="slide-subtitle">La musique, où et quand vous voulez</h3>
-
-			<p class="slide-desc"><br></p>
-
-			<a href="about.html" class="button cut-corner">En savoir plus</a>
-
-		</div>
-	</li>
-
-	<li class="lazy-bg" data-background="../images/homebackground/background5.jpg">
-		<div class="container">
-			<h2 class="slide-title">Orchestrakot</h2>
-			<h3 class="slide-subtitle">La musique, où et quand vous voulez</h3>
-
-			<p class="slide-desc"><br></p>
-
-			<a href="about.html" class="button cut-corner">En savoir plus</a>
-
-		</div>
-	</li>
-	<li class="lazy-bg" data-background="../images/homebackground/background6.jpg">
-		<div class="container">
-			<h2 class="slide-title">Orchestrakot</h2>
-			<h3 class="slide-subtitle">La musique, où et quand vous voulez</h3>
-
-			<p class="slide-desc"><br></p>
-
-			<a href="about.html" class="button cut-corner">En savoir plus</a>
-
-		</div>
-	</li>
-	<li class="lazy-bg" data-background="../images/homebackground/background7.jpg">
-		<div class="container">
-			<h2 class="slide-title">Orchestrakot</h2>
-			<h3 class="slide-subtitle">La musique, où et quand vous voulez</h3>
-
-			<p class="slide-desc"><br></p>
-
-			<a href="about.html" class="button cut-corner">En savoir plus</a>
-
-		</div>
-	</li>
-		<li class="lazy-bg" data-background="../images/homebackground/background8.jpg">
-		<div class="container">
-			<h2 class="slide-title">Orchestrakot</h2>
-			<h3 class="slide-subtitle">La musique, où et quand vous voulez</h3>
-
-			<p class="slide-desc"><br></p>
-
-			<a href="about.html" class="button cut-corner">En savoir plus</a>
-
-		</div>
-	</li>
-		<li class="lazy-bg" data-background="../images/homebackground/background9.jpg">
-		<div class="container">
-			<h2 class="slide-title">Orchestrakot</h2>
-			<h3 class="slide-subtitle">La musique, où et quand vous voulez</h3>
-
-			<p class="slide-desc"><br></p>
-
-			<a href="about.html" class="button cut-corner">En savoir plus</a>
-
-		</div>
-	</li>
-	<!--
-                    <li class="lazy-bg" data-background="omps/omp2.png">
-		<div class="container">
-			<h2 class="slide-title">Orchestrakot</h2>
-			<h3 class="slide-subtitle">La musique. Où et quand vous voulez. </h3>
-
-			<p class="slide-desc">.<br>.</p>
-
-			<a href="#" class="button cut-corner">Read More</a>
-
-		</div>
-	</li>
-	<li class="lazy-bg" data-background="homebackground/background9.png">
-		<div class="container">
-			<h2 class="slide-title">Orchestrakot</h2>
-			<h3 class="slide-subtitle">La musique. Où et quand vous voulez. </h3>
-
-			<p class="slide-desc">.<br>.</p>
-
-			<a href="#" class="button cut-corner">Read More</a>
-
-		</div>
-	</li>
--->
-	
-
-
-
-</ul>
-</div>
-</div>
-
-<main class="main-content">
-	<!-- <div class="fullwidth-block testimonial-section">
-	<div class="container">
-	<div class="quote-slider">
-	<ul class="slides">
-	<li>
-	<blockquote>
-	<p>"Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium doloremque laudantium totam rem aperiam eaque ipsa quae ab illo inventore veritatis et quasi architecto beatae vitae dicta sunt explicabo"</p>
-	<cite>John Smith</cite>
-	<span>Corporation CEO, books author</span>
-</blockquote>
-</li>
-<li>
-<blockquote>
-<p>"Iste natus error sit voluptatem accusantium doloremque laudantium totam rem aperiam eaque ipsa quae ab illo inventore veritatis et quasi architecto beatae vitae dicta sunt explicabo"</p>
-<cite>John Smith</cite>
-<span>Corporation CEO, books author</span>
-</blockquote>
-</li>
-</ul>
-</div>
-</div>
-</div> <!-- .testimonial-section -->
-<div class="fullwidth-block upcoming-event-section" data-bg-color="#191919">
-  <div class="container">
-    <header class="section-header section-header--events">
-      <h2 class="section-title">Prochains événements</h2>
-    </header>
- 
-    <div class="event-grid">
- 
-      <!-- Carte 1 -->
-      <div class="event-card" data-modal="modal-1" tabindex="0" role="button" aria-haspopup="dialog">
-        <div class="event-card__date">
-          <span class="event-card__day">7</span>
-          <span class="event-card__month">Avril</span>
-        </div>
-        <h3 class="event-card__title">Initiation musicale</h3>
-        <p class="event-card__excerpt">
-          Teste différents instruments gratuitement — batterie, guitare, piano, violon, flûte…
-          <!-- <em>Voir plus.</em> -->
-        </p>
-        <span class="event-card__cta">
-          Détails
-          <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
-            <path d="M2 7h10M8 3l4 4-4 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
-          </svg>
-        </span>
-      </div>
- 
-      <!-- Carte 2 -->
-      <div class="event-card" data-modal="modal-2" tabindex="0" role="button" aria-haspopup="dialog">
-        <div class="event-card__date">
-          <span class="event-card__day">16</span>
-          <span class="event-card__month">Avril</span>
-        </div>
-        <h3 class="event-card__title">Ateliers musicaux</h3>
-        <p class="event-card__excerpt">
-          Une après-midi immersive pour explorer la musique sous toutes ses facettes.
-          <!-- <em>Voir plus.</em> -->
-        </p>
-        <span class="event-card__cta">
-          Détails
-          <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
-            <path d="M2 7h10M8 3l4 4-4 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
-          </svg>
-        </span>
-      </div>
- 
-      <!-- Carte 3 -->
-      <div class="event-card" data-modal="modal-3" tabindex="0" role="button" aria-haspopup="dialog">
-        <div class="event-card__date">
-          <span class="event-card__day">17</span>
-          <span class="event-card__month">Avril</span>
-        </div>
-        <h3 class="event-card__title">Virée Symphonique</h3>
-        <p class="event-card__excerpt">
-          Concert du Belgian National Orchestra au Bozar, à Bruxelles.
-          <!-- <em>Voir plus.</em> -->
-        </p>
-        <span class="event-card__cta">
-          Détails
-          <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
-            <path d="M2 7h10M8 3l4 4-4 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
-          </svg>
-        </span>
-      </div>
- 
-      <!-- Carte 4 -->
-      <div class="event-card" data-modal="modal-4" tabindex="0" role="button" aria-haspopup="dialog">
-        <div class="event-card__date">
-          <span class="event-card__day">7</span>
-          <span class="event-card__month">Mai</span>
-        </div>
-        <h3 class="event-card__title">Louvainpéro</h3>
-        <p class="event-card__excerpt">
-          L'Orchestra joue à 20h à l'apéritif urbain de Louvain-La-Neuve.
-          <!-- <em>Voir plus.</em> -->
-        </p>
-        <span class="event-card__cta">
-          Détails
-          <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
-            <path d="M2 7h10M8 3l4 4-4 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
-          </svg>
-        </span>
-      </div>
-
-    </div><!-- .event-grid -->
-  </div><!-- .container -->
-</div><!-- .upcoming-event-section -->
- 
- 
-<!-- ── MODALES ─────────────────────────────────────────────────────────── -->
- 
-<div class="ork-modal-backdrop" id="modal-1" role="dialog" aria-modal="true" aria-labelledby="modal-1-title">
-  <div class="ork-modal">
-    <button class="ork-modal__close" aria-label="Fermer">&#215;</button>
-    <div class="ork-modal__meta">
-      <div class="ork-modal__date-badge">7<span>Avril</span></div>
-      <div class="ork-modal__meta-info">
-        <h2 class="ork-modal__title" id="modal-1-title">Initiation musicale</h2>
-        <p class="ork-modal__lieu">
-          <svg width="12" height="12" viewBox="0 0 12 12" fill="none"><path d="M6 1a3.5 3.5 0 0 1 3.5 3.5C9.5 7.5 6 11 6 11S2.5 7.5 2.5 4.5A3.5 3.5 0 0 1 6 1Z" stroke="currentColor" stroke-width="1.2"/><circle cx="6" cy="4.5" r="1" fill="currentColor"/></svg>
-          Gîte Mozaïk, Louvain-la-Neuve
-        </p>
-      </div>
-    </div>
-    <div class="ork-modal__divider"></div>
-    <p class="ork-modal__desc">
-      Toute l'équipe de l'Orchestra t'attend au Gîte Mozaïk pour tester différents instruments du kot. Batterie, guitare, piano, violon, flûte, saxophone, trompette… Une chouette soirée pour s'essayer <strong>gratuitement</strong> aux instruments ou même rejouer un de tes anciens que tu aurais délaissé.
-    </p>
-    <a href="https://fb.me/e/3LRtqnVtm" class="ork-modal__link" target="_blank" rel="noopener">
-      Plus d'infos
-      <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M2 7h10M8 3l4 4-4 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
-    </a>
-  </div>
-</div>
- 
-<div class="ork-modal-backdrop" id="modal-2" role="dialog" aria-modal="true" aria-labelledby="modal-2-title">
-  <div class="ork-modal">
-    <button class="ork-modal__close" aria-label="Fermer">&#215;</button>
-    <div class="ork-modal__meta">
-      <div class="ork-modal__date-badge">16<span>Avril</span></div>
-      <div class="ork-modal__meta-info">
-        <h2 class="ork-modal__title" id="modal-2-title">Ateliers musicaux</h2>
-        <p class="ork-modal__lieu">
-          <svg width="12" height="12" viewBox="0 0 12 12" fill="none"><path d="M6 1a3.5 3.5 0 0 1 3.5 3.5C9.5 7.5 6 11 6 11S2.5 7.5 2.5 4.5A3.5 3.5 0 0 1 6 1Z" stroke="currentColor" stroke-width="1.2"/><circle cx="6" cy="4.5" r="1" fill="currentColor"/></svg>
-          Salle de l'Alter d'en Face, Louvain-la-Neuve
-        </p>
-      </div>
-    </div>
-    <div class="ork-modal__divider"></div>
-    <p class="ork-modal__desc">
-      Une après-midi d'ateliers musicaux pour explorer la musique sous toutes ses facettes : histoire des compositrices, théorie des accords, chant choral, entraînement de l'oreille et découverte d'instruments rares comme les Ondes Martenot. Un parcours immersif à ne pas manquer.
-    </p>
-    <a href="https://fb.me/e/7jGu0ZW8S" class="ork-modal__link" target="_blank" rel="noopener">
-      Plus d'infos
-      <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M2 7h10M8 3l4 4-4 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
-    </a>
-  </div>
-</div>
- 
-<div class="ork-modal-backdrop" id="modal-3" role="dialog" aria-modal="true" aria-labelledby="modal-3-title">
-  <div class="ork-modal">
-    <button class="ork-modal__close" aria-label="Fermer">&#215;</button>
-    <div class="ork-modal__meta">
-      <div class="ork-modal__date-badge">17<span>Avril</span></div>
-      <div class="ork-modal__meta-info">
-        <h2 class="ork-modal__title" id="modal-3-title">Virée Symphonique</h2>
-        <p class="ork-modal__lieu">
-          <svg width="12" height="12" viewBox="0 0 12 12" fill="none"><path d="M6 1a3.5 3.5 0 0 1 3.5 3.5C9.5 7.5 6 11 6 11S2.5 7.5 2.5 4.5A3.5 3.5 0 0 1 6 1Z" stroke="currentColor" stroke-width="1.2"/><circle cx="6" cy="4.5" r="1" fill="currentColor"/></svg>
-          Bozar, Bruxelles
-        </p>
-      </div>
-    </div>
-    <div class="ork-modal__divider"></div>
-    <p class="ork-modal__desc">
-      Nous organisons une virée symphonique au Bozar à Bruxelles pour assister à un concert du Belgian National Orchestra. Le prix contient le trajet aller-retour en train jusqu'à Bruxelles et la place au concert.
-	  Une occasion unique de découvrir la richesse du répertoire classique et de partager une expérience musicale inoubliable avec les membres de l'Orchestra.
-    </p>
-    <a href="https://www.facebook.com/orchestrakot" class="ork-modal__link" target="_blank" rel="noopener">
-      Plus d'infos
-      <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M2 7h10M8 3l4 4-4 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
-    </a>
-  </div>
-</div>
- 
-<div class="ork-modal-backdrop" id="modal-4" role="dialog" aria-modal="true" aria-labelledby="modal-4-title">
-  <div class="ork-modal">
-    <button class="ork-modal__close" aria-label="Fermer">&#215;</button>
-    <div class="ork-modal__meta">
-      <div class="ork-modal__date-badge">7<span>Mai</span></div>
-      <div class="ork-modal__meta-info">
-        <h2 class="ork-modal__title" id="modal-4-title">Louvainpéro</h2>
-        <p class="ork-modal__lieu">
-          <svg width="12" height="12" viewBox="0 0 12 12" fill="none"><path d="M6 1a3.5 3.5 0 0 1 3.5 3.5C9.5 7.5 6 11 6 11S2.5 7.5 2.5 4.5A3.5 3.5 0 0 1 6 1Z" stroke="currentColor" stroke-width="1.2"/><circle cx="6" cy="4.5" r="1" fill="currentColor"/></svg>
-          Louvain-la-Neuve (lieu exact à confirmer)
-        </p>
-      </div>
-    </div>
-    <div class="ork-modal__divider"></div>
-    <p class="ork-modal__desc">
-      L'Orchestra joue à 20h au Louvainpéro, l'apéritif urbain visant à réunir les résidents et étudiants de Louvain-La-Neuve dans une atmosphère conviviale et accueillante. Un moment de partage autour de la musique live.
-    </p>
-    <a href="https://www.facebook.com/Louvainfo" class="ork-modal__link" target="_blank" rel="noopener">
-      Plus d'infos
-      <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M2 7h10M8 3l4 4-4 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
-    </a>
-  </div>
-</div>
-
-
-<script>
-  (function () {
-    const cards    = document.querySelectorAll('.event-card');
-    const backdrop = document.querySelectorAll('.ork-modal-backdrop');
- 
-    function openModal(id) {
-      const modal = document.getElementById(id);
-      if (!modal) return;
-      modal.classList.add('is-open');
-      document.body.style.overflow = 'hidden';
-      modal.querySelector('.ork-modal__close').focus();
-    }
- 
-    function closeAll() {
-      backdrop.forEach(b => b.classList.remove('is-open'));
-      document.body.style.overflow = '';
-    }
- 
-    cards.forEach(card => {
-      card.addEventListener('click', () => openModal(card.dataset.modal));
-      card.addEventListener('keydown', e => {
-        if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); openModal(card.dataset.modal); }
-      });
-    });
- 
-    backdrop.forEach(b => {
-      b.addEventListener('click', e => { if (e.target === b) closeAll(); });
-      b.querySelector('.ork-modal__close').addEventListener('click', closeAll);
-    });
- 
-    document.addEventListener('keydown', e => { if (e.key === 'Escape') closeAll(); });
-  })();
-</script>
-
-<footer class="site-footer">
-	<div class="container">
-		<img src="../images/support_graphique/Logo_Orchestrakot_Rectangle.png" alt="Site Name" class="foot_logo">
-
-		<address>
-			<p>1 Rampe des Ardennais, Louvain-la-Neuve, Belgique <br><a href="tel:+32497304104">(+32) 497 30 41 04</a> <br> <a href="mailto:orchestrakot.ucl@gmail.com">orchestrakot.ucl@gmail.com</a></p>
-		</address>
-
-
-
-		<div class="social-links">
-			<a href="https://www.facebook.com/orchestrakot/"><i class="fa-brands fa-facebook"></i></a>
-			<a href="https://www.instagram.com/orchestrakot/?hl=en"><i class="fa-brands fa-instagram"></i></a>
+				</div>
+			</div>
 		</div>
 
+	</main>
+
+	<!-- ── MODALES ÉVÉNEMENTS ───────────────────────────────────── -->
+
+	<div class="ork-modal-backdrop" id="modal-1" role="dialog" aria-modal="true" aria-labelledby="modal-1-title">
+		<div class="ork-modal">
+			<button class="ork-modal__close" aria-label="Fermer">&#215;</button>
+			<div class="ork-modal__meta">
+				<div class="ork-modal__date-badge">7<span>Avril</span></div>
+				<div class="ork-modal__meta-info">
+					<h2 class="ork-modal__title" id="modal-1-title">Initiation musicale</h2>
+					<p class="ork-modal__lieu">
+						<svg width="12" height="12" viewBox="0 0 12 12" fill="none"><path d="M6 1a3.5 3.5 0 0 1 3.5 3.5C9.5 7.5 6 11 6 11S2.5 7.5 2.5 4.5A3.5 3.5 0 0 1 6 1Z" stroke="currentColor" stroke-width="1.2"/><circle cx="6" cy="4.5" r="1" fill="currentColor"/></svg>
+						Gîte Mozaïk, Louvain-la-Neuve
+					</p>
+				</div>
+			</div>
+			<div class="ork-modal__divider"></div>
+			<p class="ork-modal__desc">
+				Toute l'équipe de l'Orchestra t'attend au Gîte Mozaïk pour tester différents instruments du kot. Batterie, guitare, piano, violon, flûte, saxophone, trompette… Une chouette soirée pour s'essayer <strong>gratuitement</strong> aux instruments ou même rejouer un de tes anciens que tu aurais délaissé.
+			</p>
+			<a href="https://fb.me/e/3LRtqnVtm" class="ork-modal__link" target="_blank" rel="noopener">
+				Plus d'infos
+				<svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M2 7h10M8 3l4 4-4 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+			</a>
+		</div>
 	</div>
-</footer> <!-- .site-footer -->
 
-</div> <!-- #site-content -->
+	<div class="ork-modal-backdrop" id="modal-2" role="dialog" aria-modal="true" aria-labelledby="modal-2-title">
+		<div class="ork-modal">
+			<button class="ork-modal__close" aria-label="Fermer">&#215;</button>
+			<div class="ork-modal__meta">
+				<div class="ork-modal__date-badge">16<span>Avril</span></div>
+				<div class="ork-modal__meta-info">
+					<h2 class="ork-modal__title" id="modal-2-title">Ateliers musicaux</h2>
+					<p class="ork-modal__lieu">
+						<svg width="12" height="12" viewBox="0 0 12 12" fill="none"><path d="M6 1a3.5 3.5 0 0 1 3.5 3.5C9.5 7.5 6 11 6 11S2.5 7.5 2.5 4.5A3.5 3.5 0 0 1 6 1Z" stroke="currentColor" stroke-width="1.2"/><circle cx="6" cy="4.5" r="1" fill="currentColor"/></svg>
+						Salle de l'Alter d'en Face, Louvain-la-Neuve
+					</p>
+				</div>
+			</div>
+			<div class="ork-modal__divider"></div>
+			<p class="ork-modal__desc">
+				Une après-midi d'ateliers musicaux pour explorer la musique sous toutes ses facettes : histoire des compositrices, théorie des accords, chant choral, entraînement de l'oreille et découverte d'instruments rares comme les Ondes Martenot. Un parcours immersif à ne pas manquer.
+			</p>
+			<a href="https://fb.me/e/7jGu0ZW8S" class="ork-modal__link" target="_blank" rel="noopener">
+				Plus d'infos
+				<svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M2 7h10M8 3l4 4-4 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+			</a>
+		</div>
+	</div>
+
+	<div class="ork-modal-backdrop" id="modal-3" role="dialog" aria-modal="true" aria-labelledby="modal-3-title">
+		<div class="ork-modal">
+			<button class="ork-modal__close" aria-label="Fermer">&#215;</button>
+			<div class="ork-modal__meta">
+				<div class="ork-modal__date-badge">17<span>Avril</span></div>
+				<div class="ork-modal__meta-info">
+					<h2 class="ork-modal__title" id="modal-3-title">Virée Symphonique</h2>
+					<p class="ork-modal__lieu">
+						<svg width="12" height="12" viewBox="0 0 12 12" fill="none"><path d="M6 1a3.5 3.5 0 0 1 3.5 3.5C9.5 7.5 6 11 6 11S2.5 7.5 2.5 4.5A3.5 3.5 0 0 1 6 1Z" stroke="currentColor" stroke-width="1.2"/><circle cx="6" cy="4.5" r="1" fill="currentColor"/></svg>
+						Bozar, Bruxelles
+					</p>
+				</div>
+			</div>
+			<div class="ork-modal__divider"></div>
+			<p class="ork-modal__desc">
+				Nous organisons une virée symphonique au Bozar à Bruxelles pour assister à un concert du Belgian National Orchestra. Le prix inclut le trajet aller-retour en train et la place au concert. Une occasion unique de partager une expérience musicale inoubliable avec les membres de l'Orchestra.
+			</p>
+			<a href="https://www.facebook.com/orchestrakot" class="ork-modal__link" target="_blank" rel="noopener">
+				Plus d'infos
+				<svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M2 7h10M8 3l4 4-4 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+			</a>
+		</div>
+	</div>
+
+	<div class="ork-modal-backdrop" id="modal-4" role="dialog" aria-modal="true" aria-labelledby="modal-4-title">
+		<div class="ork-modal">
+			<button class="ork-modal__close" aria-label="Fermer">&#215;</button>
+			<div class="ork-modal__meta">
+				<div class="ork-modal__date-badge">7<span>Mai</span></div>
+				<div class="ork-modal__meta-info">
+					<h2 class="ork-modal__title" id="modal-4-title">Louvainpéro</h2>
+					<p class="ork-modal__lieu">
+						<svg width="12" height="12" viewBox="0 0 12 12" fill="none"><path d="M6 1a3.5 3.5 0 0 1 3.5 3.5C9.5 7.5 6 11 6 11S2.5 7.5 2.5 4.5A3.5 3.5 0 0 1 6 1Z" stroke="currentColor" stroke-width="1.2"/><circle cx="6" cy="4.5" r="1" fill="currentColor"/></svg>
+						Louvain-la-Neuve (lieu exact à confirmer)
+					</p>
+				</div>
+			</div>
+			<div class="ork-modal__divider"></div>
+			<p class="ork-modal__desc">
+				L'Orchestra joue à 20h au Louvainpéro, l'apéritif urbain visant à réunir les résidents et étudiants de Louvain-La-Neuve dans une atmosphère conviviale et accueillante. Un moment de partage autour de la musique live.
+			</p>
+			<a href="https://www.facebook.com/Louvainfo" class="ork-modal__link" target="_blank" rel="noopener">
+				Plus d'infos
+				<svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M2 7h10M8 3l4 4-4 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+			</a>
+		</div>
+	</div>
+
+	<!-- ── FOOTER ──────────────────────────────────────────────── -->
+	<footer class="site-footer">
+		<div class="container">
+			<img src="../images/support_graphique/Logo_Orchestrakot_Rectangle.png" alt="OrchestraKot" class="foot_logo">
+			<address>
+				<p>1 Rampe des Ardennais, Louvain-la-Neuve, Belgique<br>
+				<a href="tel:+32497304104">(+32) 497 30 41 04</a><br>
+				<a href="mailto:orchestrakot.ucl@gmail.com">orchestrakot.ucl@gmail.com</a></p>
+			</address>
+			<div class="social-links">
+				<a href="https://www.facebook.com/orchestrakot/"><i class="fa-brands fa-facebook"></i></a>
+				<a href="https://www.instagram.com/orchestrakot/?hl=en"><i class="fa-brands fa-instagram"></i></a>
+			</div>
+		</div>
+	</footer>
+
+</div><!-- #site-content -->
 
 <script src="js/jquery-1.11.1.min.js"></script>
 <script src="js/plugins.js"></script>
 <script src="js/app.js"></script>
+
+<script>
+(function () {
+	const cards    = document.querySelectorAll('.event-card');
+	const backdrop = document.querySelectorAll('.ork-modal-backdrop');
+
+	function openModal(id) {
+		const modal = document.getElementById(id);
+		if (!modal) return;
+		modal.classList.add('is-open');
+		document.body.style.overflow = 'hidden';
+		modal.querySelector('.ork-modal__close').focus();
+	}
+
+	function closeAll() {
+		backdrop.forEach(b => b.classList.remove('is-open'));
+		document.body.style.overflow = '';
+	}
+
+	cards.forEach(card => {
+		card.addEventListener('click', () => openModal(card.dataset.modal));
+		card.addEventListener('keydown', e => {
+			if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); openModal(card.dataset.modal); }
+		});
+	});
+
+	backdrop.forEach(b => {
+		b.addEventListener('click', e => { if (e.target === b) closeAll(); });
+		b.querySelector('.ork-modal__close').addEventListener('click', closeAll);
+	});
+
+	document.addEventListener('keydown', e => { if (e.key === 'Escape') closeAll(); });
+})();
+</script>
+
+<nav class="ork-bottom-nav" aria-label="Navigation principale">
+ 
+  <!-- ACCUEIL -->
+  <a href="index.html"
+     class="ork-bottom-nav__item"
+     aria-current="page"
+     aria-label="Accueil">
+    <svg viewBox="0 0 24 24">
+      <path d="M3 9.5L12 3l9 6.5V20a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1V9.5Z"/>
+      <path d="M9 21V12h6v9"/>
+    </svg>
+    <span class="ork-bottom-nav__label">Accueil</span>
+  </a>
+ 
+  <!-- À PROPOS -->
+  <a href="about.html"
+     class="ork-bottom-nav__item"
+     aria-label="À propos">
+    <svg viewBox="0 0 24 24">
+      <circle cx="12" cy="8" r="4"/>
+      <path d="M4 20c0-4 3.6-7 8-7s8 3 8 7"/>
+    </svg>
+    <span class="ork-bottom-nav__label">À propos</span>
+  </a>
+ 
+<!-- CONTACT -->
+  <a href="contact.html"
+     class="ork-bottom-nav__item"
+     aria-label="Contact">
+    <svg viewBox="0 0 24 24">
+      <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/>
+    </svg>
+    <span class="ork-bottom-nav__label">Contact</span>
+  </a>
+ 
+  <!-- GALERIE -->
+  <a href="gallery.html"
+     class="ork-bottom-nav__item"
+     aria-label="Galerie">
+    <svg viewBox="0 0 24 24">
+      <rect x="3" y="3" width="8" height="8" rx="1"/>
+      <rect x="13" y="3" width="8" height="8" rx="1"/>
+      <rect x="3" y="13" width="8" height="8" rx="1"/>
+      <rect x="13" y="13" width="8" height="8" rx="1"/>
+    </svg>
+    <span class="ork-bottom-nav__label">Galerie</span>
+  </a>
+ 
+  <!-- MÉDIAS -->
+  <a href="videos.html"
+     class="ork-bottom-nav__item"
+     aria-label="Vidéos">
+    <svg viewBox="0 0 24 24">
+      <polygon points="5,3 19,12 5,21"/>
+    </svg>
+    <span class="ork-bottom-nav__label">Vidéos</span>
+  </a>
+ 
+
+</nav>
 </body>
 </html>

@@ -397,11 +397,11 @@
             <nav class="main-navigation">
                 <button type="button" class="toggle-menu"><i class="fa fa-bars"></i></button>
                 <ul class="menu">
-                    <li class="menu-item"><a href="index.html">Home</a></li>
-                    <li class="menu-item"><a href="about.html">About</a></li>
+                    <li class="menu-item"><a href="index.html">Accueil</a></li>
+                    <li class="menu-item"><a href="about.html">À propos</a></li>
+                    <li class="menu-item current-menu-item"><a href="contact.html">Contact</a></li>
                     <li class="menu-item"><a href="gallery.html">Galerie</a></li>
                     <li class="menu-item"><a href="videos.html">Vidéos</a></li>
-                    <li class="menu-item current-menu-item"><a href="contact.html">Contact</a></li>
                 </ul>
             </nav>
             <div class="mobile-menu"></div>
@@ -792,5 +792,67 @@
     });
 })();
 </script>
+
+<nav class="ork-bottom-nav" aria-label="Navigation principale">
+ 
+  <!-- ACCUEIL -->
+  <a href="index.html"
+     class="ork-bottom-nav__item"
+     aria-label="Accueil">
+    <svg viewBox="0 0 24 24">
+      <path d="M3 9.5L12 3l9 6.5V20a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1V9.5Z"/>
+      <path d="M9 21V12h6v9"/>
+    </svg>
+    <span class="ork-bottom-nav__label">Accueil</span>
+  </a>
+ 
+  <!-- À PROPOS -->
+  <a href="about.html"
+     class="ork-bottom-nav__item"
+     aria-label="À propos">
+    <svg viewBox="0 0 24 24">
+      <circle cx="12" cy="8" r="4"/>
+      <path d="M4 20c0-4 3.6-7 8-7s8 3 8 7"/>
+    </svg>
+    <span class="ork-bottom-nav__label">À propos</span>
+  </a>
+ 
+  <!-- CONTACT -->
+  <a href="contact.html"
+     class="ork-bottom-nav__item"
+     aria-current="page"
+     aria-label="Contact">
+    <svg viewBox="0 0 24 24">
+      <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/>
+    </svg>
+    <span class="ork-bottom-nav__label">Contact</span>
+  </a>
+
+  <!-- GALERIE -->
+  <a href="gallery.html"
+     class="ork-bottom-nav__item"
+     aria-label="Galerie">
+    <svg viewBox="0 0 24 24">
+      <rect x="3" y="3" width="8" height="8" rx="1"/>
+      <rect x="13" y="3" width="8" height="8" rx="1"/>
+      <rect x="3" y="13" width="8" height="8" rx="1"/>
+      <rect x="13" y="13" width="8" height="8" rx="1"/>
+    </svg>
+    <span class="ork-bottom-nav__label">Galerie</span>
+  </a>
+ 
+  <!-- MÉDIAS -->
+  <a href="videos.html"
+     class="ork-bottom-nav__item"
+     aria-label="Vidéos">
+    <svg viewBox="0 0 24 24">
+      <polygon points="5,3 19,12 5,21"/>
+    </svg>
+    <span class="ork-bottom-nav__label">Vidéos</span>
+  </a>
+ 
+
+ 
+</nav>
 </body>
 </html>

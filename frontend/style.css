@@ -2969,4 +2969,145 @@ body {
       grid-template-columns: 1fr;
     }
   }
+
+  /* ── MOBILE BOTTOM NAV ──────────────────────────────────────────────────── */
+ 
+/* Masquer le hamburger sur mobile, on n'en a plus besoin */
+@media screen and (max-width: 640px) {
+  .main-navigation .toggle-menu,
+  .mobile-menu {
+    display: none !important;
+  }
+ 
+  /* Espace en bas pour que le contenu ne passe pas sous la barre */
+  body {
+    padding-bottom: 72px;
+  }
+ 
+  /* Sur les pages avec hero plein-écran, ne pas décaler */
+  .hero {
+    padding-bottom: 0;
+  }
+}
+ 
+/* La barre en elle-même */
+.ork-bottom-nav {
+  display: none; /* cachée sur desktop */
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  z-index: 9000;
+ 
+  /* Fond sombre avec légère transparence + blur */
+  background: rgba(13, 13, 13, 0.97);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+ 
+  /* Ligne rouge fine en haut — signature visuelle */
+  border-top: 1px solid rgba(230, 57, 70, 0.25);
+ 
+  /* Safe area iPhone X+ */
+  padding-bottom: env(safe-area-inset-bottom);
+  height: calc(64px + env(safe-area-inset-bottom));
+ 
+  /* Distribution */
+  display: flex;
+  align-items: stretch;
+}
+ 
+/* Un item de nav */
+.ork-bottom-nav__item {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 3px;
+  text-decoration: none;
+  color: rgba(255, 255, 255, 0.35);
+  font-size: 9.5px;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  font-family: "Source Sans Pro", sans-serif;
+  position: relative;
+  transition: color 0.2s ease;
+  -webkit-tap-highlight-color: transparent;
+  padding: 10px 4px 6px;
+}
+ 
+/* Icône SVG */
+.ork-bottom-nav__item svg {
+  width: 22px;
+  height: 22px;
+  stroke: currentColor;
+  fill: none;
+  stroke-width: 1.6;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  transition: stroke 0.2s ease, transform 0.18s ease;
+}
+ 
+/* Indicateur actif — trait rouge sous l'icône */
+.ork-bottom-nav__item::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 50%;
+  transform: translateX(-50%) scaleX(0);
+  width: 24px;
+  height: 2px;
+  background: #E63946;
+  border-radius: 0 0 2px 2px;
+  transition: transform 0.22s ease;
+}
+ 
+/* État actif */
+.ork-bottom-nav__item[aria-current="page"],
+.ork-bottom-nav__item.active {
+  color: #E63946;
+}
+ 
+.ork-bottom-nav__item[aria-current="page"]::before,
+.ork-bottom-nav__item.active::before {
+  transform: translateX(-50%) scaleX(1);
+}
+ 
+.ork-bottom-nav__item[aria-current="page"] svg,
+.ork-bottom-nav__item.active svg {
+  stroke: #E63946;
+  transform: translateY(-1px);
+}
+ 
+/* Feedback tactile au press */
+.ork-bottom-nav__item:active {
+  color: rgba(230, 57, 70, 0.7);
+  transform: scale(0.94);
+  transition: transform 0.08s ease, color 0.08s ease;
+}
+ 
+.ork-bottom-nav__item:active svg {
+  transform: scale(0.9);
+}
+ 
+/* Label */
+.ork-bottom-nav__label {
+  line-height: 1;
+  pointer-events: none;
+}
+ 
+/* Afficher seulement sur mobile */
+@media screen and (max-width: 640px) {
+  .ork-bottom-nav {
+    display: flex;
+  }
+}
+ 
+/* ── DESKTOP : s'assurer que la barre reste invisible ──────────────── */
+@media screen and (min-width: 641px) {
+  .ork-bottom-nav {
+    display: none !important;
+  }
+}
 /*# sourceMappingURL=style.css.map */

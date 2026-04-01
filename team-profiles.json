@@ -1,7 +1,9 @@
 {
   "team_photos":{
     "2024-2025": "images/team/team2024/lequipe2024.jpg",
-    "2025-2026": "images/team/team2025/lequipe2025.jpg"
+    "2025-2026": "images/team/team2025/lequipe2025.jpg",
+    "2023-2024": "images/team/team2023/lequipe2023.jpg",
+    "2022-2023": "images/team/team2022/lequipe2022.jpg"
   },
   "members": [
     {
@@ -51,7 +53,7 @@
     {
       "name": "Louis Beautrix",
       "instruments": ["Batterie"],
-      "roles": "",
+      "roles": {"2023-2024" :"Vice-président"},
       "etudes": {"2021-2022": "Bac 3 Géographie", "2022-2023": "Master 1 Géographie", "2023-2024": "Master 2 en Géographie", "2024-2025": "Doctorant en Géographie"},
       "annee_debut": 2021,
       "annee_fin": 2025,
@@ -266,6 +268,39 @@
       "annee_fin": 2026,
       "images": [
         "images/team/team2025/marco.jpg"
+      ]
+    },
+    {
+      "name": "Ugo Di Nanno",
+      "instruments": ["Trombonne", "Violon"],
+      "roles": "",
+      "etudes": {"2021-2022": "Bac 3 Bio ingénieur","2022-2023": "Bac 3 Bio ingénieur", "2023-2024": "Master 1 Bio ingénieur"},
+      "annee_debut": 2021,
+      "annee_fin": 2024,
+      "images": [
+        "images/team/team2023/ugo.jpg"
+      ]
+    },
+    {
+      "name": "Wendy Botikali",
+      "instruments": ["Saxophone", "Chant"],
+      "roles": {"2023-2024" :"Trésorière"},
+      "etudes": {"2021-2022": "Bac 2 Ingénieur de gestion","2022-2023": "Bac 3 Ingénieur de gestion", "2023-2024": "Master 1 Ingénieur de gestion"},
+      "annee_debut": 2021,
+      "annee_fin": 2024,
+      "images": [
+        "images/team/team2023/wendy.jpg"
+      ]
+    },
+    {
+      "name": "Pablo Letelier",
+      "instruments": ["Trompette"],
+      "roles": "",
+      "etudes": {"2022-2023": "Bac 3 Mathématiques", "2023-2024": "Master 1 Mathématiques"},
+      "annee_debut": 2022,
+      "annee_fin": 2024,
+      "images": [
+        "images/team/team2023/pablo.jpg"
       ]
     }
   ]
