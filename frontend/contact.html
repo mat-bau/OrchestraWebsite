@@ -342,6 +342,66 @@
         .success-overlay p { font-size: 15px; color: var(--muted); font-weight: 300; line-height: 1.6; }
         .success-icon { font-size: 36px; margin-bottom: 16px; }
 
+        .error-overlay {
+            display: none;
+            background: rgba(15,15,15,0.97);
+            border: 1px solid rgba(231,76,60,0.5);
+            border-radius: 8px;
+            padding: 40px;
+            text-align: center;
+            margin-top: 24px;
+        }
+        .error-overlay.visible { display: block; }
+        .error-overlay h3 {
+            font-size: 22px;
+            font-weight: 800;
+            color: var(--text);
+            margin-bottom: 12px;
+        }
+        .error-overlay p {
+            font-size: 14px;
+            color: var(--muted);
+            font-weight: 300;
+            line-height: 1.6;
+            margin-bottom: 24px;
+        }
+        .error-icon { font-size: 36px; margin-bottom: 16px; }
+        .error-actions {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 16px;
+        }
+        .btn-retry {
+            background: var(--red);
+            color: #fff;
+            border: none;
+            padding: 14px 36px;
+            font-size: 14px;
+            font-weight: 700;
+            letter-spacing: 0.1em;
+            text-transform: uppercase;
+            cursor: pointer;
+            border-radius: 2px;
+            transition: background 0.3s;
+        }
+        .btn-retry:hover { background: var(--red-hover); }
+        .error-socials {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            flex-wrap: wrap;
+            justify-content: center;
+            font-size: 13px;
+            color: var(--muted);
+        }
+        .error-socials a {
+            color: var(--text);
+            text-decoration: none;
+            font-weight: 500;
+            transition: color 0.2s;
+        }
+        .error-socials a:hover { color: var(--red); }
         .form-group.has-error input,
         .form-group.has-error select,
         .form-group.has-error textarea { border-bottom-color: var(--red); }
@@ -448,9 +508,7 @@
                         ou nous vous ferons parvenir un <strong>devis personnalisé</strong> en fonction de votre demande — le tarif varie selon la formation, la durée, le lieu et le type d'événement.
                     </p>
                 </div>
-
-                <iframe name="hidden-iframe" id="hidden-iframe"></iframe>
-
+                <iframe name="hidden-iframe" id="hidden-iframe" style="display:none;"></iframe>
                 <form
                     class="contact-form"
                     id="contactForm"
@@ -696,10 +754,28 @@
                     </div>
 
                 </form>
-
+            
                 <div class="success-overlay" id="successOverlay">
                     <h3>Demande envoyée !</h3>
                     <p>Merci pour votre message. Nous avons bien reçu votre demande et vous recontacterons prochainement avec une offre personnalisée.</p>
+                </div>
+
+                <div class="error-overlay" id="errorOverlay">
+                    <div class="error-icon">!</div>
+                    <h3>Une erreur est survenue</h3>
+                    <p>Votre demande n'a pas pu être envoyée. Vérifiez votre connexion et réessayez, ou contactez-nous directement.</p>
+                    <div class="error-actions">
+                        <button class="btn-retry" id="retryBtn">Réessayer</button>
+                        <div class="error-socials">
+                            <span>Ou contactez-nous sur</span>
+                            <a href="https://www.instagram.com/orchestrakot/" target="_blank">
+                                <i class="fa-brands fa-instagram"></i> Instagram
+                            </a>
+                            <a href="https://www.facebook.com/orchestrakot/" target="_blank">
+                                <i class="fa-brands fa-facebook"></i> Facebook
+                            </a>
+                        </div>
+                    </div>
                 </div>
 
             </div>
