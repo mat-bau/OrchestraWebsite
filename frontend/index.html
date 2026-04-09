@@ -30,13 +30,11 @@
 		}
 
 		/* ── SUBTITLE COLOR FIX ────────────────────────────────── */
-		/* Override the old #A8324E rose – align with brand red */
 		.slider .slides .slide-subtitle {
 			color: #E63946 !important;
 		}
 
-		/* ── HERO CTA BUTTON — ghost style ─────────────────────── */
-		/* Replace the incoherent gradient with a clean outlined btn */
+		/* ── HERO CTA BUTTON  ─────────────────────── */
 		.slider .slides .button.cut-corner,
 		.slider .slides .button.cut-corner:visited {
 			background: transparent !important;
@@ -51,11 +49,10 @@
 			display: inline-block;
 			position: relative;
 			transition: background .25s ease, border-color .25s ease, color .25s ease;
-			clip-path: none; /* remove the old cut-corner polygon */
+			clip-path: none;
 		}
 
 		.slider .slides .button.cut-corner::before {
-			/* accent line that grows on hover */
 			content: '';
 			position: absolute;
 			bottom: -2px;
@@ -441,7 +438,7 @@
 				</header>
 
 				<div class="event-grid">
-
+					<!-- INITIATIONS 
 					<div class="event-card" data-modal="modal-1" tabindex="0" role="button" aria-haspopup="dialog">
 						<div class="event-card__date">
 							<span class="event-card__day">7</span>
@@ -456,7 +453,9 @@
 							</svg>
 						</span>
 					</div>
+					-->
 
+					<!-- Ateliers -->
 					<div class="event-card" data-modal="modal-2" tabindex="0" role="button" aria-haspopup="dialog">
 						<div class="event-card__date">
 							<span class="event-card__day">16</span>
@@ -472,6 +471,7 @@
 						</span>
 					</div>
 
+					<!-- Virée symphonique -->
 					<div class="event-card" data-modal="modal-3" tabindex="0" role="button" aria-haspopup="dialog">
 						<div class="event-card__date">
 							<span class="event-card__day">17</span>
@@ -487,6 +487,7 @@
 						</span>
 					</div>
 
+					<!-- OMP -->
 					<div class="event-card" data-modal="modal-4" tabindex="0" role="button" aria-haspopup="dialog">
 						<div class="event-card__date">
 							<span class="event-card__day">7</span>
@@ -510,6 +511,7 @@
 
 	<!-- ── MODALES ÉVÉNEMENTS ───────────────────────────────────── -->
 
+	<!-- Initiations 
 	<div class="ork-modal-backdrop" id="modal-1" role="dialog" aria-modal="true" aria-labelledby="modal-1-title">
 		<div class="ork-modal">
 			<button class="ork-modal__close" aria-label="Fermer">&#215;</button>
@@ -533,7 +535,8 @@
 			</a>
 		</div>
 	</div>
-
+	-->
+	<!-- Ateliers -->
 	<div class="ork-modal-backdrop" id="modal-2" role="dialog" aria-modal="true" aria-labelledby="modal-2-title">
 		<div class="ork-modal">
 			<button class="ork-modal__close" aria-label="Fermer">&#215;</button>
