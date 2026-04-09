@@ -151,19 +151,19 @@ def commit_and_push_batch(batch: List[Path], batch_num: int, total_batches: int)
     
     if not success:
         print(f"❌ Erreur lors du push: {output}")
-        print(f"💡 Vous pouvez réessayer manuellement: git push origin {BRANCH}")
+        print(f"Vous pouvez réessayer manuellement: git push origin {BRANCH}")
         return False
     
-    print(f"✅ Push réussi!")
+    print(f"Push réussi!")
     return True
 
 def main():
     print("="*70)
-    print("🚀 PUSH AUTOMATIQUE D'IMAGES PAR LOTS")
+    print("PUSH AUTOMATIQUE D'IMAGES PAR LOTS")
     print("="*70)
-    print(f"📁 Dossier       : {IMAGES_FOLDER}")
-    print(f"📊 Taille max    : {MAX_COMMIT_SIZE_MB} Mo par commit")
-    print(f"🌿 Branche       : {BRANCH}")
+    print(f"Dossier       : {IMAGES_FOLDER}")
+    print(f"Taille max    : {MAX_COMMIT_SIZE_MB} Mo par commit")
+    print(f"Branche       : {BRANCH}")
     print("="*70)
     
     # Vérifier qu'on est dans un repo Git
@@ -173,27 +173,27 @@ def main():
         return
     
     # Récupérer les images non trackées et modifiées
-    print("\n🔍 Recherche des images à pusher...")
+    print("\n Recherche des images à pusher...")
     untracked = get_untracked_images()
     modified = get_modified_images()
     
     all_images = list(set(untracked + modified))  # Supprimer les doublons
     
     if not all_images:
-        print("✅ Aucune image à pusher!")
+        print(". Aucune image à pusher!")
         return
     
     total_size = sum(get_file_size_mb(f) for f in all_images)
-    print(f"\n📊 Statistiques:")
-    print(f"   🆕 Nouvelles images  : {len(untracked)}")
-    print(f"   ✏️  Images modifiées  : {len(modified)}")
-    print(f"   📦 Total             : {len(all_images)} images ({total_size:.2f} Mo)")
+    print(f"\n. Statistiques:")
+    print(f"     Nouvelles images  : {len(untracked)}")
+    print(f"     Images modifiées  : {len(modified)}")
+    print(f"     Total             : {len(all_images)} images ({total_size:.2f} Mo)")
     
     # Créer les batches
-    print(f"\n📦 Création des batches de {MAX_COMMIT_SIZE_MB} Mo...")
+    print(f"\n  Création des batches de {MAX_COMMIT_SIZE_MB} Mo...")
     batches = create_batches(all_images, MAX_COMMIT_SIZE_MB)
     
-    print(f"\n✅ {len(batches)} batch(es) créé(s)")
+    print(f"\n  {len(batches)} batch(es) créé(s)")
     
     # Demander confirmation
     print("\n" + "="*70)
@@ -209,19 +209,19 @@ def main():
         if commit_and_push_batch(batch, i, len(batches)):
             success_count += 1
         else:
-            print(f"\n⚠️  Arrêt après l'échec du batch {i}")
+            print(f"\n   Arrêt après l'échec du batch {i}")
             break
     
     # Résumé final
     print("\n" + "="*70)
-    print("📊 RÉSUMÉ FINAL")
+    print("  RÉSUMÉ FINAL")
     print("="*70)
-    print(f"✅ Batches pushés avec succès : {success_count}/{len(batches)}")
+    print(f"  Batches pushés avec succès : {success_count}/{len(batches)}")
     
     if success_count == len(batches):
-        print("🎉 Toutes les images ont été pushées!")
+        print("  Toutes les images ont été pushées!")
     else:
-        print(f"⚠️  {len(batches) - success_count} batch(es) n'ont pas pu être pushé(s)")
+        print(f"  {len(batches) - success_count} batch(es) n'ont pas pu être pushé(s)")
     
     print("="*70)
 
