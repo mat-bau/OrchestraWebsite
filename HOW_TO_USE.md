@@ -7,17 +7,31 @@ Comment gérer le contenu du site, surtout l'ajout des nouveaux et la mise à jo
 ---
 ## TO-DO début d'année
 
+**Contenu (textes, événements, vidéos) :**
+- [ ] Éditer `frontend/data/site-config.json` → mettre à jour `events`, `videos`, textes `about`
+
+**Équipe :**
 - [ ] Créer le dossier `images/team/team{année}/`
-- [ ] Prendre la photo d'équipe et la nommer `lequipe{année}.jpg`
-- [ ] Prendre les photos individuelles des nouveaux membres (généralement du concert à la FDB donc vous avez le temps)
-- [ ] Ajouter la photo d'équipe dans `team{année}`
-- [ ] Ajouter/mettre à jour les membres dans `members` du fichier `team-profiles.json`
-- [ ] Mettre à jour les rôles et études pour la nouvelle année (et l'année)
-- [ ] Relancer `python3 start.py`
-- [ ] Vérifier que tout s'affiche correctement sur le site
-- [ ] Mettre à jour les événements de la page `Home`
-- [ ] Mettre à jour le paragraphe sur le concert dans `About` 
-- [ ] ? 
+- [ ] Ajouter la photo d'équipe nommée `lequipe{année}.jpg`
+- [ ] Ajouter les photos individuelles des nouveaux membres
+- [ ] Ajouter/mettre à jour les membres dans `team-profiles.json`
+- [ ] Mettre à jour les rôles et études pour la nouvelle année
+
+**Déploiement :**
+- [ ] `python3 start.py` (régénère galerie + équipe + lance le serveur)
+- [ ] Vérifier que tout s'affiche correctement
+- [ ] `npm run build` si vous avez modifié un fichier `.scss`
+- [ ] `git push gitlab main` pour déployer en production
+
+**Où se trouvent les choses à changer :**
+| Ce que vous voulez changer | Fichier à éditer |
+|---------------------------|------------------|
+| Événements (accueil) | `frontend/data/site-config.json` → `events` |
+| Vidéos | `frontend/data/site-config.json` → `videos` |
+| Texte About / date concert / trailer | `frontend/data/site-config.json` → `about` |
+| Membres de l'équipe | `team-profiles.json` |
+| Photos galerie | Ajouter dans `images/public/` + `python3 start.py` |
+| CSS / styles | `frontend/src/scss/` + `npm run build` |
 
 ## Ajouter un nouveau membre à l'équipe
 
@@ -179,11 +193,13 @@ La photo s'actualise automatiquement en fonction de l'année scolaire actuelle. 
 
 ### Modifier le contenu texte
 
-Les pages HTML se trouvent dans `frontend/` :
-- `frontend/index.html` - Page d'accueil
-- `frontend/about.html` - Page À propos
-- `frontend/contact.html` - Page Contact
-- etc.
+**Ne pas modifier le HTML directement.** Tout le contenu annuel est dans :
+```
+frontend/data/site-config.json
+```
+Éditez ce fichier et rechargez la page — les changements apparaissent immédiatement.
+
+Pour les modifications de structure (mise en page, nouvelles sections), les pages HTML sont dans `frontend/`.
 
 ---
 

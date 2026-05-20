@@ -441,7 +441,7 @@
 
                 <form
                     class="contact-form"
-                    id="contactForm"
+                    id="contact-form"
                     action="https://docs.google.com/forms/d/e/1FAIpQLSf6diNkrWz91YLzFFvG3i-Xe2AnxaJ2xL58gLTx0ErwFoxHJw/formResponse"
                     method="POST"
                     target="hidden-iframe"
@@ -678,8 +678,8 @@
 
                     <!-- RGPD -->
                     <div class="rgpd-group">
-                        <input type="checkbox" id="rgpd" name="rgpd" required>
-                        <label for="rgpd">
+                        <input type="checkbox" id="rgpd-checkbox" name="rgpd" required>
+                        <label for="rgpd-checkbox">
                             J'accepte que mes données soient utilisées pour traiter ma demande d'Offres Musicales Personnalisées. <span class="req">*</span>
                         </label>
                     </div>
@@ -691,7 +691,7 @@
                     </div>
 
                     <div class="submit-row">
-                        <button type="submit" class="btn-submit" id="submitBtn">
+                        <button type="submit" class="btn-submit" id="submit-btn" disabled>
                             Envoyer la demande
                         </button>
                         <p class="submit-note">
@@ -702,7 +702,7 @@
                 </form>
 
                 <!-- Message succès (affiché après soumission) -->
-                <div class="success-overlay" id="successOverlay">
+                <div class="success-overlay" id="success-overlay">
                     <h3>Demande envoyée !</h3>
                     <p>Merci pour votre message. Nous avons bien reçu votre demande et vous recontacterons prochainement avec une offre personnalisée.</p>
                 </div>
@@ -735,73 +735,10 @@
     </footer>
 </div>
 
-<script src="../js/jquery-1.11.1.min.js"></script>
-<script src="../js/plugins.js"></script>
-<script src="../js/app.js"></script>
-<script>
-(function() {
-    const form = document.getElementById('contactForm');
-    const submitBtn = document.getElementById('submitBtn');
-    const successOverlay = document.getElementById('successOverlay');
-    const recaptchaError = document.getElementById('recaptchaError');
-
-    function validateField(input) {
-        const group = input.closest('.form-group');
-        if (!group || !input.hasAttribute('required')) return true;
-        let valid = input.type === 'email'
-            ? /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(input.value.trim())
-            : input.value.trim() !== '';
-        group.classList.toggle('has-error', !valid);
-        return valid;
-    }
-
-    // Live validation au blur
-    form.querySelectorAll('input, select, textarea').forEach(input => {
-        input.addEventListener('blur', () => validateField(input));
-        input.addEventListener('input', () => {
-            if (input.closest('.form-group')?.classList.contains('has-error'))
-                validateField(input);
-        });
-    });
-
-    form.addEventListener('submit', function(e) {
-        // 1. Valider les champs
-        let allValid = true;
-        form.querySelectorAll('input[required], select[required], textarea[required]')
-            .forEach(input => { if (!validateField(input)) allValid = false; });
-
-        // 2. Valider RGPD
-        const rgpd = document.getElementById('rgpd');
-        if (!rgpd.checked) {
-            allValid = false;
-            document.querySelector('.rgpd-group label').style.color = 'var(--red)';
-        }
-
-        // 3. Valider reCAPTCHA
-        let captchaOk = false;
-        try { captchaOk = grecaptcha.getResponse().length > 0; } catch(err) {}
-        recaptchaError.style.display = captchaOk ? 'none' : 'block';
-
-        if (!allValid || !captchaOk) {
-            e.preventDefault(); 
-            const firstError = form.querySelector('.has-error');
-            if (firstError) firstError.scrollIntoView({ behavior: 'smooth', block: 'center' });
-            return;
-        }
-        submitBtn.textContent = 'Envoi en cours…';
-        submitBtn.disabled = true;
-
-        setTimeout(() => {
-            form.style.display = 'none';
-            successOverlay.classList.add('visible');
-            successOverlay.scrollIntoView({ behavior: 'smooth', block: 'center' });
-        }, 1200);
-    });
-
-    document.getElementById('rgpd').addEventListener('change', function() {
-        document.querySelector('.rgpd-group label').style.color = '';
-    });
-})();
-</script>
+<script src="js/jquery-1.11.1.min.js"></script>
+<script src="js/plugins.js"></script>
+<script src="js/app.js"></script>
+<script type="module" src="src/js/contact.js"></script>
+<script type="module" src="src/js/nav.js"></script>
 </body>
 </html>

@@ -24,7 +24,8 @@ class OptimizedRepetitionScheduler:
                  seuil_absence: int = 2,
                  generation_time_limit: int = 30,
                  creneaux_speciaux: Optional[List[str]] = None,
-                 seuil_absence_creneau_special: int = 5):
+                 seuil_absence_creneau_special: int = 5,
+                 forced_assignments: Optional[Dict[str, str]] = None):
         """
         Paramètres additionnels:
         - creneaux_speciaux: Liste des créneaux où on tolère plus d'absences 
@@ -45,9 +46,13 @@ class OptimizedRepetitionScheduler:
         # NOUVEAUX PARAMÈTRES
         self.creneaux_speciaux = self._normaliser_creneaux_speciaux(creneaux_speciaux or [])
         self.seuil_absence_creneau_special = seuil_absence_creneau_special
-        
+        # Assignments forcés par l'utilisateur: { "instance_name": "LUN_05_14:00-16:00" }
+        self.forced_assignments: Dict[str, str] = forced_assignments or {}
+
         self.musiciens: Set[str] = set()
-        self.morceaux: List[str] = []
+        self.morceaux: List[str] = []           # instances (with #N for multi-repeat)
+        self.morceaux_originals: List[str] = [] # original names before expansion
+        self.morceaux_repetitions: Dict[str, int] = {}  # original name → count
         self.creneaux: List[str] = []
         self.weeks = []
         self.repartition: Dict[str, Set[str]] = {}
@@ -131,7 +136,13 @@ class OptimizedRepetitionScheduler:
         creneau format: "LUN_05_14:00-16:00"
         """
         return creneau in self.creneaux_speciaux
-        
+
+    def _get_base_name(self, instance_name: str) -> str:
+        """Return original piece name from an instance like 'Beethoven#2' → 'Beethoven'."""
+        if '#' in instance_name:
+            return instance_name.rsplit('#', 1)[0]
+        return instance_name
+
     def transformer_simple(self, texte: str) -> Optional[Dict]:
         """Transforme un texte de créneau en dictionnaire structuré."""
         t = texte.strip().replace("\n", " ").replace("\r", " ")
@@ -159,30 +170,56 @@ class OptimizedRepetitionScheduler:
         if hasattr(self, 'repartitions_file') and self.repartitions_file:
             self.repartitions_df = pd.read_excel(self.repartitions_file)
             instrument_cols = self.repartitions_df.columns[6:]
-                    
+
+            # Detect optional "Répétitions" column (case-insensitive)
+            rep_col = None
+            for col in self.repartitions_df.columns:
+                if str(col).strip().lower() in ['répétitions', 'repetitions', 'nb_repetitions',
+                                                 'nb répétitions', 'repetition', 'nb']:
+                    rep_col = col
+                    break
+
             for _, row in self.repartitions_df.iterrows():
                 morceau = row['Titre']
                 if pd.isna(morceau):
                     continue
-                                
+
                 has_musicians = any(not pd.isna(row[c]) for c in instrument_cols)
                 if not has_musicians:
                     continue
-                                
-                self.morceaux.append(morceau)
-                self.repartition[morceau] = set()
-                            
+
+                # Read repetition count (default 1)
+                n_reps = 1
+                if rep_col is not None:
+                    val = row[rep_col]
+                    if not pd.isna(val):
+                        try:
+                            n_reps = max(1, int(float(val)))
+                        except (ValueError, TypeError):
+                            n_reps = 1
+
+                self.morceaux_originals.append(morceau)
+                self.morceaux_repetitions[morceau] = n_reps
+
+                # Collect musicians for this piece
+                musicians: Set[str] = set()
                 for col in instrument_cols:
                     cellule = row[col]
                     if pd.isna(cellule):
                         continue
-                                        
                     for nom in str(cellule).split(','):
                         nom = nom.strip()
                         if nom:
                             self.musiciens.add(nom)
-                            self.repartition[morceau].add(nom)
-                            self._musicien_morceaux[nom].append(morceau)
+                            musicians.add(nom)
+
+                # Expand into N instances
+                for i in range(n_reps):
+                    instance = morceau if n_reps == 1 else f"{morceau}#{i + 1}"
+                    self.morceaux.append(instance)
+                    self.repartition[instance] = musicians
+                    for nom in musicians:
+                        self._musicien_morceaux[nom].append(instance)
         
         self.disponibilites_df = pd.read_excel(self.disponibilites_file)
         all_dates = set()
@@ -303,10 +340,15 @@ class OptimizedRepetitionScheduler:
     
     def calculate_conflicts(self, morceau: str, creneau: str) -> int:
         """Calcule le nombre de conflits pour assigner un morceau à un créneau."""
+        # Forced assignments: pin this instance to a specific slot
+        if morceau in self.forced_assignments:
+            forced_slot = self.forced_assignments[morceau]
+            return 0 if creneau == forced_slot else 10 ** 9
+
         cache_key = (morceau, creneau)
         if cache_key in self._conflict_cache:
             return self._conflict_cache[cache_key]
-        
+
         conflicts = 0
         musiciens_morceau = self.repartition[morceau]
         
@@ -726,22 +768,28 @@ class OptimizedRepetitionScheduler:
             return f"{jour_aff} {date_num}", periode
 
         planning = []
-        for morceau in self.morceaux:
-            if morceau not in self.solution:
+        for instance in self.morceaux:
+            base_name = self._get_base_name(instance)
+            rep_index = int(instance.rsplit('#', 1)[1]) if '#' in instance else None
+            if instance not in self.solution:
                 planning.append({
-                    "Morceau": morceau,
-                    "Jour":     "Non assigné",
-                    "Heures":   "—",
-                    "Participants": ", ".join(self.repartition.get(morceau, []))
+                    "Morceau":    base_name,
+                    "instance":   instance,
+                    "repetition": rep_index,
+                    "Jour":       "Non assigné",
+                    "Heures":     "—",
+                    "Participants": ", ".join(self.repartition.get(instance, []))
                 })
             else:
-                slot = self.solution[morceau]
+                slot = self.solution[instance]
                 jour, heures = format_slot(slot)
                 planning.append({
-                    "Morceau": morceau,
-                    "Jour":     jour,
-                    "Heures":   heures,
-                    "Participants": ", ".join(self.repartition.get(morceau, []))
+                    "Morceau":    base_name,
+                    "instance":   instance,
+                    "repetition": rep_index,
+                    "Jour":       jour,
+                    "Heures":     heures,
+                    "Participants": ", ".join(self.repartition.get(instance, []))
                 })
 
         musiciens = sorted(self.musiciens)
@@ -784,11 +832,14 @@ class OptimizedRepetitionScheduler:
             dispo_output[key]  = dispo_rows
             repart_output[key] = repart_rows
 
+        # notassigned uses instance names so frontend chips match
+        notassigned_instances = [i for i in self.morceaux if i not in self.solution]
+
         return {
             "planning":       planning,
             "disponibilites": dispo_output,
-            "repartition":     repart_output,
-            "assigned": self.assigned,
-            "total": len(self.morceaux),
-            "notassigned": self.notassigned
+            "repartition":    repart_output,
+            "assigned":       self.assigned,
+            "total":          len(self.morceaux),
+            "notassigned":    notassigned_instances
         }

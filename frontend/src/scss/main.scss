@@ -1,0 +1,23 @@
+// ============================================================
+// ORCHESTRAKOT — main SCSS entry point
+//
+// Compile with:  npm run build
+// Watch with:    npm run watch
+// Output:        frontend/style.css
+// ============================================================
+
+// 1. Variables (must come first — used by all partials)
+@import 'variables';
+
+// 2. Legacy template CSS (original compiled template, unchanged)
+@import 'legacy';
+
+// 3. Page-specific styles (inline <style> blocks extracted from HTML + new features)
+@import 'about';
+@import 'gallery';
+@import 'videos';
+@import 'planner';
+@import 'contact';
+
+// 4. Responsive overrides (must come last to take effect)
+@import 'responsive';

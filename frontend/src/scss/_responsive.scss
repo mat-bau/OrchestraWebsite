@@ -1,0 +1,65 @@
+// ============================================================
+// RESPONSIVE — mobile-first overrides for all pages
+// ============================================================
+
+// Navigation mobile fixes
+@media (max-width: $bp-mobile) {
+  .site-header .container {
+    padding: 0 15px;
+  }
+
+  .main-navigation ul.menu {
+    display: none !important; // hidden on mobile, toggled via .mobile-menu
+  }
+
+  .mobile-menu {
+    padding: 10px 0;
+
+    .menu {
+      display: flex !important;
+      flex-direction: column;
+      padding: 10px 0;
+      border-top: 1px solid $color-border;
+
+      li { border-bottom: 1px solid rgba($color-border, 0.5); }
+
+      a {
+        display: block;
+        padding: 12px 0;
+        color: $color-text-light;
+        font-size: 15px;
+      }
+    }
+  }
+
+  // Hero slider
+  .hero { height: 60vh; }
+  .slide-title { font-size: 28px; }
+  .slide-subtitle { font-size: 16px; }
+
+  // Event carousel
+  .upcoming-event-section .container { padding: 30px 15px; }
+  .event { min-width: 260px; }
+
+  // Footer
+  .site-footer .container {
+    flex-direction: column;
+    text-align: center;
+    gap: 20px;
+  }
+
+  // General fullwidth blocks
+  .fullwidth-block.inner-content .container {
+    padding: 20px 15px;
+  }
+}
+
+// Tablet
+@media (min-width: #{$bp-mobile + 1}) and (max-width: $bp-large) {
+  .container { width: 100%; max-width: 960px; }
+}
+
+// Large screens
+@media (min-width: 1440px) {
+  .container { max-width: 1200px; }
+}

@@ -1,0 +1,92 @@
+{
+  "_comment": "Fichier de configuration annuel — éditez ce fichier pour mettre à jour les événements, vidéos et textes du site sans toucher au HTML.",
+
+  "events": [
+    {
+      "title": "Initiation musicale",
+      "day": "7",
+      "month": "Avril",
+      "location": "Gîte Mozaïk",
+      "facebook_url": "https://www.facebook.com/orchestrakot",
+      "description": "Toute l'équipe t'attend au Gîte Mozaïk de l'Orchestra pour tester différents instruments du kot. Batterie, guitare, piano, violon, flûte, saxophone, trompette, ... Une chouette soirée pour s'essayer GRATUITEMENT aux instruments ou même rejouer un de tes anciens que tu aurais délaissé"
+    },
+    {
+      "title": "Ateliers musicaux",
+      "day": "16",
+      "month": "Avril",
+      "location": "Salle de l'Alter d'en Face",
+      "facebook_url": "https://www.facebook.com/orchestrakot",
+      "description": "Une après-midi d'ateliers musicaux à la salle de l'Alter d'en Face pour explorer la musique sous toutes ses facettes, de l'histoire des compositrices à la théorie des accords. Un parcours immersif incluant le chant choral, l'entraînement de l'oreille ou encore la découverte d'instruments rares comme les Ondes Martenot."
+    },
+    {
+      "title": "Virée Symphonique",
+      "day": "17",
+      "month": "Avril",
+      "location": "Bozar, Bruxelles",
+      "facebook_url": "https://www.facebook.com/orchestrakot",
+      "description": "Nous organisons une virée symphonique au Bozar à Bruxelles pour assister à un concert du Belgian National Orchestra. Une occasion unique de découvrir la richesse du répertoire classique et de partager une expérience musicale inoubliable avec les membres de l'Orchestra."
+    },
+    {
+      "title": "Louvainpéro",
+      "day": "7",
+      "month": "Mai",
+      "location": "Louvain-la-Neuve",
+      "facebook_url": "https://www.facebook.com/orchestrakot",
+      "description": "L'orchestra joue à 20h au Louvainpéro l'apéritif urbain visant à réunir les résidents et étudiants de Louvain-La-Neuve dans une atmosphère conviviale et accueillante."
+    }
+  ],
+
+  "videos": [
+    {
+      "youtube_id": "sKB9o7RwP6U",
+      "title": "Trailer Concert 2025",
+      "year": "2025-2026",
+      "category": "trailer"
+    },
+    {
+      "youtube_id": "kQVHkU5yPTE",
+      "title": "Virée Symphonique",
+      "year": "2024-2025",
+      "category": "concert"
+    },
+    {
+      "youtube_id": "1JbgfiQ49IM",
+      "title": "Trailer Concert 2024",
+      "year": "2024-2025",
+      "category": "trailer"
+    },
+    {
+      "youtube_id": "qy2EXvftPz8",
+      "title": "Trailer Concert 2023",
+      "year": "2023-2024",
+      "category": "trailer"
+    },
+    {
+      "youtube_id": "25JtU1b47oo",
+      "title": "Louvain-la-Neuve",
+      "year": "2023-2024",
+      "category": "concert"
+    }
+  ],
+
+  "youtube_channel_url": "https://www.youtube.com/channel/UCNfleJHSeg1hwH2XoNd5JuQ",
+
+  "about": {
+    "intro_text": "Nous sommes un groupe de musique un peu spécial, constitué cette année de 10 internes qui vivent dans le kot et 6 externes. À la base, un pôle de l'Orchestre Symphonique des Etudiants de Louvain (OSEL) le projet a évolué autour de l'animation musicale. Désormais, l'essentiel de notre travail est de revoir les musiques contemporaines et d'incorporer des instruments classiques afin de vous offrir une expérience unique.",
+    "concert_section": {
+      "title": "Concert à la Ferme du Biéreau",
+      "leading": "L'événement principal de l'OrchestraKot.",
+      "text_1": "Chaque premier quadrimestre, nous faisons une représentation à la Ferme du Biéreau, avec chaque année un thème différent. Notre concert c'est quoi ? C'est un concert de 2 heures tenu dans la grange de la Ferme du Biéreau où nous jouons de la musique autour d'un thème pour vous ambiancer vous qui venez à cet événement !",
+      "text_2": "Il se déroule généralement à la mi-novembre. Cette année, il s'est déroulé le 13 novembre à 20h. Pour être tenu au courant de toutes les modalités, allez sur notre page Facebook.",
+      "trailer_youtube_id": "sKB9o7RwP6U"
+    }
+  },
+
+  "contact": {
+    "address": "1 Rampe des Ardennais, Louvain-la-Neuve, Belgique",
+    "phone": "+32 497 30 41 04",
+    "email": "orchestrakot.ucl@gmail.com",
+    "facebook_url": "https://www.facebook.com/orchestrakot/",
+    "instagram_url": "https://www.instagram.com/orchestrakot/?hl=en"
+  }
+}

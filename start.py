@@ -34,7 +34,7 @@ def generate_team_structure():
         gallery = merge_with_existing_gallery(team_structure)
         
         # Sauvegarder
-        output_file = root_dir / 'frontend' / 'gallery-structure.json'
+        output_file = root_dir / 'frontend' / 'data' / 'gallery-structure.json'
         with open(output_file, 'w', encoding='utf-8') as f:
             json.dump(gallery, f, indent=2, ensure_ascii=False)
         
@@ -63,9 +63,9 @@ def scan_gallery_images():
         root_dir = Path(__file__).parent.absolute()
         structure = scan_images_directory(str(root_dir / 'images' / 'public'))
         
-        output_file = root_dir / 'frontend' / 'gallery-structure.json'
+        output_file = root_dir / 'frontend' / 'data' / 'gallery-structure.json'
         import json
-        
+
         existing_structure = {}
         team_photos = {}
         if output_file.exists():

@@ -1,0 +1,13 @@
+{
+  "name": "orchestrakot-website",
+  "version": "1.0.0",
+  "description": "Site web de l'Orchestrakot",
+  "scripts": {
+    "build": "sass frontend/src/scss/main.scss frontend/style.css --style=compressed --no-source-map --silence-deprecation=import",
+    "watch": "sass --watch frontend/src/scss/main.scss:frontend/style.css --silence-deprecation=import",
+    "build:dev": "sass frontend/src/scss/main.scss frontend/style.css --style=expanded --silence-deprecation=import"
+  },
+  "devDependencies": {
+    "sass": "^1.77.0"
+  }
+}

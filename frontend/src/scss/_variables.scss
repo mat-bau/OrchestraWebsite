@@ -1,0 +1,34 @@
+// ============================================================
+// DESIGN TOKENS — edit these to retheme the whole site
+// ============================================================
+
+// Colours
+$color-primary:    #e74c3c;   // red accent
+$color-primary-dark: #74140b;
+$color-dark:       #141414;   // page background
+$color-dark-2:     #191919;   // section backgrounds
+$color-dark-card:  #191726;   // card / sidebar backgrounds
+$color-border:     #333;
+$color-text:       #ffffff;
+$color-text-muted: #848484;
+$color-text-light: #cccccc;
+$color-success:    #28a745;
+
+// Typography
+$font-main: "Source Sans Pro", "Open Sans", sans-serif;
+$font-size-base: 16px;
+$line-height-base: 1.6;
+
+// Breakpoints
+$bp-mobile:  768px;
+$bp-small:   480px;
+$bp-large:   1199px;
+
+// Spacing
+$spacing-sm:  8px;
+$spacing-md:  16px;
+$spacing-lg:  32px;
+$spacing-xl:  60px;
+
+// Transitions
+$transition-base: 0.3s ease;

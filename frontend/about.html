@@ -350,10 +350,10 @@
 			<div class="fullwidth-block inner-content">
 				<div class="container">
 					<h1 class="main-title">Orchestrakot</h1>
-					<p class="intro-text">
+					<p class="intro-text" id="intro-text">
 						Nous sommes un groupe de musique un peu spécial, constitué cette année de 10 internes qui vivent dans le kot et 6 externes. À la base, un pôle de l'Orchestre Symphonique des Etudiants de Louvain (OSEL) le projet a évolué autour
 						de l'animation musicale. Désormais, l'essentiel de notre travail est de revoir les musiques contemporaines et d'incorporer des instruments classiques afin
-						de vous offrir une expérience unique. 
+						de vous offrir une expérience unique.
 					</p>
 
 					<div class="image-slider-container">
@@ -413,17 +413,17 @@
 											Notre concert c'est quoi ? C'est un concert de 2 heures tenu dans la grange de la Ferme du Biéreau où nous jouons de la
 											musique autour d'un thème pour vous ambiancer vous qui venez à cet événement !
 										</p>
-										<p>
+										<p id="concert-date-text">
 											Il se déroule généralement à la mi-novembre. Cette année, il s'est déroulé le 13 novembre à 20h.
-											Pour être tenu au courant de toutes les modalités, allez sur notre page Facebook. 
+											Pour être tenu au courant de toutes les modalités, allez sur notre page Facebook.
 										</p>
 										<p>Voici le trailer du concert de 2025 pour vous donner un avant goût!</p>
 									</div>
 									<div class="section-media">
 										<div class="video-wrapper">
-											<iframe src="https://www.youtube.com/embed/sKB9o7RwP6U"
-												frameborder="0" 
-												allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" 
+											<iframe id="trailer-iframe" src="https://www.youtube.com/embed/sKB9o7RwP6U"
+												frameborder="0"
+												allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture"
 												allowfullscreen>
 											</iframe>
 										</div>
@@ -495,142 +495,11 @@
 		</footer>
 	</div>
 
-	<script src="../js/jquery-1.11.1.min.js"></script>
-	<script src="../js/plugins.js"></script>
-	<script src="../js/app.js"></script>
-	
-	<script>
-		let teamProfiles = null;
-		const currentSchoolYear = getCurrentSchoolYear();
 
-		function getCurrentSchoolYear() {
-			const now = new Date();
-			const year = now.getFullYear();
-			const month = now.getMonth() + 1;
-			return (month >= 1 && month <= 8) ? `${year - 1}-${year}` : `${year}-${year + 1}`;
-		}
-
-		async function loadTeamProfiles() {
-			try {
-				const response = await fetch('/team-profiles.json');
-				if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
-				teamProfiles = await response.json();
-				renderCurrentTeam();
-			} catch (error) {
-				console.error('Erreur chargement profils:', error);
-				document.getElementById('team-list').innerHTML = '<li style="color: #999; padding: 20px;">Impossible de charger l\'équipe</li>';
-			}
-		}
-
-		function isMemberInCurrentYear(member) {
-			const [startYear] = currentSchoolYear.split('-').map(Number);
-			return member.annee_debut <= startYear && startYear < member.annee_fin;
-		}
-
-		function getCurrentYearImage(member) {
-			const [startYear] = currentSchoolYear.split('-').map(Number);
-			const yearIndex = startYear - member.annee_debut;
-			return (yearIndex >= 0 && yearIndex < member.images.length) ? member.images[yearIndex] : member.images[member.images.length - 1];
-		}
-
-		function getCurrentYearRole(member) {
-			if (typeof member.roles === 'object' && member.roles !== null && !Array.isArray(member.roles)) {
-				return member.roles[currentSchoolYear] || "";
-			}
-			return typeof member.roles === 'string' ? member.roles : "";
-		}
-
-		function getCurrentYearStudies(member) {
-			if (typeof member.etudes === 'object' && member.etudes !== null && !Array.isArray(member.etudes)) {
-				return member.etudes[currentSchoolYear] || "";
-			}
-			return typeof member.etudes === 'string' ? member.etudes : "";
-		}
-
-		function normalizeRole(role) {
-			return role.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "");
-		}
-
-		function renderCurrentTeam() {
-			const teamList = document.getElementById('team-list');
-			const currentMembers = teamProfiles.members.filter(isMemberInCurrentYear);
-			
-			if (currentMembers.length === 0) {
-				teamList.innerHTML = '<li style="color: #999; padding: 20px;">Aucun membre pour cette année</li>';
-				return;
-			}
-			
-			const ROLE_PRIORITY = {
-				"president": 0,
-				"vice-president": 1,
-				"tresorier": 2,
-				"tresoriere": 2,
-				"secretaire": 3
-			};
-			
-			currentMembers.sort((a, b) => {
-				const roleA = normalizeRole(getCurrentYearRole(a));
-				const roleB = normalizeRole(getCurrentYearRole(b));
-				const priorityA = ROLE_PRIORITY[roleA] ?? 999;
-				const priorityB = ROLE_PRIORITY[roleB] ?? 999;
-				return priorityA !== priorityB ? priorityA - priorityB : a.name.localeCompare(b.name);
-			});
-			
-			const html = currentMembers.map(member => {
-				const imagePath = getCurrentYearImage(member);
-				const instruments = member.instruments.join(', ');
-				const currentRole = getCurrentYearRole(member);
-				const currentStudies = getCurrentYearStudies(member);
-				
-				return `
-					<li class="team-member visible">
-						<figure class="cover">
-							<a href="gallery.html?path=${encodeURIComponent('Nos équipes/Par instrument/' + member.instruments[0])}">
-								<img src="../${imagePath}" alt="${member.name}">
-							</a>
-						</figure>
-						<div class="detail">
-							<h3>
-								<a href="gallery.html?path=${encodeURIComponent('Nos équipes/Par instrument/' + member.instruments[0])}">${member.name}</a>
-							</h3>
-							<span class="year">${instruments}</span>
-							${currentRole ? `<span class="track">${currentRole}</span>` : ''}
-							${currentStudies ? `<span class="track">${currentStudies}</span>` : ''}
-						</div>
-					</li>
-				`;
-			}).join('');
-			
-			teamList.innerHTML = html;
-		}
-
-		function updateTitle() {
-			const title = document.getElementById('team-title');
-			const currentTeamLink = document.getElementById('current-team-link');
-			const galleryPath = `Nos équipes/Par années/${currentSchoolYear}`;
-			
-			title.innerHTML = `<a href="gallery.html?path=${encodeURIComponent(galleryPath)}" style="color: inherit; text-decoration: none;">L'équipe ${currentSchoolYear}</a>`;
-			if (currentTeamLink) currentTeamLink.href = `gallery.html?path=${encodeURIComponent(galleryPath)}`;
-		}
-
-		async function loadCurrentTeamPhoto() {
-			try {
-				const response = await fetch('../team-profiles.json');
-				const data = await response.json();
-				
-				if (data.team_photos && data.team_photos[currentSchoolYear]) {
-					document.getElementById('current-team-photo').src = '../' + data.team_photos[currentSchoolYear];
-				}
-			} catch (error) {
-				console.error('Erreur chargement photo équipe:', error);
-			}
-		}
-
-		document.addEventListener('DOMContentLoaded', function() {
-			loadTeamProfiles();
-			loadCurrentTeamPhoto();
-			updateTitle();
-		});
-	</script>
+	<script src="js/jquery-1.11.1.min.js"></script>
+	<script src="js/plugins.js"></script>
+	<script src="js/app.js"></script>
+	<script type="module" src="src/js/about.js"></script>
+	<script type="module" src="src/js/nav.js"></script>
 </body>
 </html>
